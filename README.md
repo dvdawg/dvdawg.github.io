@@ -1,2 +1,3 @@
-# my website :)
+# dvdawg.github.io
+my website :)
 written in astro!!
