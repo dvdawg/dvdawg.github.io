@@ -1,21 +1,47 @@
 ---
+import { Astronav, MenuItems, MenuIcon } from "astro-navbar";
+import Container from "./container.astro";
+const menuitems = [
+  {
+    title: "home",
+    path: "/",
+  },
+  {
+    title: "blog",
+    path: "/blog/",
+  },]
 ---
-<div class="header-container">
-    <header class="info-header">
-        <h1>david kim</h1>
-    </header>
-    <nav>
-        <a href="/">home</a>
-        <a href="/blog/">blog</a>
-    </nav>
-</div>
+<Container>
+    <div class="flex justify-between items-start mb-3">
+        <a href="/" >
+            <span class="text-4xl font-semibold">
+                <p class="bg-scroll">dvd</p>
+                <header>km</header>
+            </span>
+        </a>
+        <nav class='text-lg place-self-center text-accent-color'>
+            <a href="/">home</a>
+            <a href="/blog/">blog</a>
+        </nav>
+    </div>
+</Container>
 
 <style>
-    .info-header {
-        flex: 1;
+    p {
+        background-image: url(../../assets/images/dvdgradient.png);
+        background-repeat: no-repeat;
+        background-size: cover;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        -webkit-font-smoothing: antialiased;
+        -webkit-text-stroke-width: 1px;
+        -webkit-text-stroke-color: lightgray;
     }
-    .header-container {
-        display: flex;
-        flex-wrap: nowrap;
+
+    span {
+        display: inline-flex;
     }
+
+    
 </style>
+
