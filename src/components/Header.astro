@@ -1,5 +1,4 @@
 ---
-import { Astronav, MenuItems, MenuIcon } from "astro-navbar";
 import Container from "./container.astro";
 const menuitems = [
   {
@@ -12,15 +11,16 @@ const menuitems = [
   },]
 ---
 <Container>
-    <div class="flex justify-between items-start mb-3">
-        <a href="/" >
+    <div class="flex justify-between items-start mb-3 py-6">
+        <a href="/" class="hover:text-black" >
             <span class="text-4xl font-semibold">
                 <p class="bg-scroll">dvd</p>
                 <header>km</header>
             </span>
         </a>
-        <nav class='text-lg place-self-center text-accent-color'>
+        <nav class='text-lg place-self-center space-x-1 text-black'>
             <a href="/">home</a>
+            <a href="/about/">about</a>
             <a href="/blog/">blog</a>
         </nav>
     </div>
@@ -41,7 +41,11 @@ const menuitems = [
     span {
         display: inline-flex;
     }
-
+    
+    nav a {
+        @apply underline underline-offset-[5px] decoration-inherit !important;
+        @apply hover:text-accent-color hover:decoration-accent-color transition-colors !important;
+    }
     
 </style>
 
