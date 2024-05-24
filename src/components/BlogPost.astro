@@ -1,4 +1,31 @@
 ---
-const { title, url } = Astro.props;
+import * as Card from "$lib/components/ui/card";
+const { title, url, description, pubDate } = Astro.props;
 ---
-<li><a href={url}>{title}</a></li>
+
+<a href={url}><div class="flex text-pretty min-h-28 p-3 transition duration-500 hover:bg-light-accent">
+    <div class="flex-none size-2/6">
+        <header class="font-extrabold text-2xl">{title}</header>
+        <h2 class="italic text-sm">{pubDate.toString().slice(4,10) + "," + pubDate.toString().slice(10,15)}</h2>
+    </div>
+    <div class="flex-none text-sm size-4/6 pl-6">
+        <p class="pt-1.5">{description}</p>
+    </div>
+</div></a>
+<!--hover: bg-gradient-to-r from-inherit to-accent-color -->
+<!--  
+    <div class="pb-3"><a href={url}><Card.Root>
+    <Card.Header>
+        <Card.Title>{title}</Card.Title>
+        <Card.Description>{pubDate.toString().slice(4,10) + "," + pubDate.toString().slice(10,15)}</Card.Description>
+    </Card.Header>
+    <Card.Content>
+        {description}
+    </Card.Content>
+    </Card.Root></a></div>
+ -->
+<style>
+    a {
+        text-decoration: none !important;
+    }
+</style>
