@@ -3,12 +3,12 @@ import * as Card from "$lib/components/ui/card";
 const { title, url, description, pubDate } = Astro.props;
 ---
 
-<a href={url}><div class="flex text-pretty min-h-28 p-3 transition duration-500 hover:bg-light-accent">
-    <div class="flex-none size-2/6">
+<a href={url}><div class="flex text-pretty min-h-28 p-3 transition duration-[400ms] hover:bg-light-accent">
+    <div class="flex-none size-5/12">
         <header class="font-extrabold text-2xl">{title}</header>
         <h2 class="italic text-sm">{pubDate.toString().slice(4,10) + "," + pubDate.toString().slice(10,15)}</h2>
     </div>
-    <div class="flex-none text-sm size-4/6 pl-6">
+    <div class="flex-none text-sm size-7/12 pl-6">
         <p class="pt-1.5">{description}</p>
     </div>
 </div></a>

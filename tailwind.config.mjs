@@ -20,7 +20,8 @@ const config = {
 			colors: {
 				'regal-blue': '#243c5a',
 				'accent-color': '#c4b5fd',
-				'light-accent': '#EDE9FE'
+				'light-accent': '#EDE9FE',
+				'dark-accent': '#A78BFA',
 			}
 		}
 	},
