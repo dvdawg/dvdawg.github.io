@@ -34,11 +34,7 @@ img, video {
 */
 
 /* custom stuff */
-.link{
-  @apply underline underline-offset-[3px] decoration-neutral-400 dark:decoration-neutral-500;
-  @apply hover:text-black hover:decoration-black transition-colors;
-  @apply dark:hover:text-white dark:hover:decoration-white;
-}
+
 .hidden {
   display: none;
 }
@@ -46,12 +42,18 @@ img, video {
   hr {
     @apply border-neutral-200;
   }
-  a {
-    @apply underline underline-offset-[5px] decoration-neutral-400 dark:decoration-neutral-500;
-    @apply hover:text-black hover:decoration-black transition-colors;
-    @apply dark:hover:text-white dark:hover:decoration-white;
-  }
 }
+@font-face {
+  font-family: 'Chicago';
+  src: url('/fonts/ChicagoNormal.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
   overflow: scroll; 
+}
+::selection {
+  background: #c4b5fd;
 }

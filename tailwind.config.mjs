@@ -22,6 +22,9 @@ const config = {
 				'accent-color': '#c4b5fd',
 				'light-accent': '#EDE9FE',
 				'dark-accent': '#A78BFA',
+			},
+			transitionProperty: {
+				'fade': '400ms'
 			}
 		}
 	},

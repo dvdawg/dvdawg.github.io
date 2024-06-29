@@ -1,27 +1,33 @@
 ---
 import Container from "./container.astro";
 const menuitems = [
-  {
-    title: "home",
-    path: "/",
-  },
-  {
-    title: "blog",
-    path: "/blog/",
-  },]
+    { name: "home", href: "/" },
+    { name: "about", href: "/about/"},
+    { name: "blog", href: "/blog/" },
+];
+const pathname = Astro.url.pathname;
+const link = menuitems.find(({ href }) => pathname.startsWith(href));
 ---
 <Container>
-    <div class="flex justify-between items-start mb-3 py-6">
-        <a href="/" class="hover:text-black" >
-            <span class="text-4xl font-semibold">
+    <div class="flex justify-between items-start mb-3 pb-8 pt-12">
+        <h1 class="text-4xl font-bold"><a href="/" class="hover:text-black" >
+            <span>
                 <p class="bg-scroll">dvd</p>
-                <header>km</header>
-            </span>
-        </a>
-        <nav class='text-lg place-self-center space-x-1 text-black'>
-            <a href="/">home</a>
-            <a href="/about/">about</a>
-            <a href="/blog/">blog</a>
+                <header class="font-semibold">km</header></span>
+        </h1>
+        <nav class='text-lg place-self-center space-x-1.5 underline underline-offset-4 decoration-inherit'>
+            {
+                menuitems.map((link) => (
+                  <a
+                    href={link.href}
+                    class:list={[
+                      "hover:text-accent-color transition-colors",
+                      { "text-accent-color": link.href === pathname },
+                    ]}>
+                    {link.name}
+                  </a>
+                ))
+              }
         </nav>
     </div>
 </Container>
@@ -41,11 +47,6 @@ const menuitems = [
 
     span {
         display: inline-flex;
-    }
-    
-    nav a {
-        @apply underline underline-offset-[5px] decoration-inherit !important;
-        @apply hover:text-accent-color hover:decoration-accent-color transition-colors !important;
     }
     
 </style>

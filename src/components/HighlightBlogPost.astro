@@ -1,0 +1,13 @@
+---
+import * as Card from "$lib/components/ui/card/index.js";
+const { image, title, description, url, date } = Astro.props;
+---
+<a href={url}><div class="grow bg-cover bg-center backdrop-blur-lg w-3/5">
+    <div class='p-3 size-full'>
+    <p class="text-sm">{date}</p>
+    <div class="absolute pb-3 pl-3 bottom-0 left-0"><h1 class="text-4xl font-bold">{title}</h1>
+    <p>{description}</p></div>
+    </div>
+</div></a>
+
+
