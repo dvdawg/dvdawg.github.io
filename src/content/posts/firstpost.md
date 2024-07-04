@@ -5,7 +5,7 @@ description: 'my life...kubernetes.. .game.... video.....v ideogame..trying hard
 author: 'dvd'
 image:
     url: 'https://docs.astro.build/assets/full-logo-light.png'
-    alt: 'The full Astro logo.'
+    alt: 'bleh'
 tags: ["writing"]
 ---
 My life is like a Kubernetes game
