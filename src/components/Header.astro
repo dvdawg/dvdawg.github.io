@@ -2,18 +2,20 @@
 import Container from "./container.astro";
 const menuitems = [
     { name: "home", href: "/" },
-    { name: "about", href: "/about/"},
+    { name: "projects", href: "/projects/"},
     { name: "blog", href: "/blog/" },
 ];
 const pathname = Astro.url.pathname;
+import { Separator } from "$lib/components/ui/separator";
 const link = menuitems.find(({ href }) => pathname.startsWith(href));
 ---
 <Container>
-    <div class="flex justify-between items-start mb-3 pb-8 pt-12">
+    <div class="flex justify-between mb-3 pb-8 pt-12"> 
         <h1 class="text-4xl font-bold"><a href="/" class="hover:text-black" >
             <span>
                 <p class="bg-scroll">dvd</p>
-                <header class="font-semibold">km</header></span>
+                <header class="font-semibold">km</header>
+            </span>
         </h1>
         <nav class='text-lg place-self-center space-x-1.5 underline underline-offset-4 decoration-inherit'>
             {

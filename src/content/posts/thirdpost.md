@@ -6,10 +6,6 @@ author: 'David Kim'
 image:
     url: 'https://docs.astro.build/assets/full-logo-light.png'
     alt: 'The full Astro logo.'
-tags: ["astro", "blawg", "learning in public"]
+tags: ["math"]
 ---
-test tstet
-## test test 
-# test 
-
-*test*
+this is another placeholder post
