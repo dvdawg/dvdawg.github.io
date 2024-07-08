@@ -2,6 +2,7 @@
 import Page from "./Page.astro";
 import '@fontsource/space-mono';
 import BlogHeader from '../components/BlogHeader.astro';
+import '../styles/blog.css';
 import { baseService } from "astro/assets";
 const { frontmatter } = Astro.props;
 ---
@@ -9,51 +10,3 @@ const { frontmatter } = Astro.props;
   <BlogHeader frontmatter={frontmatter}/>
   <slot />
 </Page>
-
-<style is:global>
-  @tailwind base;
-
-  @layer base {
-    h1 {
-      @apply text-6xl;
-    }
-    h2 {
-      @apply text-5xl;
-    }
-    h3 {
-      @apply text-4xl;
-    }
-    h4 {
-      @apply text-3xl;
-    }
-    h5 {
-      @apply text-2xl;
-    }
-    h6 {
-      @apply text-xl;
-    }
-    a {
-      @apply text-dark-accent underline;
-    }
-    blockquote {
-      @apply border-l-4 border-accent-color p-3 my-4 bg-violet-50;
-    }
-    ul {
-      @apply list-disc ml-4;
-    }
-    ol {
-      @apply list-decimal ml-4;
-    }
-    code {
-      @apply text-sm font-mono bg-violet-50 rounded p-1;
-    }
-    pre {
-      @apply bg-inherit p-4 my-4;
-    }
-    pre code {
-      @apply bg-inherit;
-    }
-  }
-</style>
-
-
