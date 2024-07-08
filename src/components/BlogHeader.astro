@@ -1,0 +1,24 @@
+---
+import { Separator } from "$lib/components/ui/separator";
+import { Badge } from "$lib/components/ui/badge/index.js";
+const { frontmatter } = Astro.props;
+---
+<div class=" bg-light-accent"> 
+    <Separator class="bg-black" />
+    <div class="p-5">
+      <p class="font-bold text-4xl pt-5 pb-2">{frontmatter.title}</p>
+      <div class="flex items-center space-x-6 pb-4">
+        <p class="text-sm flex-initial font-mono"><span class="font-semibold">PUBLISHED: </span>{frontmatter.pubDate.toString().slice(3,10)},{frontmatter.pubDate.toString().slice(10,15)}</p>
+        <Separator orientation="vertical" class="bg-black h-4"/>
+        <div class="flex flex-wrap">
+          {frontmatter.tags.map((tag: unknown) => (
+            <a href={`/tags/${tag}`} class="text-black"><Badge class='bg-accent-color transition duration-[400ms] hover:bg-dark-accent' variant="secondary">{tag}</Badge></a>
+            <Separator orientation="vertical" class="w-1.5"/>
+          ))}
+        </div>
+      </div>
+      <p class="font-light pb-3">{frontmatter.description}</p>
+    </div>
+    <Separator class="bg-black" />
+  </div>
+  <Separator class="h-8" />

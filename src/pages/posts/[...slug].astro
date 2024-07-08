@@ -13,6 +13,7 @@ const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 ---
+
 <BlogLayout frontmatter={entry.data}>
   <Content />
 </BlogLayout>
