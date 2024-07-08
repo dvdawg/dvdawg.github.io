@@ -49,3 +49,6 @@
         @apply text-inherit;
     }
 }
+::selection {
+    background: #c4b5fd;
+  }
