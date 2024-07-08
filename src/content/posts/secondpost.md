@@ -26,16 +26,18 @@ this is a line of `code`
 
 this is a block of code with syntax highlighting:
 ```c
-printf('freakybob')
-char freak[];
-scanf('your response? %s', &freak)
+printf("freakybob\n");
+char freak[100];
+printf("your response? ");
+scanf("%s", freak);
 ```
 
 and this is without:
 ```
-printf('freakybob')
-char freak[];
-scanf('your response? %s', &freak)
+printf("freakybob\n");
+char freak[100];
+printf("your response? ");
+scanf("%s", freak);
 ```
 
 * this is a list
@@ -47,4 +49,4 @@ scanf('your response? %s', &freak)
 
 there should be a 
 
-sufficient space between these two. i am going to make a very long sentence here to make sure the paragraph formatting goes well!   
+sufficient space between these two.

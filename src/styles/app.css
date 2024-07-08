@@ -42,6 +42,7 @@ img, video {
   hr {
     @apply border-neutral-200;
   }
+  
 }
 @font-face {
   font-family: 'Chicago';
