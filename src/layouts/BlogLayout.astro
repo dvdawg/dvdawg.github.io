@@ -17,10 +17,11 @@ const { pageTitle } = Astro.props;
     <title>{pageTitle}</title>
   </head>
   <body>
-    <Header />
-    <Container>
+    <div class="max-w-4xl mx-auto px-32 pb-20">
+      <Header />
       <BlogHeader frontmatter={frontmatter}/>
       <slot />
-    </Container>
+    </div>
   </body>
 </html>
+

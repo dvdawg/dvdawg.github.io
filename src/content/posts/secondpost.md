@@ -1,6 +1,6 @@
 ---
 title: 'my second blawg'
-pubDate: 2024-05-23
+pubDate: 2024-06-23
 description: 'this is a placeholder post for my blog'
 author: 'David Kim'
 image:

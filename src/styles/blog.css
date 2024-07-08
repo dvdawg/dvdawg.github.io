@@ -4,22 +4,22 @@
 
 @layer base {
     h1 {
-      @apply text-6xl;
+      @apply text-6xl my-4;
     }
     h2 {
-      @apply text-5xl;
+      @apply text-5xl my-4;
     }
     h3 {
-      @apply text-4xl;
+      @apply text-4xl my-4;
     }
     h4 {
-      @apply text-3xl;
+      @apply text-3xl my-4;
     }
     h5 {
-      @apply text-2xl;
+      @apply text-2xl my-4;
     }
     h6 {
-      @apply text-xl;
+      @apply text-xl my-4;
     }
     a {
       @apply text-dark-accent underline;
@@ -28,10 +28,13 @@
       @apply border-l-4 border-accent-color p-3 my-4 bg-violet-50;
     }
     ul {
-      @apply list-disc ml-4;
+      @apply list-disc ml-8;
     }
     ol {
-      @apply list-decimal ml-4;
+      @apply list-decimal ml-8;
+    }
+    li {
+      @apply my-2;
     }
     code {
       @apply text-sm font-mono bg-violet-50 rounded p-1;
@@ -54,7 +57,18 @@
     pre code::selection {
         @apply bg-violet-900;
       }
+      br {
+        @apply my-2;
+      }
 }
 ::selection {
     background: #c4b5fd;
   }
+  
+@font-face {
+  font-family: 'Chicago';
+  src: url('/fonts/ChicagoNormal.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
