@@ -42,4 +42,10 @@
     pre code {
       @apply bg-inherit;
     }
+    nav a {
+       @apply text-inherit;
+    }
+    h1 a {
+        @apply text-inherit;
+    }
 }
