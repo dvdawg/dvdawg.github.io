@@ -6,7 +6,7 @@ const { frontmatter } = Astro.props;
 <div class="bg-light-accent"> 
     <Separator class="bg-black" />
     <div class="p-5">
-      <p class="font-bold text-4xl pt-5 pb-2">{frontmatter.title}</p>
+      <p class="text-4xl pt-5 pb-2">{frontmatter.title}</p>
       <div class="flex items-center space-x-6 pb-4">
         <p class="text-sm flex-initial font-mono"><span class="font-semibold">PUBLISHED: </span>{frontmatter.pubDate.toString().slice(3,10)},{frontmatter.pubDate.toString().slice(10,15)}</p>
         <Separator orientation="vertical" class="bg-black h-4"/>
