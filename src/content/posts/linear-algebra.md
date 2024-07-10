@@ -50,6 +50,5 @@ And the definition of a vector space:
 > $(a + b)\mathbf{u} = a\mathbf{u}+ b\mathbf{u}$
 > 8. **Scalar multiplication distributivity with respect to vector addition:**<br>
 > $a(\mathbf{u} + \mathbf{v}) = a\mathbf{u} + a\mathbf{v}$
->
-> <br><br>
-> There are some caveats regarding axioms 5 and 6 and field $F$, but disregard them for now. We just consider field F to have 
+> <br>
+> There are some caveats regarding axioms 5 and 6 with field $F$, but we'll disregard them for now. 
