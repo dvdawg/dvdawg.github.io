@@ -18,7 +18,7 @@ More generally, however, linear algebra is the study of the behavior of mathemat
 The field of linear algebra begins with the definition of its most fundamental unit...
 
 #### Vectors and Spaces
-What is a vector? An immediate reaction might be to visualize an arrow in space, or a $n \times 1$ matrix, or the definition of "a quantity with magnitude and direction". 
+What is a vector? An immediate reaction might be to visualize an arrow in space, or a $n \times 1$ matrix, or the definition of "a quantity with magnitude and direction":
 $$
 \mathbf{\nearrow} ,\quad \begin{bmatrix}
 a_1\\
@@ -26,7 +26,7 @@ a_1\\
 a_n
 \end{bmatrix}, \quad \mathbf{v}
 $$
-These are all *examples* of vectors, but don't quite encapsulate what a vector is. Our general definition of a vector is as follows:
+These are all *examples* of vectors, but don't quite encompass what a vector is. Our general definition of a vector is as follows:
 > **Definition**: A vector is an element of a vector space.
 
 And the definition of a vector space:
@@ -40,7 +40,7 @@ And the definition of a vector space:
 > This vector $\mathbf{0}$ is also called the *zero vector*, and denoted as such. There *always* exists a zero vector for any given vector space. 
 > 4. **Existence of additive inverse under vector addition**:
 > $\mathbf{u} + (\mathbf{-u}) = \mathbf{0}$ <br>
-> For every vector $\mathbf{u}$, there must exist another vector $\mathbf{-u}$ within the vector space such that under vector addition, they will add to the zero vector.
+> For every vector $\mathbf{u}$, there must exist another vector $\mathbf{-u}$ within the vector space such that under vector addition, they will add to the zero vector. Recall from above that a vector space must be a *non-empty* set--the smallest possible set a vector space can be is simply just the zero vector.
 > 5. **Existence of an identity element under scalar multiplication**:
 > $1\mathbf{u} = \mathbf{u}$ <br>
 > An identity element in $F$ under scalar multiplication. Analogous to **axiom 3**. 
@@ -52,3 +52,11 @@ And the definition of a vector space:
 > $a(\mathbf{u} + \mathbf{v}) = a\mathbf{u} + a\mathbf{v}$
 > <br>
 > There are some caveats regarding axioms 5 and 6 with field $F$, but we'll disregard them for now. 
+
+With these definitions established, we can create a few examples of vectors with respective vector spaces:
+- Rational functions
+  All 
+  For example, here's a vector space
+$$
+x \in V \mid     V = \{nx\}, \quad n \in \mathbb{Z}
+$$

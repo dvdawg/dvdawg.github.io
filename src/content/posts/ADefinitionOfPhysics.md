@@ -6,7 +6,7 @@ author: 'David Kim'
 image:
     url: 'https://docs.astro.build/assets/full-logo-light.png'
     alt: 'bleh'
-tags: ["math", "physics"]
+tags: ["physics"]
 ---
 #### What is physics?
 There's a **variety** of common definitions:
