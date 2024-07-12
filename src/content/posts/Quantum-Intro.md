@@ -26,7 +26,7 @@ and angle of incidence. Blackbody **radiation** is the radiation emitted by a bl
 with its environment. 
 <br><br>
 A classic example of a blackbody is a cavity, such as a box, with thermally insulated walls with a small hole:
-<img src='../../../public/assets/images/blog/quantum-intro/blackbody.png' class='mx-auto max-w-52 max-h-52'>
+<img src='https://dvdkm.cc/public/assets/images/blog/quantum-intro/blackbody.png' class='mx-auto max-w-52 max-h-52'>
 If an electromagnetic ray "hits" the hole, it will enter the insulated blackbody and will be reflected inside, 
 with energy transferring between the cavity and the light, before it exits the cavity by chance. This energy 
 transfer enables the light to reach **thermal equilibrium** with the cavity itself--making the light that exits the 
