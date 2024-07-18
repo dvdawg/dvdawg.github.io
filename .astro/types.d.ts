@@ -133,9 +133,9 @@ declare module 'astro:content' {
   collection: "posts";
   data: InferEntrySchema<"posts">
 } & { render(): Render[".md"] };
-"firstpost.md": {
-	id: "firstpost.md";
-  slug: "firstpost";
+"Quantum-Intro.md": {
+	id: "Quantum-Intro.md";
+  slug: "quantum-intro";
   body: string;
   collection: "posts";
   data: InferEntrySchema<"posts">
@@ -143,13 +143,6 @@ declare module 'astro:content' {
 "linear-algebra.md": {
 	id: "linear-algebra.md";
   slug: "linear-algebra";
-  body: string;
-  collection: "posts";
-  data: InferEntrySchema<"posts">
-} & { render(): Render[".md"] };
-"secondpost.md": {
-	id: "secondpost.md";
-  slug: "secondpost";
   body: string;
   collection: "posts";
   data: InferEntrySchema<"posts">

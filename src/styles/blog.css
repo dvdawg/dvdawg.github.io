@@ -57,9 +57,12 @@
     pre code::selection {
         @apply bg-violet-900;
       }
-      br {
+    br {
         @apply my-2;
       }
+    p {
+        @apply mb-2.5;
+    }
 }
 ::selection {
     background: #c4b5fd;
