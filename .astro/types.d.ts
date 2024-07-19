@@ -1,5 +1,15 @@
 declare module 'astro:content' {
 	interface Render {
+		'.mdx': Promise<{
+			Content: import('astro').MarkdownInstance<{}>['Content'];
+			headings: import('astro').MarkdownHeading[];
+			remarkPluginFrontmatter: Record<string, any>;
+		}>;
+	}
+}
+
+declare module 'astro:content' {
+	interface Render {
 		'.md': Promise<{
 			Content: import('astro').MarkdownInstance<{}>['Content'];
 			headings: import('astro').MarkdownHeading[];
@@ -133,13 +143,13 @@ declare module 'astro:content' {
   collection: "posts";
   data: InferEntrySchema<"posts">
 } & { render(): Render[".md"] };
-"Quantum-Intro.md": {
-	id: "Quantum-Intro.md";
+"Quantum-Intro.mdx": {
+	id: "Quantum-Intro.mdx";
   slug: "quantum-intro";
   body: string;
   collection: "posts";
   data: InferEntrySchema<"posts">
-} & { render(): Render[".md"] };
+} & { render(): Render[".mdx"] };
 "linear-algebra.md": {
 	id: "linear-algebra.md";
   slug: "linear-algebra";
