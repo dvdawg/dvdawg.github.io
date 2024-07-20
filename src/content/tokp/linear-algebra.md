@@ -7,6 +7,7 @@ image:
     url: 'https://docs.astro.build/assets/full-logo-light.png'
     alt: 'bleh'
 tags: ["math", "physics"]
+layout: ../../layouts/TokpLayout.astro
 ---
 > "*Mathematics is the art of reducing any problem to linear algebra.*"
 
@@ -17,7 +18,7 @@ $$
 More generally, however, linear algebra is the study of the behavior of mathematical structures that obey specific rules (vector addition and scalar multiplication), which apply to the aforementioned linear maps and relations. <br><br>
 The field of linear algebra begins with the definition of its most fundamental unit...
 
-#### Vectors and Spaces
+## Vectors and Spaces
 What is a vector? An immediate reaction might be to visualize an arrow in space, or a $n \times 1$ matrix, or the definition of "a quantity with magnitude and direction":
 $$
 \mathbf{\nearrow} ,\quad \begin{bmatrix}

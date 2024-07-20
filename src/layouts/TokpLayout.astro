@@ -3,21 +3,23 @@ import '@fontsource/space-mono';
 import BlogHeader from '../components/BlogHeader.astro';
 import '../styles/blog.css';
 import Header from '../components/Header.astro';
+import TOC from '../components/TOC.astro';
 import Container from '../components/container.astro';
+
 const { frontmatter } = Astro.props
 const { pageTitle } = Astro.props;
+const { headings } = Astro.props;
 ---
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="../../assets/images/dvd.jpeg" />
     <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} >
-    
+    <meta name="generator" content={Astro.generator}>
     <title>{pageTitle}</title>
   </head>
   <body>
-    <div class="max-w-4xl mx-auto px-32 pb-20">
+    <div class="max-w-4xl mx-auto px-32">
       <Header />
       <BlogHeader frontmatter={frontmatter}/>
       <link
@@ -26,6 +28,11 @@ const { pageTitle } = Astro.props;
         integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ"
         crossorigin="anonymous"
       />
+    </div>
+    <div class="top-12 pl-8 sticky w-72 h-96">
+      <TOC headings={headings} />
+    </div>
+    <div class="max-w-4xl mx-auto px-32 pb-20 -mt-96">
       <slot />
     </div>
   </body>

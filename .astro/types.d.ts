@@ -136,26 +136,35 @@ declare module 'astro:content' {
 
 	type ContentEntryMap = {
 		"posts": {
+"temp.md": {
+	id: "temp.md";
+  slug: "temp";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+};
+"tokp": {
 "ADefinitionOfPhysics.md": {
 	id: "ADefinitionOfPhysics.md";
   slug: "adefinitionofphysics";
   body: string;
-  collection: "posts";
-  data: InferEntrySchema<"posts">
+  collection: "tokp";
+  data: InferEntrySchema<"tokp">
 } & { render(): Render[".md"] };
 "Quantum-Intro.mdx": {
 	id: "Quantum-Intro.mdx";
   slug: "quantum-intro";
   body: string;
-  collection: "posts";
-  data: InferEntrySchema<"posts">
+  collection: "tokp";
+  data: InferEntrySchema<"tokp">
 } & { render(): Render[".mdx"] };
 "linear-algebra.md": {
 	id: "linear-algebra.md";
   slug: "linear-algebra";
   body: string;
-  collection: "posts";
-  data: InferEntrySchema<"posts">
+  collection: "tokp";
+  data: InferEntrySchema<"tokp">
 } & { render(): Render[".md"] };
 };
 

@@ -1,0 +1,50 @@
+---
+import TOCHeading from './TOCHeading.astro';
+
+const { headings } = Astro.props;
+const toc = reformatHeadings(headings);
+
+interface Heading {
+  depth: number;
+  text: string;
+  slug: string;
+  subheadings?: Heading[];
+}
+
+function reformatHeadings(headings: Heading[]): Heading[] {
+  const result: Heading[] = [];
+  const stack: Heading[] = [];
+
+  for (const heading of headings) {
+    heading.subheadings = [];
+
+    while (stack.length > 0 && stack[stack.length - 1].depth >= heading.depth) {
+      stack.pop();
+    }
+
+    if (stack.length === 0) {
+      result.push(heading);
+    } else {
+      const parent = stack[stack.length - 1];
+      parent.subheadings!.push(heading);
+    }
+
+    stack.push(heading);
+  }
+
+  return result;
+}
+---
+<p class="text-lg mb-0 font-bold">Table of Contents</p>
+{toc && toc.length > 0 && (
+  <nav class="article-toc text-xs text-black">
+    <ul class="list-none ml-1">
+      {toc.map((heading) => (
+        <TOCHeading heading={heading} />
+      ))}
+    </ul>
+  </nav>
+)}
+
+
+

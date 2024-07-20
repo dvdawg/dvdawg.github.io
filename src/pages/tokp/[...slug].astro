@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import TokpLayout from '../../layouts/TokpLayout.astro';
+
+export async function getStaticPaths() {
+
+  const allPosts = await getCollection("tokp");
+
+  const headings = await Promise.all(
+    allPosts.map((entry) => entry.render().then((data) => data.headings)),
+  );
+  
+  const blogEntries = await getCollection('tokp');
+  return blogEntries.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}
+
+const allPosts = await getCollection("tokp");
+const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
+const { entry } = Astro.props;
+const { Content, headings } = await entry.render();
+---
+<TokpLayout frontmatter={entry.data} headings={headings}>
+  <Content />
+</TokpLayout>

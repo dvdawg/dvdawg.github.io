@@ -8,7 +8,7 @@ const { frontmatter } = Astro.props;
     <div class="p-5">
       <p class="text-4xl pt-5 pb-2">{frontmatter.title}</p>
       <div class="flex items-center space-x-6 pb-4">
-        <p class="text-sm flex-initial font-mono"><span class="font-semibold">PUBLISHED: </span>{frontmatter.pubDate.toString().slice(3,10)},{frontmatter.pubDate.toString().slice(10,15)}</p>
+        <p class="text-sm flex-initial place-self-center font-mono pt-3"><span class="font-semibold">PUBLISHED: </span>{frontmatter.pubDate.toString().slice(3,10)},{frontmatter.pubDate.toString().slice(10,15)}</p>
         <Separator orientation="vertical" class="bg-black h-4"/>
         <div class="flex flex-wrap">
           {frontmatter.tags.map((tag: unknown) => (
