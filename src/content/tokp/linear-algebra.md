@@ -7,7 +7,6 @@ image:
     url: 'https://docs.astro.build/assets/full-logo-light.png'
     alt: 'bleh'
 tags: ["math", "physics"]
-layout: ../../layouts/TokpLayout.astro
 ---
 > "*Mathematics is the art of reducing any problem to linear algebra.*"
 
