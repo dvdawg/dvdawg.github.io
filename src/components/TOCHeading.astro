@@ -1,8 +1,8 @@
 ---
 const { heading } = Astro.props;
 ---
-<li class="list-none my-1">
-  <a href={'#' + heading.slug} class="hover:text-accent-color">
+<li class="list-none my-0.5">
+  <a href={'#' + heading.slug} class={`hover:text-accent-color no-underline ${heading.isRoot ? 'text-[0.85rem] font-semibold underline' : ''} ${heading.isSecondary ? 'font-normal' : ''}`}>
     {heading.text}
   </a>
   {

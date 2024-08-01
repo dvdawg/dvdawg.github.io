@@ -9,6 +9,8 @@ interface Heading {
   text: string;
   slug: string;
   subheadings?: Heading[];
+  isRoot?: boolean;
+  isSecondary?: boolean;
 }
 
 function reformatHeadings(headings: Heading[]): Heading[] {
@@ -17,16 +19,22 @@ function reformatHeadings(headings: Heading[]): Heading[] {
 
   for (const heading of headings) {
     heading.subheadings = [];
+    heading.isRoot = false;
+    heading.isSecondary = false;
 
     while (stack.length > 0 && stack[stack.length - 1].depth >= heading.depth) {
       stack.pop();
     }
 
     if (stack.length === 0) {
+      heading.isRoot = true;
       result.push(heading);
     } else {
       const parent = stack[stack.length - 1];
       parent.subheadings!.push(heading);
+      if (parent.isRoot) {
+        heading.isSecondary = true;
+      }
     }
 
     stack.push(heading);
@@ -34,11 +42,12 @@ function reformatHeadings(headings: Heading[]): Heading[] {
 
   return result;
 }
+
 ---
 <div class="w-full bg-black h-1"></div>
-<p class="text-lg mb-0 font-bold pt-3">Table of Contents</p>
+<p class="text-[1.35rem] mb-0 pt-3 pb-2">Contents</p>
 {toc && toc.length > 0 && (
-  <nav class="article-toc text-xs text-black">
+  <nav class="article-toc text-xs text-black font-extralight">
     <ul class="list-none ml-1">
       {toc.map((heading) => (
         <TOCHeading heading={heading} />
