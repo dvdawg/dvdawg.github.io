@@ -124,7 +124,7 @@ $$
 E = hf = \hbar\omega
 $$
 With this, we modify our relation to create a *new* partition function to find an expression for intensity.
-> <p class='text-xl'> **Formulating a new expression for energy** </p> <br/>
+> <p class='text-xl'> **Formulating a new expression for energy** </p>
 > Recall from [1.1](#11--the-physics-of-the-blackbody) that
 > $$
 > \int d^3n=\frac{V}{\pi^2c^3}\int\omega^2 d\omega
@@ -196,16 +196,53 @@ particle would include its position and momentum.
 Having established this, we continue to a more detailed discussion of these concepts!
 
 ## **1. &nbsp; The Wavefunction**
-The wavefunction is a mathematical function that describes the quantum state of a given system. Much like how a physicist might use or determine a function for an object's position, $x(t)$, in a classical scenario, a wavefunction $\psi(x,t)$
+The wavefunction is a mathematical function that describes the quantum state of a given system. Much like how a physicist might use or determine a function for an object's position $x(t)$ in a classical scenario, a wavefunction $\psi(x,t)$
 represents the state of a system--for example, a particle.
 $$
 \underset{\text{classical}}{x(t)} \rightarrow \underset{\text{quantum}}{\psi(x,t)}
 $$
 
-This function is complex-valued and satisfy the definition of a vector in the infinite-dimensional **Hilbert space**. As such, we use linear algebra
+This function is complex-valued and satisfies the definition of a vector in the infinite-dimensional **Hilbert space**. As such, we use linear algebra
 and vector properties to manipulate wavefunctions to yield information about the system.
 
 ### 1.1 &nbsp; Wavefunction Properties
+Let's consider the previously given wavefunction $\psi(x,t)$. At first glance, the function's physical meaning is difficult to interpret;
+it gives a function $\psi(x)$ for any time $t$. 
+
+So, what does the wavefunction represent? We know from our previous theoretical discussions that matter does not 
+behave explicitly like a particle at the quantum scale; systems *are not localized* at a single point in space. To answer this, we turn to **Born's interpretation** of the wavefunction:
+
+$$
+\int_a^b |\psi(x,t)|^2 \, dx = \begin{cases}
+    \text{probability of finding the particle} \\
+    \text{ within } x=[a,b] \text{ at time } t
+\end{cases}
+$$
+
+We see that the integral of the *wavefunction squared* over a given interval gives the probability of finding the particle within that interval at a given time. 
+<img src='/assets/images/blog/quantum-intro/born.png' class='mx-auto'/>
+<div class='flex items-center pb-2'><p class='text-xs mx-auto'><em>image from <a href='https://www.amazon.com/Introduction-Quantum-Mechanics-David-Griffiths/dp/1107189632'>Griffiths</a>.</em></p></div>
+
+> <p class='text-xl'> **Basic mathematical properties of the wavefunction** </p>
+> - The wavefunction $\psi$ is represented in bra-ket notation as $\left| \psi \right\rangle$.
+> - The wavefunction vector is a sum of linearly independent vectors. This is a linear combination of **eigenstates** $\ket{v_n}$ of the system with coefficients $c_n$:
+> $$
+> \left| \psi \right\rangle =  \sum c_n\ket{v_n}
+> $$
+> - The wavefunction is **normalized**:
+> $$
+> \int_{-\infty}^{\infty} \left| \psi(x,t) \right|^2dx = 1
+> $$
+> $$
+> \braket{\psi | \psi} = \sum_n |c_n|^2 = 1
+> $$
+
+Based on Born's interpretation and vector properties of the wavefunction, we now know how to find the probability of a system being 
+in a certain state. By using the orthonormality of the eigenstattes:
+> **Probability of an eigenstate**
+> $$
+> P(\ket{v_n})=\braket{\psi | v_n} = |c_n|^2
+> $$
 
 ## **2. &nbsp; Observables and Measurement**
 
