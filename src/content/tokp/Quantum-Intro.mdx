@@ -186,16 +186,14 @@ The photoelectric effect is explained by considering light as a particle.
 # II. Fundamental Quantum Concepts
 Having established our theoretical precendent for quantum mechanics, we now move to explaining the concepts of
 quantum mechanics. 
-
+## **1. &nbsp; The Language of Quantum Mechanics**
 The language of quantum mechanics can be simplified to two basic fundamental concepts: wave functions, and observables.
 - A **wave function** describes the state of a system--all of its properties at a given time. Essentially, when discussing
 the state of something, we are discussing everything we know about it at a given time. For example, the state of a moving 
 particle would include its position and momentum.
 - An **observable** is a property of a system that can be *measured*.
 
-Having established this, we continue to a more detailed discussion of these concepts!
-
-## **1. &nbsp; The Wavefunction**
+### 1.1 &nbsp; Wavefunctions
 The wavefunction is a mathematical function that describes the quantum state of a given system. Much like how a physicist might use or determine a function for an object's position $x(t)$ in a classical scenario, a wavefunction $\psi(x,t)$
 represents the state of a system--for example, a particle.
 $$
@@ -205,7 +203,8 @@ $$
 This function is complex-valued and satisfies the definition of a vector in the infinite-dimensional **Hilbert space**. As such, we use linear algebra
 and vector properties to manipulate wavefunctions to yield information about the system.
 
-### 1.1 &nbsp; Wavefunction Properties
+<p class='text-2xl underline py-2'>Properties</p>
+
 Let's consider the previously given wavefunction $\psi(x,t)$. At first glance, the function's physical meaning is difficult to interpret;
 it gives a function $\psi(x)$ for any time $t$. 
 
@@ -237,13 +236,29 @@ We see that the integral of the *wavefunction squared* over a given interval giv
 > \braket{\psi | \psi} = \sum_n |c_n|^2 = 1
 > $$
 
+Note that the last point shows the integral of an already normalized wavefunction. You may encounter wavefunctions that have
+the integral equal a constant; we then use a fitting multiplicative constant and multiply the wavefunction accordingly to
+normalize it. As we'll see in later sections, this multiplication is valid, as the wavefunction is a solution to a differential equation
+and thus can be multiplied by a constant and remain in the solution space.
+
+Then, what about *this case*?
+$$
+\int_{-\infty}^{\infty} \left| \psi(x,t) \right|^2dx = \infty
+$$
+If the integral is infinite or $0$, we state that the wavefunction is not normalizable, as there is no constant value that can
+be multiplied to normalize the integral. Thus, these wavefunctions can not be *physically realizable* are rejected as solutions.
+
 Based on Born's interpretation and vector properties of the wavefunction, we now know how to find the probability of a system being 
-in a certain state. By using the orthonormality of the eigenstattes:
+in a certain state. By using the orthonormality of eigenstates:
 > **Probability of an eigenstate**
 > $$
 > P(\ket{v_n})=\braket{\psi | v_n} = |c_n|^2
 > $$
 
-## **2. &nbsp; Observables and Measurement**
+### 1.2 &nbsp; Observables and Measurement
+An **observable** is a property of a system that can be measured. In quantum mechanics, observables are represented by **Hermitian operators**.
+While wavefunctions describe the state of a particle, observables are the properties that we 
 
-## **3. &nbsp; The Schrödinger Equation**
+## **2. &nbsp; The Schrödinger Equation**
+
+
