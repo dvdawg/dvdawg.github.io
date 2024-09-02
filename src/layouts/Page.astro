@@ -1,8 +1,32 @@
 ---
 import Header from '../components/Header.astro';
 import Container from '../components/container.astro';
+import Footer from '../components/Footer.astro';
+import { ViewTransitions } from "astro:transitions";
+
 const { pageTitle } = Astro.props;
 import "$lib/styles/app.css";
+
+const anim = {
+  old: {
+    name: "flyOut",
+    duration: "350ms",
+    easing: "ease",
+    fillMode: "forwards",
+  },
+  new: {
+    name: "flyIn",
+    duration: "350ms",
+    delay: "350ms",
+    easing: "ease",
+    fillMode: "backwards",
+  },
+};
+
+const animation = {
+  forwards: anim,
+  backwards: anim,
+};
 ---
 <html lang="en">
   <head>
@@ -12,11 +36,13 @@ import "$lib/styles/app.css";
     <meta name="generator" content={Astro.generator} >
     <script defer src="https://cloud.umami.is/script.js" data-website-id="7a390d78-01a3-49da-8dd2-189cf9b10983"></script>
     <title>{pageTitle}</title>
+    <ViewTransitions />
   </head>
-  <body>
+  <body transition:animate={animation}>
     <Header />
     <Container>
       <slot />
     </Container>
+    <Footer />
   </body>
 </html>
