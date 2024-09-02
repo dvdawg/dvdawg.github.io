@@ -9,6 +9,25 @@ import Container from '../components/container.astro';
 const { frontmatter } = Astro.props
 const { pageTitle } = Astro.props;
 const { headings } = Astro.props;
+const anim = {
+  old: {
+    name: "flyOut",
+    duration: "350ms",
+    easing: "ease",
+    fillMode: "forwards",
+  },
+  new: {
+    name: "flyIn",
+    duration: "350ms",
+    delay: "350ms",
+    easing: "ease",
+    fillMode: "backwards",
+  },
+};
+const animation = {
+  forwards: anim,
+  backwards: anim,
+};
 ---
 <html lang="en">
   <head>
@@ -18,7 +37,7 @@ const { headings } = Astro.props;
     <meta name="generator" content={Astro.generator}>
     <title>{pageTitle}</title>
   </head>
-  <body>
+  <body transition:animate={animation}>
     <div class="max-w-4xl mx-auto px-32">
       <Header />
       <BlogHeader frontmatter={frontmatter}/>

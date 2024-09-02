@@ -6,6 +6,25 @@ import Header from '../components/Header.astro';
 import Container from '../components/container.astro';
 const { frontmatter } = Astro.props
 const { pageTitle } = Astro.props;
+const anim = {
+  old: {
+    name: "flyOut",
+    duration: "350ms",
+    easing: "ease",
+    fillMode: "forwards",
+  },
+  new: {
+    name: "flyIn",
+    duration: "350ms",
+    delay: "350ms",
+    easing: "ease",
+    fillMode: "backwards",
+  },
+};
+const animation = {
+  forwards: anim,
+  backwards: anim,
+};
 ---
 <html lang="en">
   <head>
@@ -16,7 +35,7 @@ const { pageTitle } = Astro.props;
     
     <title>{pageTitle}</title>
   </head>
-  <body>
+  <body transition:animate={animation}>
     <div class="max-w-4xl mx-auto px-32 pb-20">
       <Header />
       <BlogHeader frontmatter={frontmatter}/>
