@@ -45,8 +45,14 @@ img, video {
   a::selection{
     background: #c4b5fd;
   }
-
   
+  .page-content a {
+    @apply text-dark-accent underline;
+  }
+  
+  .page-content .paragraph {
+    @apply text-base pb-3;
+  }
 }
 @font-face {
   font-family: 'Chicago';
