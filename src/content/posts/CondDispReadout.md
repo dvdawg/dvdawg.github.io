@@ -1,12 +1,12 @@
 ---
 title: 'Conditional Displacement Readout'
-pubDate: 2024-07-07
-description: 'temp placeholder post'
+pubDate: 2025-06-04
+description: 'A brief look at conditional displacement readout in superconducting qubit systems.'
 author: 'David Kim'
 image:
     url: 'https://docs.astro.build/assets/full-logo-light.png'
-    alt: 'bleh'
-tags: ["physics"]
+    alt: 'hooray'
+tags: ["physics", "quantum computing"]
 ---
 # Conditional Displacement Readout
 
@@ -161,9 +161,4 @@ The plot above is configured for minimum SNR. Below, the left is configured for 
 
 ![image.png](/assets/images/blog/CondDispReadout/image8.png)
 
-## Measurement-Induced State Transitions - optimization and sim
-
-[Measurement Induced State Transitions](https://www.notion.so/Measurement-Induced-State-Transitions-210f349e24bc801a9aa5dd82c154f9e5?pvs=21) 
-
-![image.png](/assets/images/blog/CondDispReadout/image9.png)
 
