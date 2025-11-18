@@ -64,6 +64,39 @@
         @apply mb-2.5;
     }
 }
+
+/* KaTeX equation wrapping - prevent overflow */
+.katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+    margin: 1em 0;
+}
+
+.katex-display > .katex {
+    max-width: 100%;
+    display: inline-block;
+}
+
+/* Inline KaTeX equations - proper vertical alignment */
+p .katex,
+li .katex,
+span .katex,
+.katex:not(.katex-display > .katex) {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    vertical-align: baseline;
+    display: inline;
+    line-height: inherit;
+}
+
+/* Ensure equation containers don't exceed parent width */
+.katex-display,
+.katex {
+    box-sizing: border-box;
+}
+
 ::selection {
     background: #c4b5fd;
   }

@@ -3,7 +3,7 @@ import '@fontsource/space-mono';
 import BlogHeader from '../components/BlogHeader.astro';
 import '../styles/blog.css';
 import Header from '../components/Header.astro';
-import Container from '../components/container.astro';
+import { ViewTransitions } from "astro:transitions";
 const { frontmatter } = Astro.props
 const { pageTitle } = Astro.props;
 const anim = {
@@ -32,12 +32,12 @@ const animation = {
     <link rel="icon" type="image/svg+xml" href="../../assets/images/dvd.jpeg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} >
-    
     <title>{pageTitle}</title>
+    <ViewTransitions />
   </head>
   <body transition:animate={animation}>
+    <Header transition:persist />
     <div class="max-w-4xl mx-auto px-32 pb-20">
-      <Header />
       <BlogHeader frontmatter={frontmatter}/>
       <link
         rel="stylesheet"
