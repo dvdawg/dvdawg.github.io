@@ -1,0 +1,17 @@
+---
+const { title, url, description } = Astro.props;
+---
+<a href={url}><div class="flex flex-wrap text-truncate min-h-16 p-3 transition duration-[400ms] hover:bg-light-accent">
+    <div class="flex-none size-5/12">
+        <header class="font-bold text-2xl">{title}</header>
+    </div>
+    <div class="flex-none text-sm size-7/12 pl-6">
+        <p class="pt-1.5 italic">{description}</p>
+    </div>
+</div></a>
+<style>
+    a {
+        text-decoration: none !important;
+    }
+</style>
+

@@ -67,6 +67,20 @@ body {
   background-color: #f7f7fa;
 }
 
+/* Prevent header from fading during view transitions */
+/* Specifically target persistent header elements to prevent any animations */
+[data-astro-transition-persist] {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+[data-astro-transition-persist] * {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
 ::selection {
   background: #c4b5fd;
 }

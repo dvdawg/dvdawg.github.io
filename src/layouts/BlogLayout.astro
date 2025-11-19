@@ -35,9 +35,9 @@ const animation = {
     <title>{pageTitle}</title>
     <ViewTransitions />
   </head>
-  <body transition:animate={animation}>
+  <body>
     <Header transition:persist />
-    <div class="max-w-4xl mx-auto px-32 pb-20">
+    <div class="max-w-4xl mx-auto px-32 pb-20" transition:animate={animation}>
       <BlogHeader frontmatter={frontmatter}/>
       <link
         rel="stylesheet"

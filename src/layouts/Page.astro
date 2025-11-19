@@ -38,11 +38,13 @@ const animation = {
     <title>{pageTitle}</title>
     <ViewTransitions />
   </head>
-  <body transition:animate={animation}>
+  <body>
     <Header transition:persist />
-    <Container>
-      <slot />
-    </Container>
-    <Footer />
+    <div transition:animate={animation}>
+      <Container>
+        <slot />
+      </Container>
+      <Footer />
+    </div>
   </body>
 </html>

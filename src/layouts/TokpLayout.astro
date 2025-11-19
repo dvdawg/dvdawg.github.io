@@ -37,22 +37,26 @@ const animation = {
     <meta name="generator" content={Astro.generator}>
     <title>{pageTitle}</title>
   </head>
-  <body transition:animate={animation}>
+  <body>
     <div class="max-w-4xl mx-auto px-32">
-      <Header />
-      <BlogHeader frontmatter={frontmatter}/>
-      <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css"
-        integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ"
-        crossorigin="anonymous"
-      />
+      <Header transition:persist />
     </div>
-    <div class="top-10 pl-8 sticky w-72 h-96">
-      <TOC headings={headings} />
-    </div>
-    <div class="max-w-4xl mx-auto px-32 pb-20 -mt-96">
-      <slot />
+    <div transition:animate={animation}>
+      <div class="max-w-4xl mx-auto px-32">
+        <BlogHeader frontmatter={frontmatter}/>
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css"
+          integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ"
+          crossorigin="anonymous"
+        />
+      </div>
+      <div class="top-10 pl-8 sticky w-72 h-96">
+        <TOC headings={headings} />
+      </div>
+      <div class="max-w-4xl mx-auto px-32 pb-20 -mt-96">
+        <slot />
+      </div>
     </div>
   </body>
 </html>
