@@ -63,7 +63,8 @@ img, video {
 }
 
 body {
-  overflow: scroll; 
+  overflow: scroll;
+  background-color: #f7f7fa;
 }
 
 ::selection {

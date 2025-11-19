@@ -167,13 +167,6 @@ declare module 'astro:content' {
   collection: "posts";
   data: InferEntrySchema<"posts">
 } & { render(): Render[".md"] };
-"temp.md": {
-	id: "temp.md";
-  slug: "temp";
-  body: string;
-  collection: "posts";
-  data: InferEntrySchema<"posts">
-} & { render(): Render[".md"] };
 };
 "tokp": {
 "Quantum-Intro.mdx": {

@@ -7,6 +7,7 @@ import { Badge } from "$lib/components/ui/badge/index.js";
 const pageTitle = "blog"
 const allPosts = await getCollection("posts");
 const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
+const highlightedPost = allPosts.find((post) => post.slug === "conddispreadout");
 ---
 <Page pageTitle={pageTitle}>
   <div class="flex justify-between items-center space-x-4 flex-wrap">
@@ -17,14 +18,19 @@ const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
   <!--highlighted posts section -->
   <div class="grid grid-rows-2 grid-cols-3 grid-flow-row gap-2 pt-4 h-[28rem] text-wrap">
     <!-- biiig post -->
-    <div class="row-span-2 col-span-2 bg-cover bg-center backdrop-blur-lg hover:shadow-2xl" style="background-image: url(../../assets/images/purple.png)"><a href="/posts/firstpost">
+    {highlightedPost && (
+    <div class="row-span-2 col-span-2 relative overflow-hidden hover:shadow-2xl">
+      <div class="absolute inset-0 bg-cover bg-center" style="background-image: url(/assets/images/blog/CondDispReadout/transmon_diag.png); filter: blur(4px);"></div>
+      <a href={`/posts/${highlightedPost.slug}/`} class="relative z-10 block h-full">
       <div class='p-3 size-full'>
-      <p class="text-sm">May 12, 2024</p>
-      <div class="absolute pb-3 pl-3 bottom-0 left-0"><h1 class="text-4xl font-mono font-bold ">POST 1</h1>
-      <p class="pt-2">description 1
+      <p class="text-sm">{highlightedPost.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+      <div class="absolute pb-3 pl-3 bottom-0 left-0"><h1 class="text-4xl font-mono font-bold ">{highlightedPost.data.title}</h1>
+      <p class="pt-2">{highlightedPost.data.description}
       </p></div>
       </div>
-    </div></a>
+    </a>
+    </div>
+    )}
     <!-- small posts -->
     <div class="overflow-clip break-words relative row-span-1 col-span-1 bg-center bg-cover hover:shadow-2xl" style="background-image: url(../../assets/images/purple.png)"><a href="/posts/secondpost">
       <div class='p-3 size-full'>
