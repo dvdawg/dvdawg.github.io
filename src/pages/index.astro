@@ -1,10 +1,11 @@
 ---
 import Page from '../layouts/Page.astro';
+import { Separator } from "$lib/components/ui/separator";
 const pageTitle = "dvdkm"
 ---
 
 <Page pageTitle={pageTitle}>
-    <div class="page-content flex items-center gap-8">
+    <div class="page-content flex items-start gap-8 pt-16">
         <div>
             <h1 class="text-2xl font-bold">about</h1>
             <h1 class="paragraph">I'm David, an undergraduate at UC Berkeley studying physics and computer science.</h1>
@@ -12,8 +13,30 @@ const pageTitle = "dvdkm"
                 at UC Berkeley. At <a href="https://launchpad.studentorg.berkeley.edu/">Launchpad</a>, I work on
                 projects with interesting applications in machine learning.
             </h1>
+            
+            <h1 class="text-2xl font-bold mt-12">links</h1>
+            <div class="flex items-center space-x-3 mt-3">
+                <h1 class="italic">email</h1>
+                <a class="inline-flex items-center gap-1.5 px-2 py-1 !text-black no-underline bg-gray-100 hover:bg-gray-200 hover:[&>svg]:text-accent-color transition-colors" href="mailto:davidkm@berkeley.edu">
+                    <span>davidkm@berkeley.edu</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 17L17 7"/>
+                        <path d="M7 7h10v10"/>
+                    </svg>
+                </a>
+            </div>
+            <div class="flex items-center space-x-3">
+                <h1 class="italic">github</h1>
+                <a class="inline-flex items-center gap-1.5 px-2 py-1 !text-black no-underline bg-gray-100 hover:bg-gray-200 hover:[&>svg]:text-accent-color transition-colors" href="https://github.com/dvdawg">
+                    <span>@dvdawg</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 17L17 7"/>
+                        <path d="M7 7h10v10"/>
+                    </svg>
+                </a>
+            </div>
         </div>
-        <img src="../../assets/images/dvd_pfp.png" class="w-[43vh] h-[43vh] object-cover" />
+        <img src="../../assets/images/dvd_pfp.png" class="w-[43vh] h-[43vh] object-cover -mt-16" />
     </div>
     <!--
         <div class="pt-4 text-lg">

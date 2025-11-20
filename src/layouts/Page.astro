@@ -1,7 +1,6 @@
 ---
 import Header from '../components/Header.astro';
 import Container from '../components/container.astro';
-import Footer from '../components/Footer.astro';
 import { ViewTransitions } from "astro:transitions";
 
 const { pageTitle } = Astro.props;
@@ -44,7 +43,6 @@ const animation = {
       <Container>
         <slot />
       </Container>
-      <Footer />
     </div>
   </body>
 </html>
