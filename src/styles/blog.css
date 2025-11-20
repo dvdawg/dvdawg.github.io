@@ -24,6 +24,12 @@
     a {
       @apply text-dark-accent underline;
     }
+    a svg {
+      @apply text-black;
+    }
+    a:hover svg {
+      @apply text-inherit;
+    }
     blockquote {
       @apply border-l-4 border-accent-color p-3 my-4 bg-violet-50;
     }
