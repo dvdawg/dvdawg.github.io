@@ -1,0 +1,40 @@
+---
+const { class: className = "", transitionName = "site-logo" } = Astro.props;
+---
+<span
+  class={`site-mark inline-flex items-start ${className}`.trim()}
+  transition:name={transitionName}
+  aria-label="dvdkm"
+>
+  <span class="site-mark__dvd" aria-hidden="true">dvd</span>
+  <span class="site-mark__km" aria-hidden="true">km</span>
+</span>
+
+<style>
+  .site-mark {
+    gap: 0.05em;
+    line-height: 0.85;
+  }
+
+  .site-mark__dvd {
+    background-image: url(../../assets/images/dvdgradient-breathe.gif);
+    background-repeat: no-repeat;
+    background-size: cover;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: lightgray;
+    display: inline-block;
+    letter-spacing: -0.03em;
+    font-weight: 600;
+  }
+
+  .site-mark__km {
+    font-weight: 600;
+    letter-spacing: -0.08em;
+    display: inline-block;
+    margin-left: -0.03em;
+  }
+</style>
+

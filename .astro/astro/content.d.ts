@@ -168,14 +168,6 @@ declare module 'astro:content' {
   data: InferEntrySchema<"posts">
 } & { render(): Render[".md"] };
 };
-"projects": Record<string, {
-  id: string;
-  slug: string;
-  body: string;
-  collection: "projects";
-  data: any;
-  render(): Render[".md"];
-}>;
 "tokp": {
 "Quantum-Intro.mdx": {
 	id: "Quantum-Intro.mdx";
@@ -196,7 +188,12 @@ declare module 'astro:content' {
 	};
 
 	type DataEntryMap = {
-		
+		"projects": Record<string, {
+  id: string;
+  collection: "projects";
+  data: any;
+}>;
+
 	};
 
 	type AnyEntryMap = ContentEntryMap & DataEntryMap;

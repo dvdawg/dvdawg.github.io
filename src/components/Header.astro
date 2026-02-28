@@ -1,5 +1,6 @@
 ---
 import Container from "./container.astro";
+import SiteMark from "./SiteMark.astro";
 const menuitems = [
     { name: "home", href: "/" },
     { name: "projects", href: "/projects/"},
@@ -12,12 +13,11 @@ const link = menuitems.find(({ href }) => pathname.startsWith(href));
 <Container>
     <div class="flex justify-between mb-3 pb-8 pt-12"> 
         <div class="flex items-center gap-8">
-            <h1 class="text-4xl font-bold"><a href="/" class="hover:text-black" >
-                <span>
-                    <p class="bg-scroll">dvd</p>
-                    <header class="font-semibold">km</header>
-                </span>
-            </a></h1>
+            <h1 class="text-4xl font-bold leading-none">
+                <a href="/" class="hover:text-black transition-colors">
+                    <SiteMark class="text-4xl" />
+                </a>
+            </h1>
             <div class="flex items-center gap-2">
                 <a href="https://github.com/dvdawg" class="hover:text-accent-color transition-colors" aria-label="GitHub">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -49,24 +49,3 @@ const link = menuitems.find(({ href }) => pathname.startsWith(href));
         </nav>
     </div>
 </Container>
-
-<style>
-    p {
-        background-image: url(../../assets/images/dvdgradient-breathe.gif);
-        background-repeat: no-repeat;
-        background-size: cover;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        -webkit-font-smoothing: antialiased;
-        -webkit-text-stroke-width: 1px;
-        -webkit-text-stroke-color: lightgray;
-        
-    }
-
-    span {
-        display: inline-flex;
-    }
-    
-    
-</style>
-

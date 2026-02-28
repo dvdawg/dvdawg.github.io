@@ -3,7 +3,7 @@ import Header from '../components/Header.astro';
 import Container from '../components/container.astro';
 import { ViewTransitions } from "astro:transitions";
 
-const { pageTitle } = Astro.props;
+const { pageTitle, showHeader = true } = Astro.props;
 import "$lib/styles/app.css";
 
 const anim = {
@@ -38,7 +38,7 @@ const animation = {
     <ViewTransitions />
   </head>
   <body>
-    <Header transition:persist />
+    {showHeader && <Header />}
     <div transition:animate={animation}>
       <Container>
         <slot />

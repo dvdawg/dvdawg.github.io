@@ -1,46 +1,86 @@
 ---
 import Page from '../layouts/Page.astro';
-import { Separator } from "$lib/components/ui/separator";
-const pageTitle = "dvdkm"
+const pageTitle = "David Kim";
 ---
 
-<Page pageTitle={pageTitle}>
-    <div class="page-content flex items-start gap-8 pt-16">
-        <div>
-            <h1 class="text-2xl font-bold">about</h1>
-            <h1 class="paragraph">I'm David, an undergraduate at UC Berkeley studying physics and computer science.</h1>
-            <h1 class="paragraph">I contribute to superconducting qubit research at the <a href="https://aqt.lbl.gov/about-aqt/qnl/">Quantum Nanoelectronics Lab</a> 
-                at UC Berkeley. At <a href="https://launchpad.studentorg.berkeley.edu/">Launchpad</a>, I work on
-                projects with interesting applications in machine learning.
-            </h1>
-            
-            <h1 class="text-2xl font-bold mt-12">links</h1>
-            <div class="flex items-center space-x-3 mt-3">
-                <h1 class="italic">email</h1>
-                <a class="inline-flex items-center gap-1.5 px-2 py-1 !text-black no-underline bg-gray-100 hover:bg-gray-200 hover:[&>svg]:text-accent-color transition-colors" href="mailto:davidkm@berkeley.edu">
-                    <span>davidkm@berkeley.edu</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M7 17L17 7"/>
-                        <path d="M7 7h10v10"/>
-                    </svg>
-                </a>
-            </div>
-            <div class="flex items-center space-x-3">
-                <h1 class="italic">github</h1>
-                <a class="inline-flex items-center gap-1.5 px-2 py-1 !text-black no-underline bg-gray-100 hover:bg-gray-200 hover:[&>svg]:text-accent-color transition-colors" href="https://github.com/dvdawg">
-                    <span>@dvdawg</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M7 17L17 7"/>
-                        <path d="M7 7h10v10"/>
-                    </svg>
-                </a>
-            </div>
-        </div>
-        <img src="../../assets/images/dvd_pfp.png" class="w-[43vh] h-[43vh] object-cover -mt-16" />
+<Page pageTitle={pageTitle} showHeader={false}>
+  <section class="-mt-6 flex min-h-[100vh] flex-col items-center justify-center gap-12 px-4 pb-16 pt-16">
+    <div
+      class="flex w-full max-w-4xl flex-nowrap items-center justify-between gap-6"
+      transition:name="site-logo"
+    >
+      <h1 class="min-w-0 flex-shrink font-serif text-[clamp(2.65rem,8.25vw,10.25rem)] font-normal leading-[0.85] tracking-tight text-black whitespace-nowrap">
+        David Kim
+      </h1>
+      <div class="flex-shrink-0">
+        <img
+          src="/assets/images/dvd_pfp.png"
+          alt="Portrait of David Kim"
+          class="h-auto w-[clamp(120px,22vw,200px)] object-cover object-top"
+          loading="lazy"
+        />
+      </div>
     </div>
-    <!--
-        <div class="pt-4 text-lg">
-            <h1>I'm currently an undergraduate at <strong>UC Berkeley</strong> studying physics and computer science. As a academic, I've been a member of the Undergraduate Laboratory at Berkeley program and collaborated on projects with Quantum Computing at Berkeley.</h1> 
+
+    <div class="flex w-full max-w-4xl flex-col gap-8 text-left md:flex-row md:items-start md:gap-16">
+      <div class="page-content flex-1 space-y-3 text-base leading-relaxed">
+        <p class="text-black">
+          I'm David, an undergraduate at UC Berkeley studying physics and computer science.
+        </p>
+        <p class="text-black">
+          I contribute to superconducting qubit research at the
+          <a href="https://aqt.lbl.gov/about-aqt/qnl/">Quantum Nanoelectronics Laboratory</a> and the 
+          <a href="https://quantumdevices.berkeley.edu/">Quantum Devices Laboratory</a> at UC Berkeley. At
+          <a href="https://launchpad.studentorg.berkeley.edu/">Launchpad</a>, I work on projects with interesting applications in machine learning.
+        </p>
+        <div class="space-y-2 text-sm">
+          <p>
+            Read more on my <a href="/blog">blog</a> or see what I've built on the <a href="/projects">projects page</a>.
+          </p>
         </div>
-    -->
+      </div>
+
+      <div class="flex w-full flex-col gap-3 text-left md:w-auto md:max-w-xs">
+        <div class="flex items-center space-x-3">
+          <span class="italic text-sm text-gray-600">email</span>
+          <a
+            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm !text-black no-underline bg-gray-100 hover:bg-gray-200 hover:[&>svg]:text-accent-color transition-colors"
+            href="mailto:davidkm@berkeley.edu"
+          >
+            <span>davidkm@berkeley.edu</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 17L17 7" />
+              <path d="M7 7h10v10" />
+            </svg>
+          </a>
+        </div>
+        <div class="flex items-center space-x-3">
+          <span class="italic text-sm text-gray-600">github</span>
+          <a
+            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm !text-black no-underline bg-gray-100 hover:bg-gray-200 hover:[&>svg]:text-accent-color transition-colors"
+            href="https://github.com/dvdawg"
+          >
+            <span>@dvdawg</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 17L17 7" />
+              <path d="M7 7h10v10" />
+            </svg>
+          </a>
+        </div>
+        <div class="flex items-center space-x-3">
+          <span class="italic text-sm text-gray-600">linkedin</span>
+          <a
+            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm !text-black no-underline bg-gray-100 hover:bg-gray-200 hover:[&>svg]:text-accent-color transition-colors"
+            href="https://www.linkedin.com/in/davidkim3141/"
+          >
+            <span>@davidkim3141</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 17L17 7" />
+              <path d="M7 7h10v10" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 </Page>
