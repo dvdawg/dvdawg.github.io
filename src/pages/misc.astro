@@ -1,0 +1,23 @@
+---
+import Page from '../layouts/Page.astro';
+
+const pageTitle = "misc";
+---
+
+<Page pageTitle={pageTitle}>
+  <div class="flex flex-col space-y-4 pt-4">
+    <p class="text-base leading-relaxed text-black">Miscellaneous content.</p>
+
+    <section class="pt-8">
+      <h2 class="text-3xl font-bold text-black mb-4">also check out</h2>
+      <ul class="space-y-2 text-base">
+        <li>
+          Sammy Hajhamid (<a href="https://pepsipu.com/" class="underline underline-offset-4 hover:text-accent-color transition-colors" target="_blank" rel="noopener noreferrer">pepsipu.com</a>)
+        </li>
+        <li>
+          Divit "C.H.U.D. (Compassionate Honest Understanding Dedicated)" Rawal (<a href="https://divitr.github.io/" class="underline underline-offset-4 hover:text-accent-color transition-colors" target="_blank" rel="noopener noreferrer">divitr.github.io</a>)
+        </li>
+      </ul>
+    </section>
+  </div>
+</Page>
