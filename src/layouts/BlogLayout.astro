@@ -1,11 +1,11 @@
 ---
 import '@fontsource/space-mono';
 import BlogHeader from '../components/BlogHeader.astro';
+import BlogToc from '../components/BlogToc.astro';
 import '../styles/blog.css';
 import Header from '../components/Header.astro';
 import { ViewTransitions } from "astro:transitions";
-const { frontmatter } = Astro.props
-const { pageTitle } = Astro.props;
+const { frontmatter, pageTitle, headings = [] } = Astro.props;
 const anim = {
   old: {
     name: "flyOut",
@@ -37,7 +37,10 @@ const animation = {
   </head>
   <body>
     <Header transition:persist />
-    <div class="max-w-4xl mx-auto px-32 pb-20" transition:animate={animation}>
+    {headings.length > 0 && (
+      <BlogToc items={headings} />
+    )}
+    <div class="blog-content max-w-4xl mx-auto px-8 pb-20 font-light" transition:animate={animation}>
       <BlogHeader frontmatter={frontmatter}/>
       <link
         rel="stylesheet"

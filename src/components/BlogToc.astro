@@ -1,0 +1,226 @@
+---
+import type { TocItem } from '../utils/headings';
+
+interface Props {
+  items?: TocItem[];
+}
+
+const { items = [] } = Astro.props as Props;
+
+/** Group flat TOC items into sections: each h2 is a section, h3+ are its children. */
+function groupIntoSections(flat: TocItem[]): { section: TocItem; children: TocItem[] }[] {
+  const sections: { section: TocItem; children: TocItem[] }[] = [];
+  let current: { section: TocItem; children: TocItem[] } | null = null;
+  for (const item of flat) {
+    if (item.level === 2) {
+      current = { section: item, children: [] };
+      sections.push(current);
+    } else if (current) {
+      current.children.push(item);
+    }
+  }
+  return sections;
+}
+
+const sections = groupIntoSections(items);
+---
+
+<nav class="blog-toc" aria-label="Table of contents">
+  <p class="blog-toc-title">Contents</p>
+  <ul class="blog-toc-list">
+    {sections.map(({ section, children }) => (
+      <li class="blog-toc-section" data-section-id={section.id}>
+        <a href={`#${section.id}`} class="blog-toc-link blog-toc-link--top" data-heading-id={section.id}>{section.text}</a>
+        {children.length > 0 && (
+          <ul class="blog-toc-sublist">
+            {children.map((item: TocItem) => (
+              <li
+                class="blog-toc-item"
+                style={`--depth: ${item.level - 3}`}
+              >
+                <a href={`#${item.id}`} class="blog-toc-link" data-heading-id={item.id}>{item.text}</a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<script>
+  function initTocScrollSpy() {
+    const nav = document.querySelector('.blog-toc');
+    if (!nav) return;
+    const sectionEls = nav.querySelectorAll('.blog-toc-section');
+    const sectionIds: string[] = [];
+    const allHeadingIds: string[] = [];
+
+    sectionEls.forEach((sectionEl) => {
+      const sectionId = sectionEl.getAttribute('data-section-id');
+      if (!sectionId) return;
+      sectionIds.push(sectionId);
+      allHeadingIds.push(sectionId);
+      const subLinks = sectionEl.querySelectorAll('.blog-toc-sublist a[data-heading-id]');
+      subLinks.forEach((link) => {
+        const id = link.getAttribute('data-heading-id');
+        if (id) allHeadingIds.push(id);
+      });
+    });
+
+    if (sectionIds.length === 0) return;
+
+    const offsetFromTop = 0.25;
+
+    function getActiveSectionIndex() {
+      const scrollY = window.scrollY;
+      const viewportTop = scrollY + window.innerHeight * offsetFromTop;
+      let activeIndex = 0;
+      for (let i = 0; i < sectionIds.length; i++) {
+        const heading = document.getElementById(sectionIds[i]);
+        if (!heading) continue;
+        const top = heading.getBoundingClientRect().top + window.scrollY;
+        if (top <= viewportTop) activeIndex = i;
+      }
+      return activeIndex;
+    }
+
+    function getCurrentHeadingId() {
+      const scrollY = window.scrollY;
+      const viewportTop = scrollY + window.innerHeight * offsetFromTop;
+      let currentId = allHeadingIds[0] ?? null;
+      for (const id of allHeadingIds) {
+        const heading = document.getElementById(id);
+        if (!heading) continue;
+        const top = heading.getBoundingClientRect().top + window.scrollY;
+        if (top <= viewportTop) currentId = id;
+      }
+      return currentId;
+    }
+
+    function updateActive() {
+      if (!nav) return;
+      const activeIndex = getActiveSectionIndex();
+      const currentHeadingId = getCurrentHeadingId();
+
+      sectionEls.forEach((el, i) => {
+        el.classList.toggle('is-active', i === activeIndex);
+      });
+
+      nav.querySelectorAll('.blog-toc-link[data-heading-id]').forEach((link) => {
+        const id = link.getAttribute('data-heading-id');
+        link.classList.toggle('is-current', id === currentHeadingId);
+      });
+    }
+
+    let ticking = false;
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          updateActive();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    updateActive();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+  initTocScrollSpy();
+</script>
+
+<style>
+  .blog-toc {
+    position: fixed;
+    left: 2rem;
+    top: 35%;
+    transform: translateY(-50%);
+    background: transparent;
+    padding: 0.5rem 0;
+    max-width: 12rem;
+    z-index: 10;
+  }
+
+  .blog-toc-title {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .blog-toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .blog-toc-section {
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+
+  .blog-toc-section .blog-toc-sublist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    padding-left: 0.75rem;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.35s ease, opacity 0.3s ease;
+  }
+
+  .blog-toc-section:hover .blog-toc-sublist,
+  .blog-toc-section.is-active .blog-toc-sublist {
+    max-height: 50vh;
+    opacity: 1;
+  }
+
+  .blog-toc-section:hover .blog-toc-link--top,
+  .blog-toc-section.is-active .blog-toc-link--top {
+    font-weight: 700;
+  }
+
+  .blog-toc-item {
+    margin: 0;
+    padding: 0.15rem 0;
+    padding-left: calc(var(--depth, 0) * 0.75rem);
+  }
+
+  .blog-toc-link {
+    font-size: 0.8125rem;
+    color: #374151;
+    text-decoration: none;
+    display: block;
+    line-height: 1.35;
+    position: relative;
+    padding-right: 0.75rem;
+  }
+
+  .blog-toc-link::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: transparent;
+    transition: background 0.15s ease;
+  }
+
+  .blog-toc-link.is-current::after {
+    background: #000;
+  }
+
+  @media (max-width: 1024px) {
+    .blog-toc {
+      display: none;
+    }
+  }
+</style>

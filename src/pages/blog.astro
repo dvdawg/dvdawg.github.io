@@ -55,7 +55,7 @@ const highlightedPost = allPosts.find((post) => post.slug === "conddispreadout")
   <!-- tags -->
   <div class="flex flex-wrap pt-3 pb-3">
     {tags.map((tag) => (
-      <a href={`/tags/${tag}`} class="text-black"><Badge class='bg-accent-color transition duration-[400ms] hover:bg-dark-accent' variant="secondary">{tag}</Badge></a>
+      <a href={`/tags/${tag}`} class="text-black"><Badge class='font-normal bg-accent-color transition duration-[400ms] hover:bg-dark-accent' variant="secondary">{tag}</Badge></a>
       <Separator orientation="vertical" class="w-1.5"/>
     ))}
   </div>

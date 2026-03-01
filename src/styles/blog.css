@@ -4,13 +4,13 @@
 
 @layer base {
     h1 {
-      @apply text-4xl my-4;
+      @apply text-4xl my-4 font-bold;
     }
     h2 {
-      @apply text-3xl my-4;
+      @apply text-3xl my-4 font-semibold;
     }
     h3 {
-      @apply text-2xl my-4;
+      @apply text-2xl my-4 font-normal;
     }
     h4 {
       @apply text-xl my-4;
@@ -69,6 +69,55 @@
     p {
         @apply mb-2.5;
     }
+}
+
+/* Shrink images in blog posts */
+.blog-content img {
+    max-width: 70%;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Per-image size classes: use in Markdown as <img src="..." alt="..." class="w-50" /> */
+.blog-content img.w-40 { max-width: 40%; }
+.blog-content img.w-50 { max-width: 50%; }
+.blog-content img.w-60 { max-width: 60%; }
+.blog-content img.w-70 { max-width: 70%; }
+.blog-content img.w-80 { max-width: 80%; }
+.blog-content img.w-full { max-width: 100%; }
+
+/* Per-image size classes: use in Markdown as <img src="..." alt="..." class="w-50" /> */
+.blog-content img.w-40 { max-width: 40%; }
+.blog-content img.w-50 { max-width: 50%; }
+.blog-content img.w-60 { max-width: 60%; }
+.blog-content img.w-70 { max-width: 70%; }
+.blog-content img.w-80 { max-width: 80%; }
+.blog-content img.w-full { max-width: 100%; }
+
+/* Per-image max-height classes: e.g. <img src="..." alt="..." class="max-h-50" /> */
+.blog-content img.max-h-30 { max-height: 30vh; }
+.blog-content img.max-h-40 { max-height: 40vh; }
+.blog-content img.max-h-50 { max-height: 50vh; }
+.blog-content img.max-h-60 { max-height: 60vh; }
+.blog-content img.max-h-80 { max-height: 80vh; }
+
+/* Two (or more) images side by side — same height */
+.blog-content .side-by-side {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1em 0;
+    justify-content: center;
+    align-items: stretch;
+}
+.blog-content .side-by-side img {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 50%;
+    height: 100%;
+    object-fit: contain;
 }
 
 /* KaTeX equation wrapping - prevent overflow */

@@ -8,10 +8,6 @@ image:
     alt: 'hooray'
 tags: ["physics", "quantum computing"]
 ---
-# Conditional Displacement Readout
-
-Created: June 4, 2025 3:31 PM
-
 ## Single-Qubit and Derivation
 
 The dispersive hamiltonian (from https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.122.080503) in the frame rotating at $\omega_r$ is
@@ -20,7 +16,7 @@ $$
 \hat{H}''/\hbar \approx (\Delta + \chi)\hat{\sigma}_{+}\hat{\sigma}_{-} + \left[ \left( \Omega_q + i\Omega_r \frac{\chi}{g} \right) \hat{\sigma}_{+} + \text{H.c.} \right] - \chi\hat{\sigma}_z\hat{a}^{\dagger}\hat{a} + \left[ \left( i\Omega_r - \Omega_q \frac{\chi}{g}\hat{\sigma}_z \right) \hat{a}^{\dagger} + \text{H.c.} \right]
 $$
 
-Note that the approximations for two-level systems has been made, to make $\chi=\frac{g^2}{\Delta}$
+Note that the two-level approximation has been made, using $\chi=\frac{g^2}{\Delta}$ as a result.
 
 The virtual origin $\alpha_{vo}$ is given by 
 
@@ -94,7 +90,7 @@ In our case, we want $\ket{10}$ and $\ket{01}$ to be indistinguishable in this I
 
 ![image.png](/assets/images/blog/CondDispReadout/image1.png)
 
-in this case, the magnitudes of the drives $\Omega_q$ are equal and simply shifted 180 degrees in phase. However, with unequal $\chi$, the states are no longer on the same point:
+in this case, the magnitudes of the drives $\Omega_q$ are equal and simply shifted by $\pi$ in phase. However, with unequal $\chi$, the states are no longer on the same point:
 
 ![image.png](/assets/images/blog/CondDispReadout/image2.png)
 
@@ -150,15 +146,16 @@ Optimizing both qubit drives for readout SNR, we consider varying metrics for se
 3. **Spacing**: ****evenly spacing each pointer state within phase space
 
 With all three considered, we simulate with the following cavity conditions
-
-![image.png](/assets/images/blog/CondDispReadout/image5.png)
-
-![image.png](/assets/images/blog/CondDispReadout/image6.png)
+<div class="side-by-side">
+  <img src="/assets/images/blog/CondDispReadout/image5.png" alt="Cavity conditions 1" style="max-width: 220px;"/>
+  <img src="/assets/images/blog/CondDispReadout/image6.png" alt="Cavity conditions 2" />
+</div>
 
 The plot above is configured for minimum SNR. Below, the left is configured for average, and the right is configured for spacing (visually very similar, but parameters are slightly different). 
+<div class="side-by-side">
+    <img src="/assets/images/blog/CondDispReadout/image7.png" style="max-width: 400px;">
+    <img src="/assets/images/blog/CondDispReadout/image8.png" style="max-width: 400px;">
+</div>
 
-![image.png](/assets/images/blog/CondDispReadout/image7.png)
-
-![image.png](/assets/images/blog/CondDispReadout/image8.png)
 
 

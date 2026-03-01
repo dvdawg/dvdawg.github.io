@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import svelte from "@astrojs/svelte";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import rehypeSlug from "rehype-slug";
 import tailwind from "@astrojs/tailwind";
 
 import mdx from "@astrojs/mdx";
@@ -15,6 +16,6 @@ export default defineConfig({
   markdown: {
     syntaxHighlight: "prism",
     remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex]
+    rehypePlugins: [rehypeKatex, rehypeSlug]
   }
 });
