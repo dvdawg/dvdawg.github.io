@@ -11,68 +11,70 @@ const highlightedPost = allPosts.find((post) => post.slug === "cond_disp_readout
 const fnoPost = allPosts.find((post) => post.slug === "cond_aware_fno");
 ---
 <Page pageTitle={pageTitle}>
-  <div class="flex justify-between items-center space-x-4 flex-wrap">
-    <h1 class="text-4xl font-mono flex-none">DVD-ROM:<span class="text-dark-accent font-bold">BLOG</span></h1>
-    <Separator class="bg-black self-center flex-1"/>
-    <h1 class="text-2xl font-light flex-initial">Highlighted Posts</h1>
-  </div>
-  <!--highlighted posts section -->
-  <div class="grid grid-rows-2 grid-cols-3 grid-flow-row gap-2 pt-4 h-[28rem] text-wrap">
-    <!-- biiig post -->
-    {highlightedPost && (
-    <div class="row-span-2 col-span-2 relative overflow-hidden hover:shadow-2xl">
-      <div class="absolute inset-0 bg-cover bg-center" style="background-image: url(/assets/blog/cond_disp_readout/transmon_diag.png); filter: blur(5px);"></div>
-      <a href={`/posts/${highlightedPost.slug}/`} class="relative z-10 block h-full">
-      <div class='p-3 size-full'>
-      <p class="text-sm" style="text-shadow: 0 0 10px rgba(255,255,255,0.95);">{highlightedPost.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-      <div class="absolute pb-3 pl-3 bottom-0 left-0"><h1 class="text-4xl font-mono font-bold " style="text-shadow: 0 0 14px rgba(255,255,255,0.98);">{highlightedPost.data.title}</h1>
-      <p class="pt-2 italic" style="text-shadow: 0 0 10px rgba(255,255,255,0.95);">{highlightedPost.data.description}
-      </p></div>
-      </div>
-    </a>
+  <div class="pb-8">
+    <div class="flex justify-between items-center space-x-4 flex-wrap">
+      <h1 class="text-4xl font-mono flex-none">DVD-ROM:<span class="text-dark-accent font-bold">BLOG</span></h1>
+      <Separator class="bg-black self-center flex-1"/>
+      <h1 class="text-2xl font-light flex-initial">Highlighted Posts</h1>
     </div>
-    )}
-    <!-- small posts -->
-    {fnoPost && (
-    <div class="overflow-clip break-words relative row-span-1 col-span-1 hover:shadow-2xl">
-      <div class="absolute inset-0 bg-center bg-cover" style="background-image: url(/assets/blog/cond_aware_fno/fno.png); filter: blur(5px);"></div>
-      <a href={`/posts/${fnoPost.slug}/`} class="relative z-10 block h-full">
+    <!--highlighted posts section -->
+    <div class="grid grid-rows-2 grid-cols-3 grid-flow-row gap-2 pt-4 h-[28rem] text-wrap">
+      <!-- biiig post -->
+      {highlightedPost && (
+      <div class="row-span-2 col-span-2 relative overflow-hidden hover:shadow-2xl">
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url(/assets/blog/cond_disp_readout/transmon_diag.png); filter: blur(5px);"></div>
+        <a href={`/posts/${highlightedPost.slug}/`} class="relative z-10 block h-full">
         <div class='p-3 size-full'>
-          <p class="text-sm" style="text-shadow: 0 0 8px rgba(255,255,255,0.95);">{fnoPost.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-          <div class="absolute pb-3 pl-3 bottom-0 left-0 text-clip">
-            <h1 class="text-2xl font-mono font-bold " style="text-shadow: 0 0 10px rgba(255,255,255,0.98);">{fnoPost.data.title}</h1>
-          </div>
+        <p class="text-sm" style="text-shadow: 0 0 10px rgba(255,255,255,0.95);">{highlightedPost.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        <div class="absolute pb-3 pl-3 bottom-0 left-0"><h1 class="text-4xl font-mono font-bold " style="text-shadow: 0 0 14px rgba(255,255,255,0.98);">{highlightedPost.data.title}</h1>
+        <p class="pt-2 italic" style="text-shadow: 0 0 10px rgba(255,255,255,0.95);">{highlightedPost.data.description}
+        </p></div>
         </div>
       </a>
+      </div>
+      )}
+      <!-- small posts -->
+      {fnoPost && (
+      <div class="overflow-clip break-words relative row-span-1 col-span-1 hover:shadow-2xl">
+        <div class="absolute inset-0 bg-center bg-cover" style="background-image: url(/assets/blog/cond_aware_fno/fno.png); filter: blur(5px);"></div>
+        <a href={`/posts/${fnoPost.slug}/`} class="relative z-10 block h-full">
+          <div class='p-3 size-full'>
+            <p class="text-sm" style="text-shadow: 0 0 8px rgba(255,255,255,0.95);">{fnoPost.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+            <div class="absolute pb-3 pl-3 bottom-0 left-0 text-clip">
+              <h1 class="text-2xl font-mono font-bold " style="text-shadow: 0 0 10px rgba(255,255,255,0.98);">{fnoPost.data.title}</h1>
+            </div>
+          </div>
+        </a>
+      </div>
+      )}
+      <div class="overflow-clip break-words relative row-span-1 col-span-1 bg-center bg-cover hover:shadow-2xl" style="background-image: url(../../assets/images/purple.png)"><a href="/posts/thirdpost">
+        <div class='p-3 size-full'>
+          <p class="text-sm">May 12, 2024</p>
+          <div class="absolute pb-3 pl-3 bottom-0 left-0"><h1 class="text-2xl font-mono font-bold ">POST 3</h1></div>
+          </div>
+      </div></a>
     </div>
-    )}
-    <div class="overflow-clip break-words relative row-span-1 col-span-1 bg-center bg-cover hover:shadow-2xl" style="background-image: url(../../assets/images/purple.png)"><a href="/posts/thirdpost">
-      <div class='p-3 size-full'>
-        <p class="text-sm">May 12, 2024</p>
-        <div class="absolute pb-3 pl-3 bottom-0 left-0"><h1 class="text-2xl font-mono font-bold ">POST 3</h1></div>
-        </div>
-    </div></a>
-  </div>
-  <!-- all posts section -->
-  <Separator class="by-1 h-20"/>
-  <div class="flex justify-between items-center space-x-4 flex-wrap">
-    <h1 class="text-2xl font-light flex-initial">All Posts</h1>
-    <Separator class="bg-black self-center flex-1"/>
-    <h1>{allPosts.length} posts</h1>
-  </div>
-  <!-- tags -->
-  <div class="flex flex-wrap pt-3 pb-3">
-    {tags.map((tag) => (
-      <a href={`/tags/${tag}`} class="text-black"><Badge class='font-normal bg-accent-color transition duration-[400ms] hover:bg-dark-accent' variant="secondary">{tag}</Badge></a>
-      <Separator orientation="vertical" class="w-1.5"/>
-    ))}
-  </div>
-  <!-- posts list -->
-  <div class="flex flex-col space-y-4">
-    {
-      allPosts.map((post) => (
-        <BlogPost url={`/posts/${post.slug}/`} title={post.data.title} description={post.data.description} pubDate={post.data.pubDate}/>
-      ))
-    }
+    <!-- all posts section -->
+    <Separator class="by-1 h-20"/>
+    <div class="flex justify-between items-center space-x-4 flex-wrap">
+      <h1 class="text-2xl font-light flex-initial">All Posts</h1>
+      <Separator class="bg-black self-center flex-1"/>
+      <h1>{allPosts.length} posts</h1>
+    </div>
+    <!-- tags -->
+    <div class="flex flex-wrap pt-3 pb-3">
+      {tags.map((tag) => (
+        <a href={`/tags/${tag}`} class="text-black"><Badge class='font-normal bg-accent-color transition duration-[400ms] hover:bg-dark-accent' variant="secondary">{tag}</Badge></a>
+        <Separator orientation="vertical" class="w-1.5"/>
+      ))}
+    </div>
+    <!-- posts list -->
+    <div class="flex flex-col space-y-4">
+      {
+        allPosts.map((post) => (
+          <BlogPost url={`/posts/${post.slug}/`} title={post.data.title} description={post.data.description} pubDate={post.data.pubDate}/>
+        ))
+      }
+    </div>
   </div>
 </Page>
