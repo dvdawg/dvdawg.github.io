@@ -43,13 +43,16 @@
       @apply my-2;
     }
     code {
-      @apply text-sm font-mono bg-violet-50 rounded p-1;
+      /* Inline code */
+      @apply text-sm font-mono bg-violet-50 text-violet-950 rounded px-1.5 py-0.5;
     }
     pre {
-      @apply bg-inherit p-4 my-4;
+      /* Fenced code blocks */
+      @apply my-4 p-4 rounded-lg overflow-x-auto border bg-slate-950 border-slate-900 text-slate-100;
     }
     pre code {
-      @apply bg-inherit;
+      /* Ensure inline-code styles don't leak into blocks */
+      @apply bg-transparent text-slate-100 p-0;
     }
     nav a {
        @apply text-inherit;
@@ -58,10 +61,10 @@
         @apply text-inherit;
     }
     pre code span::selection {
-        @apply bg-violet-900;
+        @apply bg-slate-700;
       }
     pre code::selection {
-        @apply bg-violet-900;
+        @apply bg-slate-700;
       }
     br {
         @apply my-2;
@@ -118,6 +121,64 @@
     max-width: 50%;
     height: 100%;
     object-fit: contain;
+}
+
+/* Theorem / proposition callout blocks */
+@layer components {
+  .blog-content .blog-callout {
+    @apply my-4 border border-slate-200 bg-light-accent px-4 py-3;
+    border-left-width: 6px;
+    @apply border-l-dark-accent;
+  }
+
+  .blog-content .blog-callout > :first-child {
+    @apply mt-0;
+  }
+
+  .blog-content .blog-callout > :last-child {
+    @apply mb-0;
+  }
+
+  .blog-content .blog-callout-title {
+    @apply font-semibold text-dark-accent;
+  }
+}
+
+/* Tables in blog markdown */
+@layer components {
+  .blog-content table {
+    @apply my-5 text-sm outline outline-1 outline-accent-color;
+    width: fit-content;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .blog-content thead {
+    @apply bg-light-accent;
+  }
+
+  .blog-content th,
+  .blog-content td {
+    @apply px-3 py-2 align-top border border-accent-color;
+  }
+
+  .blog-content th {
+    @apply font-semibold text-dark-accent;
+    white-space: nowrap;
+  }
+
+  .blog-content tbody tr:nth-child(even) {
+    @apply bg-light-accent/50;
+  }
+
+  .blog-content .blog-table-caption {
+    @apply mt-[-0.6rem] mb-6 text-sm text-center text-slate-700;
+  }
 }
 
 /* KaTeX equation wrapping - prevent overflow */

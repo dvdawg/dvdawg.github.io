@@ -160,9 +160,16 @@ declare module 'astro:content' {
 } & { render(): Render[".md"] };
 };
 "posts": {
-"CondDispReadout.md": {
-	id: "CondDispReadout.md";
-  slug: "conddispreadout";
+"cond_aware_fno.mdx": {
+	id: "cond_aware_fno.mdx";
+  slug: "cond_aware_fno";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".mdx"] };
+"cond_disp_readout.md": {
+	id: "cond_disp_readout.md";
+  slug: "cond_disp_readout";
   body: string;
   collection: "posts";
   data: InferEntrySchema<"posts">

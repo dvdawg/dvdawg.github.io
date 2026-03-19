@@ -1,17 +1,27 @@
 ---
-import Page from '../layouts/Page.astro';
+import Page from "../layouts/Page.astro";
 const pageTitle = "David Kim";
 ---
 
 <Page pageTitle={pageTitle} showHeader={false}>
-  <section class="-mt-6 flex min-h-[100vh] flex-col items-center justify-center gap-12 px-4 pb-16 pt-16">
+  <section
+    class="-mt-6 flex min-h-[100vh] flex-col items-center justify-center gap-12 px-4 pb-16 pt-16">
     <div
       class="flex w-full max-w-4xl flex-nowrap items-center justify-between gap-6"
-      transition:name="site-logo"
-    >
+      transition:name="site-logo">
       <h1 class="min-w-0 flex-shrink font-serif text-[clamp(2.65rem,8.25vw,10.25rem)] font-normal leading-[0.85] tracking-tight text-black whitespace-nowrap">
         David Kim
       </h1>
+      <!-- headshot (commented out for now)
+      <div class="flex-shrink-0 overflow-hidden">
+        <img
+          src="/assets/images/headshot.png"
+          alt="Portrait of David Kim"
+          class="h-[clamp(120px,22vw,200px)] w-[clamp(120px,22vw,200px)] rounded-full object-cover object-[center_55%]"
+          loading="lazy"
+        />
+      </div>
+      -->
       <div class="flex-shrink-0">
         <img
           src="/assets/images/dvd_pfp.png"
@@ -22,20 +32,29 @@ const pageTitle = "David Kim";
       </div>
     </div>
 
-    <div class="flex w-full max-w-4xl flex-col gap-8 text-left md:flex-row md:items-start md:gap-16">
+    <div
+      class="flex w-full max-w-4xl flex-col gap-8 text-left md:flex-row md:items-start md:gap-16"
+    >
       <div class="page-content flex-1 space-y-3 text-base leading-relaxed">
         <p class="text-black">
-          I'm David, an undergraduate at UC Berkeley studying physics and computer science.
+          I'm David, an undergraduate at UC Berkeley studying physics and
+          computer science.
         </p>
         <p class="text-black">
           I contribute to superconducting qubit research at the
-          <a href="https://aqt.lbl.gov/about-aqt/qnl/">Quantum Nanoelectronics Laboratory</a> (assoc. LBNL) and the 
-          <a href="https://quantumdevices.berkeley.edu/">Quantum Devices Laboratory</a> at UC Berkeley. At
-          <a href="https://launchpad.studentorg.berkeley.edu/">Launchpad</a>, I work on projects with interesting applications in machine learning.
+          <a href="https://aqt.lbl.gov/about-aqt/qnl/"
+            >Quantum Nanoelectronics Laboratory</a
+          > (assoc. LBNL) and the
+          <a href="https://quantumdevices.berkeley.edu/"
+            >Quantum Devices Laboratory</a
+          > at UC Berkeley. At
+          <a href="https://launchpad.studentorg.berkeley.edu/">Launchpad</a>, I
+          work on projects with interesting applications in machine learning.
         </p>
         <div class="space-y-2 text-sm">
           <p>
-            Read more on my <a href="/blog">blog</a> or see what I've built on the <a href="/projects">projects page</a>.
+            Read more on my <a href="/blog">blog</a> or see what I've built on the
+            <a href="/projects">projects page</a>.
           </p>
         </div>
       </div>
@@ -48,9 +67,19 @@ const pageTitle = "David Kim";
             href="mailto:davidkm@berkeley.edu"
           >
             <span>davidkm@berkeley.edu</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M7 17L17 7" />
-              <path d="M7 7h10v10" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M7 17L17 7"></path>
+              <path d="M7 7h10v10"></path>
             </svg>
           </a>
         </div>
@@ -61,9 +90,19 @@ const pageTitle = "David Kim";
             href="https://github.com/dvdawg"
           >
             <span>@dvdawg</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M7 17L17 7" />
-              <path d="M7 7h10v10" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M7 17L17 7"></path>
+              <path d="M7 7h10v10"></path>
             </svg>
           </a>
         </div>
@@ -74,9 +113,19 @@ const pageTitle = "David Kim";
             href="https://www.linkedin.com/in/davidkim3141/"
           >
             <span>@davidkim3141</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M7 17L17 7" />
-              <path d="M7 7h10v10" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M7 17L17 7"></path>
+              <path d="M7 7h10v10"></path>
             </svg>
           </a>
         </div>
