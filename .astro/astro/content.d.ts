@@ -174,6 +174,13 @@ declare module 'astro:content' {
   collection: "posts";
   data: InferEntrySchema<"posts">
 } & { render(): Render[".md"] };
+"crib_sheets.md": {
+	id: "crib_sheets.md";
+  slug: "crib_sheets";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
 };
 "tokp": {
 "Quantum-Intro.mdx": {

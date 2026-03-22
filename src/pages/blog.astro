@@ -5,7 +5,9 @@ import BlogPost from '../components/BlogPost.astro';
 import { Separator } from "$lib/components/ui/separator";
 import { Badge } from "$lib/components/ui/badge/index.js";
 const pageTitle = "blog"
-const allPosts = await getCollection("posts");
+const allPosts = (await getCollection("posts")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
 const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
 const highlightedPost = allPosts.find((post) => post.slug === "cond_disp_readout");
 const fnoPost = allPosts.find((post) => post.slug === "cond_aware_fno");
