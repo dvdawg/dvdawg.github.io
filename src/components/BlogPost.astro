@@ -1,15 +1,40 @@
 ---
-const { title, url, description, pubDate } = Astro.props;
+const { title, url, description, pubDate, tags = [] } = Astro.props;
+const dateStr =
+  pubDate.toString().slice(4, 10) + "," + pubDate.toString().slice(10, 15);
 ---
-<a href={url}><div class="flex flex-wrap text-truncate min-h-28 p-3 transition duration-[400ms] hover:bg-light-accent">
-    <div class="flex-none size-5/12">
-        <header class="font-bold text-2xl">{title}</header>
-        <h2 class="italic text-sm">{pubDate.toString().slice(4,10) + "," + pubDate.toString().slice(10,15)}</h2>
-    </div>
-    <div class="flex-none text-sm size-7/12 pl-6">
-        <p class="pt-1.5">{description}</p>
-    </div>
-</div></a>
+<div
+  class="flex flex-col sm:flex-row sm:items-stretch text-truncate min-h-28 p-3 transition duration-[400ms] hover:bg-light-accent gap-3 sm:gap-0"
+>
+  <div class="flex-none w-full sm:w-5/12">
+    <a href={url} class="post-row-link block text-inherit">
+      <header class="font-bold text-2xl">{title}</header>
+      <h2 class="italic text-sm mt-0.5">{dateStr}</h2>
+    </a>
+  </div>
+  <div class="flex flex-col flex-1 w-full sm:w-7/12 sm:pl-6">
+    <a href={url} class="post-row-link block text-inherit">
+      <p class="text-sm pt-0 sm:pt-1.5">{description}</p>
+    </a>
+    {
+      tags.length > 0 && (
+        <p class="text-right text-xs text-black/65 font-semibold mt-1.5">
+          {tags.map((tag: string, i: number) => (
+            <>
+              {i > 0 && <span class="text-black/40 mx-1">·</span>}
+              <a
+                href={`/tags/${tag}`}
+                class="text-inherit underline-offset-2 hover:underline"
+              >
+                {tag}
+              </a>
+            </>
+          ))}
+        </p>
+      )
+    }
+  </div>
+</div>
 <!--  
     <div class="pb-3"><a href={url}><Card.Root>
     <Card.Header>
@@ -22,7 +47,7 @@ const { title, url, description, pubDate } = Astro.props;
     </Card.Root></a></div>
  -->
 <style>
-    a {
-        text-decoration: none !important;
-    }
+  .post-row-link {
+    text-decoration: none !important;
+  }
 </style>
