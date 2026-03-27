@@ -1,7 +1,7 @@
 ---
-title: 'Crib Sheets'
+title: 'Educational Resources'
 pubDate: 2025-06-28
-description: 'My crib sheets for various classes at Berkeley.'
+description: 'My resources and crib sheets for various classes at Berkeley.'
 author: 'David Kim'
 image:
     url: 'https://docs.astro.build/assets/full-logo-light.png'
