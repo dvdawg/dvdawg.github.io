@@ -7,9 +7,9 @@ const pageTitle = "David Kim";
   <section
     class="-mt-6 flex min-h-[100vh] flex-col items-center justify-center gap-12 px-4 pb-16 pt-16">
     <div
-      class="flex w-full max-w-4xl flex-nowrap items-center justify-between gap-6"
+      class="hero-lockup grid w-full max-w-4xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 sm:gap-6"
       transition:name="site-logo">
-      <h1 class="min-w-0 flex-shrink font-serif text-[clamp(2.65rem,8.25vw,10.25rem)] font-normal leading-[0.85] tracking-tight text-black whitespace-nowrap">
+      <h1 class="hero-title min-w-0 font-serif font-normal leading-[0.85] tracking-tight text-black whitespace-nowrap">
         David Kim
       </h1>
       <!-- headshot (commented out for now)
@@ -22,11 +22,11 @@ const pageTitle = "David Kim";
         />
       </div>
       -->
-      <div class="flex-shrink-0">
+      <div class="justify-self-end">
         <img
           src="/assets/images/dvd_pfp.png"
           alt="Portrait of David Kim"
-          class="h-auto w-[clamp(120px,22vw,200px)] object-cover object-top"
+          class="hero-portrait h-auto object-cover object-top"
           loading="lazy"
         />
       </div>
@@ -133,3 +133,26 @@ const pageTitle = "David Kim";
     </div>
   </section>
 </Page>
+
+<style>
+  .hero-lockup {
+    container-type: inline-size;
+    --hero-gap: 0.75rem;
+    --hero-image-size: clamp(88px, 18cqw, 200px);
+  }
+
+  .hero-title {
+    font-size: clamp(2.65rem, calc((100cqw - var(--hero-image-size) - var(--hero-gap)) * 0.218), 10.25rem);
+  }
+
+  .hero-portrait {
+    width: var(--hero-image-size);
+  }
+
+  @media (min-width: 640px) {
+    .hero-lockup {
+      --hero-gap: 1.5rem;
+      --hero-image-size: clamp(120px, 22vw, 200px);
+    }
+  }
+</style>
