@@ -1,17 +1,34 @@
 ---
-const { title, url, description } = Astro.props;
+const {
+  title,
+  url,
+  description,
+  image,
+  imagePosition = "center",
+  imageClass = "object-cover scale-100",
+} = Astro.props;
 ---
-<a href={url}><div class="flex flex-wrap text-truncate min-h-16 p-3 transition duration-[400ms] hover:bg-light-accent">
-    <div class="flex-none size-5/12">
-        <header class="font-bold text-2xl">{title}</header>
-    </div>
-    <div class="flex-none text-sm size-7/12 pl-6">
-        <p class="pt-1.5 italic">{description}</p>
-    </div>
-</div></a>
+<a href={url}>
+  <article class="flex h-full flex-col rounded-sm p-4 transition duration-[400ms] hover:bg-light-accent">
+    <header class="text-2xl font-semibold">{title}</header>
+    <p class="pt-2 text-sm font-light italic">{description}</p>
+    {image && (
+      <div class="mt-4 h-32 w-full overflow-hidden rounded-sm">
+        <img
+          src={image}
+          alt={`${title} preview`}
+          class:list={[
+            "h-full w-full blur-[0.5px] transition duration-[400ms]",
+            imageClass,
+          ]}
+          style={`object-position: ${imagePosition};`}
+        />
+      </div>
+    )}
+  </article>
+</a>
 <style>
-    a {
-        text-decoration: none !important;
-    }
+  a {
+    text-decoration: none !important;
+  }
 </style>
-

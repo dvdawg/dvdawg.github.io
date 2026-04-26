@@ -181,6 +181,13 @@ declare module 'astro:content' {
   collection: "posts";
   data: InferEntrySchema<"posts">
 } & { render(): Render[".md"] };
+"quantum_adv.md": {
+	id: "quantum_adv.md";
+  slug: "quantum_adv";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
 "qubit_dynamics.md": {
 	id: "qubit_dynamics.md";
   slug: "qubit_dynamics";
