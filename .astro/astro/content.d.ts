@@ -150,23 +150,14 @@ declare module 'astro:content' {
 	>;
 
 	type ContentEntryMap = {
-		"inprogress": {
+		"posts": {
 "ADefinitionOfPhysics.md": {
 	id: "ADefinitionOfPhysics.md";
   slug: "adefinitionofphysics";
   body: string;
-  collection: "inprogress";
-  data: any
+  collection: "posts";
+  data: InferEntrySchema<"posts">
 } & { render(): Render[".md"] };
-"quantum_adv.md": {
-	id: "quantum_adv.md";
-  slug: "quantum_adv";
-  body: string;
-  collection: "inprogress";
-  data: any
-} & { render(): Render[".md"] };
-};
-"posts": {
 "cond_aware_fno.mdx": {
 	id: "cond_aware_fno.mdx";
   slug: "cond_aware_fno";
@@ -191,6 +182,13 @@ declare module 'astro:content' {
 "info_geom.md": {
 	id: "info_geom.md";
   slug: "info_geom";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"quantum_adv.md": {
+	id: "quantum_adv.md";
+  slug: "quantum_adv";
   body: string;
   collection: "posts";
   data: InferEntrySchema<"posts">

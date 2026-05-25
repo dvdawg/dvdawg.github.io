@@ -5,26 +5,20 @@ const {
   description,
   image,
   imagePosition = "center",
-  imageClass = "object-cover scale-100",
 } = Astro.props;
 ---
-<a href={url}>
-  <article class="flex h-full flex-col rounded-sm p-4 transition duration-[400ms] hover:bg-light-accent">
-    <header class="text-2xl font-semibold">{title}</header>
-    <p class="pt-2 text-sm font-light italic">{description}</p>
+<a href={url} class="block h-full">
+  <article class="relative h-72 overflow-hidden rounded-sm border border-neutral-200 transition duration-[400ms] hover:shadow-2xl">
     {image && (
-      <div class="mt-4 h-32 w-full overflow-hidden rounded-sm">
-        <img
-          src={image}
-          alt={`${title} preview`}
-          class:list={[
-            "h-full w-full blur-[0.5px] transition duration-[400ms]",
-            imageClass,
-          ]}
-          style={`object-position: ${imagePosition};`}
-        />
-      </div>
+      <div
+        class="absolute inset-0 bg-cover"
+        style={`background-image: url(${image}); background-position: ${imagePosition};`}
+      ></div>
     )}
+    <div class="absolute bottom-0 left-0 right-0 h-22 border-t border-neutral-200 bg-[#f3f3f8] p-3">
+      <h1 class="truncate font-serif text-2xl font-bold leading-tight">{title}</h1>
+      <p class="line-clamp-2 pt-1 text-xs italic">{description}</p>
+    </div>
   </article>
 </a>
 <style>
