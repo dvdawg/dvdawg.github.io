@@ -4,13 +4,13 @@ import BlogLayout from '../../layouts/BlogLayout.astro';
 import { extractHeadingsFromMarkdown } from '../../utils/headings';
 
 export async function getStaticPaths() {
-  const blogEntries = await getCollection('posts');
+  const blogEntries = await getCollection('posts', ({ data }) => import.meta.env.DEV || !data.draft);
   return blogEntries.map(entry => ({
     params: { slug: entry.slug }, props: { entry },
   }));
 }
 
-const allPosts = await getCollection("posts");
+const allPosts = await getCollection("posts", ({ data }) => import.meta.env.DEV || !data.draft);
 const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
 const { entry } = Astro.props;
 const { Content } = await entry.render();

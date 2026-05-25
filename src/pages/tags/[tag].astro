@@ -6,7 +6,7 @@ import { Separator } from "$lib/components/ui/separator";
 import comboboxSvelte from 'node_modules/bits-ui/dist/bits/combobox/components/combobox.svelte';
 import SelectArrow from 'node_modules/bits-ui/dist/bits/select/components/select-arrow.svelte';
 export async function getStaticPaths() {
-  const allPosts = await getCollection("posts");
+  const allPosts = await getCollection("posts", ({ data }) => import.meta.env.DEV || !data.draft);
   const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
 
   return uniqueTags.map((tag) => {

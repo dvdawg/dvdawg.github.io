@@ -72,6 +72,10 @@
     p {
         @apply mb-2.5;
     }
+    strong,
+    b {
+      @apply font-bold;
+    }
 }
 
 /* Shrink images in blog posts */

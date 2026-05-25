@@ -158,6 +158,13 @@ declare module 'astro:content' {
   collection: "inprogress";
   data: any
 } & { render(): Render[".md"] };
+"quantum_adv.md": {
+	id: "quantum_adv.md";
+  slug: "quantum_adv";
+  body: string;
+  collection: "inprogress";
+  data: any
+} & { render(): Render[".md"] };
 };
 "posts": {
 "cond_aware_fno.mdx": {
@@ -181,9 +188,9 @@ declare module 'astro:content' {
   collection: "posts";
   data: InferEntrySchema<"posts">
 } & { render(): Render[".md"] };
-"quantum_adv.md": {
-	id: "quantum_adv.md";
-  slug: "quantum_adv";
+"info_geom.md": {
+	id: "info_geom.md";
+  slug: "info_geom";
   body: string;
   collection: "posts";
   data: InferEntrySchema<"posts">
