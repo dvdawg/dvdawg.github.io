@@ -5,15 +5,18 @@ const {
   description,
   image,
   imagePosition = "center",
+  imageClass = "",
 } = Astro.props;
 ---
 <a href={url} class="block h-full">
   <article class="relative h-72 overflow-hidden rounded-sm border border-neutral-200 transition duration-[400ms] hover:shadow-2xl">
     {image && (
-      <div
-        class="absolute inset-0 bg-cover"
-        style={`background-image: url(${image}); background-position: ${imagePosition};`}
-      ></div>
+      <img
+        src={image}
+        alt={title}
+        class={`absolute inset-0 h-full w-full object-cover ${imageClass}`.trim()}
+        style={`object-position: ${imagePosition};`}
+      />
     )}
     <div class="absolute bottom-0 left-0 right-0 h-22 border-t border-neutral-200 bg-[#f3f3f8] p-3">
       <h1 class="truncate font-serif text-2xl font-bold leading-tight">{title}</h1>

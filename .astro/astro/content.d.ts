@@ -158,6 +158,13 @@ declare module 'astro:content' {
   collection: "posts";
   data: InferEntrySchema<"posts">
 } & { render(): Render[".md"] };
+"LetterToLinearAlgebra.md": {
+	id: "LetterToLinearAlgebra.md";
+  slug: "lettertolinearalgebra";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
 "cond_aware_fno.mdx": {
 	id: "cond_aware_fno.mdx";
   slug: "cond_aware_fno";
@@ -182,6 +189,13 @@ declare module 'astro:content' {
 "info_geom.md": {
 	id: "info_geom.md";
   slug: "info_geom";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".md"] };
+"projects/herald.md": {
+	id: "projects/herald.md";
+  slug: "projects/herald";
   body: string;
   collection: "posts";
   data: InferEntrySchema<"posts">
