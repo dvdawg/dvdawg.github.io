@@ -5,7 +5,7 @@ const pageTitle = "David Kim";
 
 <Page pageTitle={pageTitle} showHeader={false}>
   <section
-    class="-mt-6 flex min-h-[100vh] flex-col items-center justify-center gap-12 px-4 pb-16 pt-16">
+    class="-mt-6 flex min-h-[100vh] flex-col items-center justify-center gap-6 px-4 pb-16 pt-16">
     <div
       class="hero-lockup grid w-full max-w-4xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 sm:gap-6"
       transition:name="site-logo">
@@ -32,12 +32,13 @@ const pageTitle = "David Kim";
       </div>
     </div>
 
+<!-- about me section -->
     <div
       class="flex w-full max-w-4xl flex-col gap-8 text-left md:flex-row md:items-start md:gap-16"
     >
       <div class="page-content flex-1 space-y-3 text-base leading-relaxed">
         <p class="text-black">
-          I'm David, an undergraduate at UC Berkeley studying physics and
+          I'm an undergraduate at UC Berkeley studying physics and
           computer science.
         </p>
         <p class="text-black">
@@ -51,10 +52,10 @@ const pageTitle = "David Kim";
           <a href="https://launchpad.studentorg.berkeley.edu/">Launchpad</a>, I
           work on projects with interesting applications in machine learning.
         </p>
-        <div class="space-y-2 text-sm">
+        <div class="space-y-2 text-base">
           <p>
-            Read more on my <a href="/blog">blog</a> or see what I've built on the
-            <a href="/projects">projects page</a>.
+            Read more on my <a href="/blog">blog</a>, see what I've built on the
+            <a href="/projects">projects page</a>, or check out my <a href="https://photo.dvdkm.cc">photography</a>.
           </p>
         </div>
       </div>
@@ -63,7 +64,7 @@ const pageTitle = "David Kim";
         <div class="flex items-center space-x-3">
           <span class="italic text-sm text-gray-600">email</span>
           <a
-            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm !text-black no-underline bg-gray-100 hover:bg-gray-200 hover:[&>svg]:text-accent-color transition-colors"
+            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm !text-black no-underline bg-light-accent hover:bg-accent-color hover:[&>svg]:text-dark-accent transition-colors"
             href="mailto:davidkm@berkeley.edu"
           >
             <span>davidkm@berkeley.edu</span>
@@ -86,7 +87,7 @@ const pageTitle = "David Kim";
         <div class="flex items-center space-x-3">
           <span class="italic text-sm text-gray-600">github</span>
           <a
-            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm !text-black no-underline bg-gray-100 hover:bg-gray-200 hover:[&>svg]:text-accent-color transition-colors"
+            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm !text-black no-underline bg-light-accent hover:bg-accent-color hover:[&>svg]:text-dark-accent transition-colors"
             href="https://github.com/dvdawg"
           >
             <span>@dvdawg</span>
@@ -109,7 +110,7 @@ const pageTitle = "David Kim";
         <div class="flex items-center space-x-3">
           <span class="italic text-sm text-gray-600">linkedin</span>
           <a
-            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm !text-black no-underline bg-gray-100 hover:bg-gray-200 hover:[&>svg]:text-accent-color transition-colors"
+            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm !text-black no-underline bg-light-accent hover:bg-accent-color hover:[&>svg]:text-dark-accent transition-colors"
             href="https://www.linkedin.com/in/davidkim3141/"
           >
             <span>@davidkim3141</span>
