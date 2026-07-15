@@ -1,0 +1,166 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { Project } from "../data/projects";
+import ContactLinks from "./ContactLinks.astro";
+import WorkLedgerRow from "./WorkLedgerRow.astro";
+import LandingHighlight from "./LandingHighlight.astro";
+import { Separator } from "$lib/components/ui/separator";
+
+interface Props {
+  projects: Project[];
+  posts: CollectionEntry<"posts">[];
+}
+
+const { projects, posts }: Props = Astro.props;
+const landingLinks = [
+  { label: "blog", href: "/blog/" },
+  { label: "projects", href: "/projects/" },
+  { label: "misc", href: "/misc/" },
+  { label: "photos", href: "https://photo.dvdkm.cc" },
+];
+---
+<section id="sidebar-view" class="hidden pb-16 pt-14 lg:-mx-16 xl:-mx-32">
+  <div class="grid w-full grid-cols-1 gap-10 md:grid-cols-[230px_minmax(0,1fr)] md:gap-12">
+    <!-- left sidebar -->
+    <aside class="flex flex-col gap-2">
+      <img
+        src="/assets/images/dvd_pfp.png"
+        alt="Portrait of David Kim"
+        width="512"
+        height="512"
+        class="h-24 w-24 object-contain object-left-top"
+        loading="eager"
+      />
+      <h1 class="text-3xl font-serif font-light tracking-tight text-black">David Kim</h1>
+      <p class="text-xs leading-relaxed text-black">
+        BA Physics and Computer Science at UC Berkeley. 
+      </p>
+      <Separator class="bg-gray-200"/>
+      <p class="text-[0.5rem] font-semibold tracking-[0.08em] text-gray-500 -mb-2">current</p>
+      <div class="flex flex-col">        
+        <div>
+          <a href="https://quantumdevices.berkeley.edu/" class="text-xs font-normal !text-black no-underline hover:!text-dark-accent">Quantum Devices Laboratory</a>
+          <p class="text-xs italic text-gray-500">Supercond. devices · Berkeley</p>
+        </div>
+        <div>
+          <a href="https://aqt.lbl.gov/about-aqt/qnl/" class="text-xs font-normal !text-black no-underline hover:!text-dark-accent">Quantum Nanoelectronics Laboratory</a>
+          <p class="text-xs italic text-gray-500">Supercond. qubits · Berkeley, LBNL</p>
+        </div>
+        <div>
+          <a href="https://launchpad.studentorg.berkeley.edu/" class="text-xs font-normal !text-black no-underline hover:!text-dark-accent">Berkeley Physics 112: StatMech</a>
+          <p class="text-xs italic text-gray-500">Academic instruction · SLC</p>
+        </div>
+        <div>
+          <a href="https://launchpad.studentorg.berkeley.edu/" class="text-xs font-normal !text-black no-underline hover:!text-dark-accent">Launchpad</a>
+          <p class="text-xs italic text-gray-500">Machine learning org · Berkeley</p>
+        </div>
+      </div>
+      <Separator class="bg-gray-200"/>
+      <p class="text-[0.5rem] font-semibold tracking-[0.08em] text-gray-500 -mb-2">prev</p>
+      <div class="flex flex-col">        
+        <div>
+          <a href="https://eaglesens.com/" class="text-xs font-normal !text-black no-underline hover:!text-dark-accent">Eaglesens</a>
+          <p class="text-xs italic text-gray-500">Super resolution models · Contract</p>
+        </div>
+      </div>
+      <Separator class="bg-gray-200"/>
+      <div class="flex flex-col items-start gap-2 pt-2 text-left -ml-2">
+        <ContactLinks size="xs" />
+        <div class="pt-6 pl-5"><slot name="toggle" /></div>
+      </div>
+    </aside>
+
+    <!-- center column -->
+    <div class="min-w-0">
+      <div class="flex items-center gap-6 ml-3">
+        <p>explore my site!</p>
+        <div class="flex flex-wrap mt-[0.1rem] gap-2">
+          {landingLinks.map((link) => (
+            <a
+              href={link.href}
+              class="border border-light-accent px-2 py-1 text-sm font-normal leading-none text-black !no-underline transition-colors duration-200 hover:bg-light-accent hover:!text-dark-accent"
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </div>
+      <Separator class="mt-3 bg-gray-200" />
+      <LandingHighlight
+        design="feature"
+        url="/posts/cond_aware_fno/"
+        image="/assets/blog/cond_aware_fno/fno.png"
+        imagePosition="center"
+        imageSize="26%"
+        title="Condition-Aware Fourier Neural Operators"
+        date="2026"
+        description="
+          A data-driven approach to spectral mode selection in Fourier Neural Operators using
+          condition number analysis and ridge regression. Presented at Yale's YURC 2026 conference.
+        "
+      />
+      <LandingHighlight 
+        design="feature"
+        url="/assets/projects/ming_pres.pdf"
+        image="/assets/projects/thumbnails/MING.png"
+        imagePosition="left"
+        imageSize="26%"
+        title="MING Diode" 
+        date="2026"
+        description="
+          The Matched-pair Inverting Nonlinear Generator (MING) diode. A Chua-style diode 
+          with a piecewise-linear I-V characteristic using matched JFET behavior, 
+          op-amp signal conditioning, and bias networks to create a tunable nonlinear port.
+        " 
+      />
+      <LandingHighlight
+        design="feature"
+        url="https://github.com/gheustace/quantumalg"
+        image="/assets/projects/thumbnails/certifieddel.jpeg"
+        imagePosition="center top"
+        imageSize="26%"
+        title="Certified Deletion Circuits"
+        date="2024"
+        description="
+          An implementation of a homomorphic certified deletion scheme with quantum computing
+          at Berkeley.
+        "
+      />
+
+      <!-- <div class="flex items-baseline justify-between border-b-[1.5px] border-black pb-1.5">
+        <h2 class="text-xs font-semibold uppercase tracking-[0.08em] text-black">Selected Work</h2>
+        <span class="font-mono text-[11px] text-gray-500">{projects.length} projects</span>
+      </div>
+      {projects.map((project) => (
+        <WorkLedgerRow
+          title={project.title}
+          url={project.url}
+          description={project.description}
+          image={project.image}
+          imagePosition={project.imagePosition}
+          year={project.year}
+        />
+      ))}
+
+      {posts.length > 0 && (
+        <>
+          <div class="mt-8 flex items-baseline justify-between border-b-[1.5px] border-black pb-1.5">
+            <h2 class="text-xs font-semibold uppercase tracking-[0.08em] text-black">From the Blog</h2>
+            <span class="font-mono text-[11px] text-gray-500">recent</span>
+          </div>
+          {posts.map((post) => (
+            <a
+              href={`/posts/${post.slug}/`}
+              class="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-4 border-b border-neutral-200 px-1 py-2.5 !no-underline transition-colors duration-200 hover:bg-light-accent"
+            >
+              <h3 class="min-w-0 truncate text-base font-medium text-black">{post.data.title}</h3>
+              <span class="font-mono text-[11px] text-dark-accent">
+                {post.data.pubDate.toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+              </span>
+            </a>
+          ))}
+        </>
+      )}
+    </div> -->
+  </div>
+</section>

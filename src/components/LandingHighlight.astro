@@ -1,0 +1,91 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  imageAlt?: string;
+  imagePosition?: string;
+  url?: string;
+  design?: "ledger" | "feature";
+  imageSize?: string;
+  date?: string;
+}
+
+const {
+  title,
+  description,
+  image,
+  imageAlt = "",
+  imagePosition = "center",
+  url,
+  design = "ledger",
+  imageSize = "32%",
+  date,
+}: Props = Astro.props;
+
+const Element = url ? "a" : "article";
+const ledgerClass =
+  "grid grid-cols-[minmax(0,1fr)] items-center gap-4 border-b border-neutral-200 px-1 py-3 !no-underline transition-colors duration-200 hover:bg-light-accent sm:grid-cols-[120px_minmax(0,0.75fr)_minmax(0,1.25fr)]";
+const featureClass =
+  "grid grid-cols-[minmax(0,1fr)] gap-4 border-b border-neutral-200 px-1 py-4 !no-underline transition-colors duration-200 hover:bg-light-accent sm:grid-cols-[var(--landing-highlight-image-size)_minmax(0,1fr)] sm:items-stretch";
+---
+
+{
+  design === "feature" ? (
+    <Element
+      href={url}
+      class={featureClass}
+      style={`--landing-highlight-image-size: ${imageSize};`}
+    >
+      <div class="h-28 w-full overflow-hidden rounded-sm sm:h-auto">
+        {image && (
+          <img
+            src={image}
+            alt={imageAlt}
+            class="h-full w-full object-cover ml-2"
+            style={`object-position: ${imagePosition};`}
+            loading="eager"
+          />
+        )}
+      </div>
+      <div class="ml-2 mt-3 min-w-0 self-start">
+        <div class="flex items-baseline justify-between gap-4">
+          <h3 class="min-w-0 truncate text-lg font-normal leading-tight text-black">{title}</h3>
+          {date && (
+            <span class="shrink-0 font-mono font-bold text-[11px] text-dark-accent mr-3">
+              {date}
+            </span>
+          )}
+        </div>
+        <p class="mt-2 text-xs leading-relaxed text-gray-700 w-5/6">
+          {description}
+        </p>
+      </div>
+    </Element>
+  ) : (
+    <Element href={url} class={ledgerClass}>
+      <div class="hidden h-16 w-full overflow-hidden rounded-sm bg-neutral-200 sm:block">
+        {image && (
+          <img
+            src={image}
+            alt={imageAlt}
+            class="h-full w-full object-cover"
+            style={`object-position: ${imagePosition};`}
+            loading="eager"
+          />
+        )}
+      </div>
+      <div class="min-w-0">
+        <h3 class="truncate text-lg font-semibold leading-tight text-black">{title}</h3>
+      </div>
+      <div class="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-4">
+        <p class="line-clamp-2 text-xs italic text-gray-600">{description}</p>
+        {date && (
+          <span class="shrink-0 font-mono text-[11px] text-dark-accent">
+            {date}
+          </span>
+        )}
+      </div>
+    </Element>
+  )
+}

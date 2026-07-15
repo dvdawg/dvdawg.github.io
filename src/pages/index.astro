@@ -1,11 +1,56 @@
 ---
 import Page from "../layouts/Page.astro";
+import ContactLinks from "../components/ContactLinks.astro";
+import LandingSidebarView from "../components/LandingSidebarView.astro";
+import LayoutToggle from "../components/LayoutToggle.astro";
+import { projects } from "../data/projects";
+import { getCollection } from "astro:content";
 const pageTitle = "David Kim";
+
+const recentPosts = (
+  await getCollection("posts", ({ data }) => import.meta.env.DEV || !data.draft)
+)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
 ---
 
 <Page pageTitle={pageTitle} showHeader={false}>
+  <script is:inline>
+    (() => {
+      const storageKey = "landing-view-preference";
+      try {
+        const stored = window.localStorage.getItem(storageKey);
+        if (!stored) {
+          document.documentElement.dataset.landingView = "hero";
+          return;
+        }
+        const preference = JSON.parse(stored);
+        if (
+          !preference ||
+          typeof preference !== "object" ||
+          typeof preference.expiresAt !== "number" ||
+          (preference.view !== "hero" && preference.view !== "sidebar")
+        ) {
+          window.localStorage.removeItem(storageKey);
+          document.documentElement.dataset.landingView = "hero";
+          return;
+        }
+        if (Date.now() > preference.expiresAt) {
+          window.localStorage.removeItem(storageKey);
+          document.documentElement.dataset.landingView = "hero";
+          return;
+        }
+        document.documentElement.dataset.landingView = preference.view;
+      } catch {
+        window.localStorage.removeItem(storageKey);
+        document.documentElement.dataset.landingView = "hero";
+      }
+    })();
+  </script>
+
   <section
-    class="-mt-6 flex min-h-[100vh] flex-col items-center justify-center gap-6 px-4 pb-16 pt-16">
+    id="hero-view"
+    class="-mt-5 flex min-h-[100vh] flex-col items-center justify-center gap-6 px-4 pb-16 pt-16">
     <div
       class="hero-lockup grid w-full max-w-4xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 sm:gap-6"
       transition:name="site-logo">
@@ -18,7 +63,7 @@ const pageTitle = "David Kim";
           src="/assets/images/headshot.png"
           alt="Portrait of David Kim"
           class="h-[clamp(120px,22vw,200px)] w-[clamp(120px,22vw,200px)] rounded-full object-cover object-[center_55%]"
-          loading="lazy"
+          loading="eager"
         />
       </div>
       -->
@@ -26,113 +71,52 @@ const pageTitle = "David Kim";
         <img
           src="/assets/images/dvd_pfp.png"
           alt="Portrait of David Kim"
-          class="hero-portrait h-auto object-cover object-top"
-          loading="lazy"
+          width="512"
+          height="512"
+          class="hero-portrait object-contain object-left-top"
+          loading="eager"
         />
       </div>
     </div>
 
 <!-- about me section -->
     <div
-      class="flex w-full max-w-4xl flex-col gap-8 text-left md:flex-row md:items-start md:gap-16"
-    >
+      class="flex w-full max-w-5xl flex-col gap-8 text-left md:flex-row md:items-start md:gap-4">
       <div class="page-content flex-1 space-y-3 text-base leading-relaxed">
         <p class="text-black">
           I'm an undergraduate at UC Berkeley studying physics and
-          computer science.
+          computer science. I'm broadly interested in quantum device engineering and information, 
+          as well as statistical models of learning.
         </p>
         <p class="text-black">
-          I contribute to superconducting qubit research at the
+          I contribute to superconducting qubit research at Berkeley's
           <a href="https://aqt.lbl.gov/about-aqt/qnl/"
             >Quantum Nanoelectronics Laboratory</a
-          > (assoc. LBNL) and the
+          > (assoc. LBNL) and
           <a href="https://quantumdevices.berkeley.edu/"
             >Quantum Devices Laboratory</a
-          > at UC Berkeley. At
+          >. At
           <a href="https://launchpad.studentorg.berkeley.edu/">Launchpad</a>, I
           work on projects with interesting applications in machine learning.
         </p>
         <div class="space-y-2 text-base">
           <p>
             Read more on my <a href="/blog">blog</a>, see what I've built on the
-            <a href="/projects">projects page</a>, or check out my <a href="https://photo.dvdkm.cc">photography</a>.
+            <a href="/projects">projects</a> page, or check out some of my <a href="https://photo.dvdkm.cc">photography</a>!
           </p>
         </div>
       </div>
 
-      <div class="flex w-full flex-col gap-3 text-left md:w-auto md:max-w-xs">
-        <div class="flex items-center space-x-3">
-          <span class="italic text-sm text-gray-600">email</span>
-          <a
-            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm !text-black no-underline bg-light-accent hover:bg-accent-color hover:[&>svg]:text-dark-accent transition-colors"
-            href="mailto:davidkm@berkeley.edu"
-          >
-            <span>davidkm@berkeley.edu</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M7 17L17 7"></path>
-              <path d="M7 7h10v10"></path>
-            </svg>
-          </a>
-        </div>
-        <div class="flex items-center space-x-3">
-          <span class="italic text-sm text-gray-600">github</span>
-          <a
-            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm !text-black no-underline bg-light-accent hover:bg-accent-color hover:[&>svg]:text-dark-accent transition-colors"
-            href="https://github.com/dvdawg"
-          >
-            <span>@dvdawg</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M7 17L17 7"></path>
-              <path d="M7 7h10v10"></path>
-            </svg>
-          </a>
-        </div>
-        <div class="flex items-center space-x-3">
-          <span class="italic text-sm text-gray-600">linkedin</span>
-          <a
-            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm !text-black no-underline bg-light-accent hover:bg-accent-color hover:[&>svg]:text-dark-accent transition-colors"
-            href="https://www.linkedin.com/in/davidkim3141/"
-          >
-            <span>@davidkim3141</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M7 17L17 7"></path>
-              <path d="M7 7h10v10"></path>
-            </svg>
-          </a>
-        </div>
+      <div class="flex w-full flex-col gap-3 items-start text-left md:w-auto md:max-w-xs">
+        <ContactLinks />
+        <div class="pt-8 self-center"><LayoutToggle /></div>
       </div>
     </div>
   </section>
+
+  <LandingSidebarView projects={projects} posts={recentPosts}>
+    <LayoutToggle slot="toggle" pressed={true} />
+  </LandingSidebarView>
 </Page>
 
 <style>
@@ -148,6 +132,29 @@ const pageTitle = "David Kim";
 
   .hero-portrait {
     width: var(--hero-image-size);
+    height: var(--hero-image-size);
+    aspect-ratio: 1 / 1;
+    overflow: visible;
+  }
+
+  :global(.view-fly-in) {
+    animation-duration: 450ms;
+  }
+
+  :global(.view-fly-out) {
+    animation-duration: 450ms;
+  }
+
+  :global(html[data-landing-view="sidebar"] #hero-view) {
+    display: none !important;
+  }
+
+  :global(html[data-landing-view="sidebar"] #sidebar-view) {
+    display: block !important;
+  }
+
+  :global(html[data-landing-view="hero"] #sidebar-view) {
+    display: none !important;
   }
 
   @media (min-width: 640px) {
@@ -157,3 +164,113 @@ const pageTitle = "David Kim";
     }
   }
 </style>
+
+<script>
+  const landingViewStorageKey = "landing-view-preference";
+  const landingViewPreferenceTtl = 10 * 60 * 1000;
+
+  const getLandingViews = () => ({
+    hero: document.getElementById("hero-view"),
+    sidebar: document.getElementById("sidebar-view"),
+  });
+
+  const setLayoutToggleState = (showSidebar: boolean) => {
+    document
+      .querySelectorAll("[data-layout-toggle]")
+      .forEach((b) => b.setAttribute("aria-pressed", String(showSidebar)));
+  };
+
+  const applyLandingView = (showSidebar: boolean) => {
+    const { hero, sidebar } = getLandingViews();
+    if (!hero || !sidebar) return;
+    document.documentElement.dataset.landingView = showSidebar
+      ? "sidebar"
+      : "hero";
+    hero.classList.toggle("hidden", showSidebar);
+    sidebar.classList.toggle("hidden", !showSidebar);
+    setLayoutToggleState(showSidebar);
+  };
+
+  const readStoredLandingView = () => {
+    try {
+      const stored = window.localStorage.getItem(landingViewStorageKey);
+      if (!stored) return null;
+      const preference = JSON.parse(stored);
+      if (
+        !preference ||
+        typeof preference !== "object" ||
+        typeof preference.expiresAt !== "number" ||
+        (preference.view !== "hero" && preference.view !== "sidebar")
+      ) {
+        window.localStorage.removeItem(landingViewStorageKey);
+        return null;
+      }
+      if (Date.now() > preference.expiresAt) {
+        window.localStorage.removeItem(landingViewStorageKey);
+        return null;
+      }
+      return preference.view;
+    } catch {
+      window.localStorage.removeItem(landingViewStorageKey);
+      return null;
+    }
+  };
+
+  const storeLandingView = (showSidebar: boolean) => {
+    try {
+      window.localStorage.setItem(
+        landingViewStorageKey,
+        JSON.stringify({
+          view: showSidebar ? "sidebar" : "hero",
+          expiresAt: Date.now() + landingViewPreferenceTtl,
+        })
+      );
+    } catch {
+      // Ignore storage failures so the toggle still works in private modes.
+    }
+  };
+
+  const storedLandingView = readStoredLandingView();
+  if (storedLandingView) {
+    applyLandingView(storedLandingView === "sidebar");
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target instanceof Element ? event.target : null;
+    const button = target?.closest("[data-layout-toggle]");
+    if (!button) return;
+    const { hero, sidebar } = getLandingViews();
+    if (!hero || !sidebar) return;
+    if (
+      hero.classList.contains("view-fly-out") ||
+      sidebar.classList.contains("view-fly-out")
+    ) {
+      return;
+    }
+    const showSidebar = sidebar.classList.contains("hidden");
+    const outgoing = showSidebar ? hero : sidebar;
+    const incoming = showSidebar ? sidebar : hero;
+    storeLandingView(showSidebar);
+    setLayoutToggleState(showSidebar);
+    outgoing.classList.add("view-fly-out");
+    outgoing.addEventListener(
+      "animationend",
+      () => {
+        outgoing.classList.remove("view-fly-out");
+        outgoing.classList.add("hidden");
+        incoming.classList.remove("hidden");
+        incoming.classList.add("view-fly-in");
+        document.documentElement.dataset.landingView = showSidebar
+          ? "sidebar"
+          : "hero";
+        incoming.addEventListener(
+          "animationend",
+          () => incoming.classList.remove("view-fly-in"),
+          { once: true }
+        );
+        incoming.querySelector<HTMLElement>("[data-layout-toggle]")?.focus();
+      },
+      { once: true }
+    );
+  });
+</script>

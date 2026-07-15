@@ -21,7 +21,9 @@ const config = {
 				'regal-blue': '#243c5a',
 				'accent-color': '#c4b5fd',
 				'light-accent': '#EDE9FE',
+				'semilight-accent': '#D9CFFE',
 				'dark-accent': '#A78BFA',
+				'ultradark-accent': '#7347f7',
 			},
 			transitionProperty: {
 				'fade': '400ms'

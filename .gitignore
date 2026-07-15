@@ -39,3 +39,6 @@ examples/**/env.d.ts
 
 # keep draft posts out of git
 src/content/inprogress/
+# superpowers brainstorm scratch
+.superpowers/
+.claude/

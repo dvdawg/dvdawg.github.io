@@ -35,13 +35,28 @@ img, video {
 
 /* custom stuff */
 
-.hidden {
-  display: none;
-}
 @layer base {
   hr {
     @apply border-neutral-200;
   }
+  img,
+  svg,
+  video,
+  canvas,
+  audio,
+  iframe,
+  embed,
+  object {
+    display: block;
+    vertical-align: middle;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
   a::selection{
     background: #c4b5fd;
   }
@@ -105,4 +120,12 @@ body {
     transform: translateY(10px);
     opacity: 0;
   }
+}
+
+.view-fly-in {
+  animation: flyIn 350ms ease backwards;
+}
+
+.view-fly-out {
+  animation: flyOut 350ms ease forwards;
 }

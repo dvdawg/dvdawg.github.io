@@ -14,13 +14,13 @@ const fnoPost = allPosts.find((post) => post.slug === "cond_aware_fno");
 ---
 <Page pageTitle={pageTitle}>
   <div class="pb-8">
-    <div class="flex justify-between items-center space-x-4 flex-wrap">
+    <!-- <div class="flex justify-between items-center space-x-4 flex-wrap">
       <h1 class="text-4xl font-mono flex-none">DVD-ROM:<span class="text-dark-accent font-bold">BLOG</span></h1>
       <Separator class="bg-black self-center flex-1"/>
       <h1 class="text-2xl font-light flex-initial">Highlighted Posts</h1>
-    </div>
+    </div> -->
     <!--highlighted posts section -->
-    <div class="grid grid-rows-2 grid-cols-3 grid-flow-row gap-2 pt-4 h-[28rem] text-wrap">
+    <div class="grid grid-rows-2 grid-cols-3 grid-flow-row gap-2 h-[28rem] text-wrap">
       <!-- biiig post -->
       {highlightedPost && (
       <div class="row-span-2 col-span-2 relative overflow-hidden hover:shadow-2xl">
@@ -57,18 +57,17 @@ const fnoPost = allPosts.find((post) => post.slug === "cond_aware_fno");
       </div></a>
     </div>
     <!-- all posts section -->
-    <Separator class="by-1 h-10"/>
-    <div class="flex justify-between items-center space-x-4 flex-wrap">
-      <h1 class="text-2xl font-light flex-initial">All Posts</h1>
-      <Separator class="bg-black self-center flex-1"/>
-      <h1>{allPosts.length} posts</h1>
-    </div>
-    <!-- tags -->
-    <div class="flex flex-wrap pt-3 pb-3">
-      {tags.map((tag) => (
-        <a href={`/tags/${tag}`} class="text-black"><Badge class='font-normal bg-accent-color transition duration-[400ms] hover:bg-dark-accent' variant="secondary">{tag}</Badge></a>
-        <Separator orientation="vertical" class="w-1.5"/>
-      ))}
+    <Separator class="by-1 h-12"/>
+    <Separator class="bg-gray-200"/>
+    <div class="flex justify-between items-center space-x-4 flex-wrap pt-8">
+      <h1 class="text-xl font-light flex-initial">Blog Posts ({allPosts.length})</h1>
+      <!-- tags -->
+      <div class="flex flex-wrap pt-3 pb-3">
+        {tags.map((tag) => (
+          <a href={`/tags/${tag}`} class="text-black"><Badge class='font-normal bg-semilight-accent transition duration-[400ms] hover:bg-accent-color' variant="secondary">{tag}</Badge></a>
+          <Separator orientation="vertical" class="w-1.5"/>
+        ))}
+      </div>
     </div>
     <!-- posts list -->
     <div class="flex flex-col space-y-4">

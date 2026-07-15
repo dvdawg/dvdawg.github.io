@@ -1,0 +1,48 @@
+---
+const { pressed = false } = Astro.props;
+---
+<button
+  type="button"
+  data-layout-toggle
+  aria-pressed={pressed ? "true" : "false"}
+  class="relative mx-auto block h-10 w-40 rounded-full bg-light-accent transition-colors hover:bg-accent-color"
+>
+  <span
+    data-layout-toggle-thumb
+    class="absolute bottom-1 left-1 top-1 w-[calc(50%-0.375rem)] rounded-full bg-white transition-transform duration-300 ease-out"
+  ></span>
+  <span
+    data-layout-toggle-label="more"
+    class="absolute right-1 top-1/2 w-[calc(50%-0.375rem)] -translate-y-1/2 text-center text-xs italic text-black/40"
+  >
+    more
+  </span>
+  <span
+    data-layout-toggle-label="less"
+    class="absolute left-1 top-1/2 w-[calc(50%-0.375rem)] -translate-y-1/2 text-center text-xs italic text-black/40"
+  >
+    less
+  </span>
+</button>
+
+<style>
+  [data-layout-toggle][aria-pressed="true"] [data-layout-toggle-thumb] {
+    transform: translateX(calc(100% + 0.25rem));
+  }
+
+  [data-layout-toggle] [data-layout-toggle-label] {
+    transition: opacity 250ms ease;
+  }
+
+  [data-layout-toggle][aria-pressed="false"] [data-layout-toggle-label="less"],
+  [data-layout-toggle][aria-pressed="true"] [data-layout-toggle-label="more"] {
+    opacity: 0;
+    transition-delay: 0ms;
+  }
+
+  [data-layout-toggle][aria-pressed="false"] [data-layout-toggle-label="more"],
+  [data-layout-toggle][aria-pressed="true"] [data-layout-toggle-label="less"] {
+    opacity: 1;
+    transition-delay: 180ms;
+  }
+</style>
