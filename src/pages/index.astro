@@ -230,10 +230,13 @@ const recentPosts = (
     }
   };
 
-  const storedLandingView = readStoredLandingView();
-  if (storedLandingView) {
+  const initializeLandingView = () => {
+    const storedLandingView = readStoredLandingView();
     applyLandingView(storedLandingView === "sidebar");
-  }
+  };
+
+  initializeLandingView();
+  document.addEventListener("astro:page-load", initializeLandingView);
 
   document.addEventListener("click", (event) => {
     const target = event.target instanceof Element ? event.target : null;
