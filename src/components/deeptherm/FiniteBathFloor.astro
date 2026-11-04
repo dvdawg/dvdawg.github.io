@@ -1,0 +1,185 @@
+---
+import '../../styles/deeptherm.css';
+import data from '../../data/deep_therm/design.json';
+---
+
+<figure class="dt-fig" data-dt-floor>
+  <p class="dt-title">Figure 8 — the finite-bath floor, and what is left after you subtract it</p>
+
+  <div class="dt-controls">
+    <div class="dt-control">
+      <label>chain length</label>
+      <div class="dt-seg" data-size-group>
+        {data.series.map((s: any, i: number) => (
+          <button type="button" data-size={s.L} aria-pressed={i === data.series.length - 1}>L = {s.L}</button>
+        ))}
+      </div>
+    </div>
+    <label class="dt-check"><input type="checkbox" data-subtract /> subtract exact Haar floor</label>
+    <label class="dt-check"><input type="checkbox" data-split checked /> show k = 2 harmonic split</label>
+    <label class="dt-check"><input type="checkbox" data-mean /> show norm of the disorder-averaged moment</label>
+  </div>
+
+  <svg class="dt-stage" viewBox="0 0 700 330" data-plot role="img" style="max-width:700px;margin:0 auto"></svg>
+
+  <div class="dt-legend">
+    <span><i style="background:#0e7490"></i>&epsilon;<sub>1</sub> &mdash; ordinary</span>
+    <span><i style="background:#7347f7"></i>&epsilon;<sub>2</sub> &mdash; full k = 2</span>
+    <span><i style="background:#d97706"></i>inherited &ell; = 1 part of k = 2</span>
+    <span><i style="background:#be123c"></i>primitive C<sub>2</sub></span>
+    <span><i style="background:#9aa0ac"></i>parameter-free Haar floor</span>
+  </div>
+
+  <div class="dt-readout" data-readout></div>
+
+  <figcaption>
+    Disorder-averaged kicked Ising chains, RMS relative Frobenius error of the projected moment,
+    <span class="dt-mono">A</span> = two sites, computational-basis measurement of the rest
+    (<span class="dt-mono">J = 0.7, b = 0.65, h<sub>j</sub> ~ N(0.6, (&pi;/4)&sup2;)</span>, plus-product
+    initial state). The dashed lines are <b>not fits</b>: they are the exact mean-square value a
+    genuinely Haar-random global state would give at this bath size,
+    <span class="dt-mono">E&epsilon;<sub>k</sub>&sup2; = (N<sub>k</sub>&minus;1)(D<sub>A</sub>+1)/(D<sub>A</sub>D<sub>B</sub>+1)</span>.
+    Untouched, the curves bend continuously on a semilog plot &mdash; which is exactly what a
+    stretched exponential looks like. Tick <i>subtract exact Haar floor</i> and much of the bending
+    goes away: it was the floor being approached in quadrature, not a new dynamical law. Note also
+    that the primitive <span class="dt-mono">C<sub>2</sub></span> reaches its floor
+    <i>before</i> the inherited one-copy component does.
+  </figcaption>
+
+  <script is:inline type="application/json" data-floor-json set:html={JSON.stringify(data)} />
+</figure>
+
+<script>
+  function setupFloor() {
+    document.querySelectorAll('[data-dt-floor]').forEach((root) => {
+      const el = root as HTMLElement;
+      if (el.dataset.dtReady === '1') return;
+      el.dataset.dtReady = '1';
+
+      const raw = el.querySelector('[data-floor-json]')?.textContent;
+      if (!raw) return;
+      const data = JSON.parse(raw);
+
+      const ns = 'http://www.w3.org/2000/svg';
+      const mk = (tag: string, a: Record<string, string | number>) => {
+        const n = document.createElementNS(ns, tag);
+        for (const key in a) n.setAttribute(key, String(a[key]));
+        return n;
+      };
+      const txt = (x: number, y: number, s: string, extra: Record<string, string | number> = {}) => {
+        const t = mk('text', { x, y, 'font-size': 10, fill: '#6b647f', ...extra });
+        t.textContent = s;
+        return t;
+      };
+
+      const svg = el.querySelector('[data-plot]') as SVGSVGElement;
+      const readout = el.querySelector('[data-readout]') as HTMLElement;
+      const subBox = el.querySelector('[data-subtract]') as HTMLInputElement;
+      const splitBox = el.querySelector('[data-split]') as HTMLInputElement;
+      const meanBox = el.querySelector('[data-mean]') as HTMLInputElement;
+      const sizeBtns = Array.from(el.querySelectorAll('[data-size-group] button')) as HTMLButtonElement[];
+
+      let L = data.series[data.series.length - 1].L;
+
+      const KEYS = [
+        { key: 'eps1', col: '#0e7490', label: 'ε₁' },
+        { key: 'eps2', col: '#7347f7', label: 'ε₂' },
+        { key: 'inh', col: '#d97706', label: 'ε₂,ℓ=1' },
+        { key: 'prim', col: '#be123c', label: 'ε₂,C₂' },
+      ];
+
+      function render() {
+        const s = data.series.find((x: any) => x.L === L);
+        const sub = subBox.checked;
+        const split = splitBox.checked;
+        const showMean = meanBox.checked;
+
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        const W = 700, H = 330, m = { l: 56, r: 16, t: 16, b: 42 };
+        const iw = W - m.l - m.r, ih = H - m.t - m.b;
+        const tmax = Math.max(...s.t);
+        const lo = sub ? -4.2 : -3.2, hi = 0.6;
+        const X = (t: number) => m.l + (t / tmax) * iw;
+        const Y = (v: number) => {
+          const y = m.t + ih - ((Math.log10(Math.max(v, 1e-12)) - lo) / (hi - lo)) * ih;
+          return Math.min(m.t + ih + 6, Math.max(m.t - 4, y));
+        };
+
+        for (let p = Math.ceil(lo); p <= 0; p++) {
+          const y = Y(Math.pow(10, p));
+          svg.appendChild(mk('line', { x1: m.l, x2: W - m.r, y1: y, y2: y, stroke: '#f1eff7', 'stroke-width': 1 }));
+          svg.appendChild(txt(m.l - 6, y + 3.5, p === 0 ? '1' : `10^${p}`, { 'text-anchor': 'end', 'font-size': 9 }));
+        }
+        svg.appendChild(mk('line', { x1: m.l, x2: W - m.r, y1: m.t + ih, y2: m.t + ih, stroke: '#d7d3e6', 'stroke-width': 1 }));
+        svg.appendChild(mk('line', { x1: m.l, x2: m.l, y1: m.t, y2: m.t + ih, stroke: '#d7d3e6', 'stroke-width': 1 }));
+        for (let t = 0; t <= tmax; t += 5) {
+          svg.appendChild(txt(X(t), H - 24, String(t), { 'text-anchor': 'middle', 'font-size': 9 }));
+        }
+        svg.appendChild(txt(m.l + iw / 2, H - 8, 'Floquet periods t', { 'text-anchor': 'middle' }));
+        svg.appendChild(txt(-(m.t + ih / 2), 14, sub ? 'excess above the floor' : 'relative Frobenius error', {
+          'text-anchor': 'middle', transform: 'rotate(-90)',
+        }));
+
+        const active = split ? KEYS : KEYS.slice(0, 2);
+        for (const spec of active) {
+          const floor = s.floor[spec.key];
+          if (!sub) {
+            svg.appendChild(mk('line', {
+              x1: m.l, x2: W - m.r, y1: Y(floor), y2: Y(floor),
+              stroke: spec.col, 'stroke-width': 1, 'stroke-dasharray': '4 4', opacity: 0.45,
+            }));
+          }
+          let d = '', started = false;
+          s.t.forEach((t: number, i: number) => {
+            const v0 = s[spec.key][i];
+            const v = sub ? Math.sqrt(Math.max(v0 * v0 - floor * floor, 1e-14)) : v0;
+            if (sub && v0 * v0 - floor * floor <= 1e-13) { started = false; return; }
+            d += `${started ? 'L' : 'M'}${X(t).toFixed(1)},${Y(v).toFixed(1)}`;
+            started = true;
+          });
+          svg.appendChild(mk('path', { d, fill: 'none', stroke: spec.col, 'stroke-width': 1.9, 'stroke-linejoin': 'round' }));
+        }
+
+        if (showMean) {
+          let d = '';
+          s.t.forEach((t: number, i: number) => {
+            d += `${i === 0 ? 'M' : 'L'}${X(t).toFixed(1)},${Y(s.meanMoment[i]).toFixed(1)}`;
+          });
+          svg.appendChild(mk('path', {
+            d, fill: 'none', stroke: '#111827', 'stroke-width': 1.6, 'stroke-dasharray': '5 3', opacity: 0.75,
+          }));
+          svg.appendChild(txt(W - m.r - 4, Y(s.meanMoment[s.meanMoment.length - 1]) - 7,
+            '‖E Δ₂‖ (signed average)', { 'text-anchor': 'end', 'font-size': 9, fill: '#111827' }));
+        }
+
+        if (!sub) {
+          svg.appendChild(txt(W - m.r - 4, Y(s.floor.eps1) + 13, 'exact Haar floors', {
+            'text-anchor': 'end', 'font-size': 9, fill: '#9aa0ac',
+          }));
+        }
+
+        const last = s.t.length - 1;
+        readout.innerHTML =
+          `<span><i>D<sub>B</sub></i> ${s.D_B}</span>` +
+          KEYS.map((spec) =>
+            `<span><i>${spec.label} at t=${s.t[last]}</i> ${s[spec.key][last].toPrecision(4)} ` +
+            `<span style="color:#9aa0ac">/ ${s.floor[spec.key].toPrecision(4)} = ` +
+            `${(s[spec.key][last] / s.floor[spec.key]).toFixed(3)}</span></span>`
+          ).join('');
+      }
+
+      sizeBtns.forEach((b) => {
+        b.addEventListener('click', () => {
+          L = Number(b.dataset.size);
+          sizeBtns.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+          render();
+        });
+      });
+      [subBox, splitBox, meanBox].forEach((c) => c.addEventListener('change', render));
+      render();
+    });
+  }
+
+  setupFloor();
+  document.addEventListener('astro:after-swap', setupFloor);
+</script>

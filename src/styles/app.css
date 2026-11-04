@@ -129,3 +129,13 @@ body {
 .view-fly-out {
   animation: flyOut 350ms ease forwards;
 }
+
+/* Elements that only exist on one side of a navigation (e.g. the header when
+   leaving the landing page) fly out/in with the page content instead of fading */
+:root::view-transition-old(*):only-child {
+  animation: flyOut 350ms ease forwards;
+}
+
+:root::view-transition-new(*):only-child {
+  animation: flyIn 350ms ease 350ms backwards;
+}

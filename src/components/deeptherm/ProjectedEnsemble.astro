@@ -1,0 +1,357 @@
+---
+import '../../styles/deeptherm.css';
+import data from '../../data/deep_therm/bloch.json';
+---
+
+<figure class="dt-fig" data-dt-bloch>
+  <p class="dt-title">Figure 1 — the projected ensemble of a kicked Ising chain</p>
+
+  <div class="dt-controls">
+    <div class="dt-control">
+      <label>dynamics</label>
+      <div class="dt-seg" data-model-group>
+        <button type="button" data-model="dual_unitary" aria-pressed="true">self-dual</button>
+        <button type="button" data-model="chaotic" aria-pressed="false">chaotic</button>
+        <button type="button" data-model="integrable" aria-pressed="false">integrable</button>
+      </div>
+    </div>
+    <div class="dt-control">
+      <label for="dt-bloch-time">period <span class="dt-value" data-time-label>t = 0</span></label>
+      <input id="dt-bloch-time" type="range" min="0" max="12" step="1" value="0" data-time />
+    </div>
+    <button type="button" class="dt-btn" data-play>play</button>
+    <label class="dt-check"><input type="checkbox" data-spin checked /> spin</label>
+  </div>
+
+  <div class="dt-row">
+    <div class="dt-panel" style="flex:0 1 330px">
+      <p class="dt-panel-label">conditional states <span class="dt-mono">|&psi;<sub>z</sub>&rang;</span> on the Bloch sphere</p>
+      <canvas class="dt-stage" data-sphere width="660" height="660" style="max-width:330px;margin:0 auto"></canvas>
+    </div>
+    <div class="dt-panel" style="flex:1 1 300px">
+      <p class="dt-panel-label">relative moment error <span class="dt-mono">&epsilon;<sub>k</sub>(t)</span></p>
+      <svg class="dt-stage" viewBox="0 0 340 250" data-curves role="img"></svg>
+      <div class="dt-legend">
+        <span><i style="background:#0e7490"></i>k = 1 (ordinary)</span>
+        <span><i style="background:#7347f7"></i>k = 2</span>
+        <span><i style="background:#be123c"></i>k = 3</span>
+        <span><i style="background:#9aa0ac"></i>finite-bath floor</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dt-readout" data-readout></div>
+
+  <figcaption>
+    Exact state-vector simulation of <b>L = 12</b> qubits. Subsystem <i>A</i> is one qubit;
+    the other 11 qubits are the bath <i>B</i>, measured in the computational basis
+    (D<sub>B</sub> = 2048 outcomes, 220 of them drawn). Each dot is the pure state of
+    <i>A</i> conditioned on one measurement outcome, with area proportional to its Born
+    probability; the black cross is the ordinary reduced state &rho;<sub>A</sub>. At
+    <span class="dt-mono">t = 0</span> the initial state is a product state, so every outcome
+    gives the <i>same</i> conditional state and all 220 dots sit on top of one another
+    underneath the cross. At the
+    <b>self-dual point</b> &rho;<sub>A</sub> is exactly maximally mixed from the first period
+    until the light cone wraps the ring at <span class="dt-mono">t &asymp; L/2</span> &mdash;
+    ordinary thermalization is instantaneous &mdash; yet the cloud of conditional states needs
+    many more periods to spread uniformly. That gap is deep thermalization.
+  </figcaption>
+
+  <script is:inline type="application/json" data-bloch-json set:html={JSON.stringify(data)} />
+</figure>
+
+<script>
+  function setupBloch() {
+    document.querySelectorAll('[data-dt-bloch]').forEach((root) => {
+      const el = root as HTMLElement;
+      if (el.dataset.dtReady === '1') return;
+      el.dataset.dtReady = '1';
+
+      const raw = el.querySelector('[data-bloch-json]')?.textContent;
+      if (!raw) return;
+      const data = JSON.parse(raw);
+
+      const canvas = el.querySelector('[data-sphere]') as HTMLCanvasElement;
+      const ctx = canvas.getContext('2d')!;
+      const svg = el.querySelector('[data-curves]') as SVGSVGElement;
+      const slider = el.querySelector('[data-time]') as HTMLInputElement;
+      const timeLabel = el.querySelector('[data-time-label]') as HTMLElement;
+      const readout = el.querySelector('[data-readout]') as HTMLElement;
+      const playBtn = el.querySelector('[data-play]') as HTMLButtonElement;
+      const spinBox = el.querySelector('[data-spin]') as HTMLInputElement;
+      const modelBtns = Array.from(
+        el.querySelectorAll('[data-model-group] button')
+      ) as HTMLButtonElement[];
+
+      let modelKey = 'dual_unitary';
+      let t = 0;
+      let azimuth = 0.6;
+      const elevation = 0.35;
+      let playing = false;
+      let lastStep = 0;
+      let rafId = 0;
+      let dragging = false;
+      let dragX = 0;
+
+      const COL = ['#0e7490', '#7347f7', '#be123c'];
+
+      /* ---------------- sphere ---------------- */
+
+      function project(x: number, y: number, z: number) {
+        // rotate about the vertical (z) axis, then tilt toward the viewer
+        const ca = Math.cos(azimuth), sa = Math.sin(azimuth);
+        const xr = ca * x - sa * y;
+        const yr = sa * x + ca * y;
+        const ce = Math.cos(elevation), se = Math.sin(elevation);
+        // screen: horizontal = xr, vertical = z*cos - yr*sin, depth = z*sin + yr*cos
+        return {
+          sx: xr,
+          sy: -(z * ce - yr * se),
+          depth: z * se + yr * ce,
+        };
+      }
+
+      function drawSphere() {
+        const W = canvas.width, H = canvas.height;
+        const R = W * 0.40;
+        const cx = W / 2, cy = H / 2;
+        ctx.clearRect(0, 0, W, H);
+        ctx.save();
+        ctx.translate(cx, cy);
+
+        // outline
+        ctx.beginPath();
+        ctx.arc(0, 0, R, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(237,233,254,0.42)';
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#d7d3e6';
+        ctx.stroke();
+
+        // equator + a meridian, drawn as ellipses in the rotated frame
+        const ring = (fn: (a: number) => [number, number, number], dash: number[]) => {
+          ctx.setLineDash(dash);
+          ctx.lineWidth = 1.6;
+          ctx.strokeStyle = '#cfc9e3';
+          ctx.beginPath();
+          for (let i = 0; i <= 96; i++) {
+            const a = (i / 96) * 2 * Math.PI;
+            const p = project(...fn(a));
+            const X = p.sx * R, Y = p.sy * R;
+            i === 0 ? ctx.moveTo(X, Y) : ctx.lineTo(X, Y);
+          }
+          ctx.stroke();
+          ctx.setLineDash([]);
+        };
+        ring((a) => [Math.cos(a), Math.sin(a), 0], [5, 5]);
+        ring((a) => [Math.cos(a), 0, Math.sin(a)], [2, 6]);
+
+        // axes
+        const axis = (v: [number, number, number], label: string) => {
+          const p = project(...v);
+          ctx.strokeStyle = '#bdb7cf';
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(p.sx * R, p.sy * R);
+          ctx.stroke();
+          ctx.fillStyle = '#8b849c';
+          ctx.font = '600 22px ui-sans-serif, system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(label, p.sx * R * 1.13, p.sy * R * 1.13);
+        };
+        axis([1, 0, 0], 'x');
+        axis([0, 1, 0], 'y');
+        axis([0, 0, 1], 'z');
+
+        // points, painter's algorithm
+        const f = data.models[modelKey].frames[t];
+        const n = f.x.length;
+        const items: { X: number; Y: number; r: number; d: number }[] = [];
+        for (let i = 0; i < n; i++) {
+          const p = project(f.x[i] / 100, f.y[i] / 100, f.z[i] / 100);
+          const w = f.w[i] / 32; // D_B * p_z
+          items.push({
+            X: p.sx * R,
+            Y: p.sy * R,
+            r: Math.max(2.2, 6.5 * Math.pow(Math.max(w, 0.02), 1 / 3)),
+            d: p.depth,
+          });
+        }
+        items.sort((a, b) => a.d - b.d);
+        for (const it of items) {
+          const shade = 0.30 + 0.55 * (it.d + 1) / 2;
+          ctx.beginPath();
+          ctx.arc(it.X, it.Y, it.r, 0, 2 * Math.PI);
+          ctx.fillStyle = `rgba(115,71,247,${shade.toFixed(3)})`;
+          ctx.fill();
+        }
+
+        // reduced state
+        const rp = project(f.r[0], f.r[1], f.r[2]);
+        const RX = rp.sx * R, RY = rp.sy * R;
+        ctx.strokeStyle = '#111827';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(RX - 9, RY - 9); ctx.lineTo(RX + 9, RY + 9);
+        ctx.moveTo(RX + 9, RY - 9); ctx.lineTo(RX - 9, RY + 9);
+        ctx.stroke();
+
+        ctx.restore();
+      }
+
+      /* ---------------- curves ---------------- */
+
+      const ns = 'http://www.w3.org/2000/svg';
+      function mk(tag: string, attrs: Record<string, string | number>) {
+        const node = document.createElementNS(ns, tag);
+        for (const key in attrs) node.setAttribute(key, String(attrs[key]));
+        return node;
+      }
+
+      function drawCurves() {
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        const W = 340, H = 250;
+        const m = { l: 42, r: 10, t: 12, b: 30 };
+        const iw = W - m.l - m.r, ih = H - m.t - m.b;
+        const tmax = data.times.length - 1;
+        const lo = Math.log10(8e-3), hi = Math.log10(2.2);
+        const X = (i: number) => m.l + (i / tmax) * iw;
+        const Y = (v: number) => {
+          const y = m.t + ih - ((Math.log10(Math.max(v, 1e-6)) - lo) / (hi - lo)) * ih;
+          return Math.min(m.t + ih, Math.max(m.t, y));
+        };
+
+        // grid
+        for (const p of [-2, -1, 0]) {
+          const y = Y(Math.pow(10, p));
+          svg.appendChild(mk('line', { x1: m.l, x2: W - m.r, y1: y, y2: y, stroke: '#eeecf5', 'stroke-width': 1 }));
+          const lab = mk('text', { x: m.l - 6, y: y + 3.5, 'text-anchor': 'end', 'font-size': 9, fill: '#8b849c' });
+          lab.textContent = p === 0 ? '1' : `10${p === -1 ? '⁻¹' : '⁻²'}`;
+          svg.appendChild(lab);
+        }
+        svg.appendChild(mk('line', { x1: m.l, x2: W - m.r, y1: m.t + ih, y2: m.t + ih, stroke: '#d7d3e6', 'stroke-width': 1 }));
+        svg.appendChild(mk('line', { x1: m.l, x2: m.l, y1: m.t, y2: m.t + ih, stroke: '#d7d3e6', 'stroke-width': 1 }));
+        for (let i = 0; i <= tmax; i += 3) {
+          const lab = mk('text', { x: X(i), y: H - 17, 'text-anchor': 'middle', 'font-size': 9, fill: '#8b849c' });
+          lab.textContent = String(i);
+          svg.appendChild(lab);
+        }
+        const zlab = mk('text', { x: m.l - 6, y: m.t + ih + 3.5, 'text-anchor': 'end', 'font-size': 8.5, fill: '#8b849c' });
+        zlab.textContent = '0';
+        svg.appendChild(zlab);
+        const xlab = mk('text', { x: m.l + iw / 2, y: H - 3, 'text-anchor': 'middle', 'font-size': 9.5, fill: '#6b647f' });
+        xlab.textContent = 'Floquet periods t';
+        svg.appendChild(xlab);
+
+        // floors
+        const floors = [data.floor.eps1, data.floor.eps2, data.floor.eps3];
+        floors.forEach((fv, j) => {
+          svg.appendChild(mk('line', {
+            x1: m.l, x2: W - m.r, y1: Y(fv), y2: Y(fv),
+            stroke: '#9aa0ac', 'stroke-width': 1, 'stroke-dasharray': '3 3', opacity: 0.75,
+          }));
+          if (j === 2) {
+            const lab = mk('text', { x: W - m.r - 2, y: Y(fv) - 4, 'text-anchor': 'end', 'font-size': 8.5, fill: '#9aa0ac' });
+            lab.textContent = 'Haar floor';
+            svg.appendChild(lab);
+          }
+        });
+
+        const frames = data.models[modelKey].frames;
+        for (let k = 0; k < 3; k++) {
+          let d = '';
+          frames.forEach((f: any, i: number) => {
+            d += `${i === 0 ? 'M' : 'L'}${X(i).toFixed(1)},${Y(f.e[k]).toFixed(1)}`;
+          });
+          svg.appendChild(mk('path', { d, fill: 'none', stroke: COL[k], 'stroke-width': 1.8, 'stroke-linejoin': 'round' }));
+          svg.appendChild(mk('circle', { cx: X(t), cy: Y(frames[t].e[k]), r: 3.4, fill: COL[k] }));
+        }
+        svg.appendChild(mk('line', {
+          x1: X(t), x2: X(t), y1: m.t, y2: m.t + ih,
+          stroke: '#7347f7', 'stroke-width': 1, opacity: 0.28,
+        }));
+      }
+
+      /* ---------------- readout ---------------- */
+
+      function drawReadout() {
+        const f = data.models[modelKey].frames[t];
+        const rlen = Math.hypot(f.r[0], f.r[1], f.r[2]);
+        readout.innerHTML =
+          `<span><i>&epsilon;<sub>1</sub></i> ${f.e[0].toFixed(4)}</span>` +
+          `<span><i>&epsilon;<sub>2</sub></i> ${f.e[1].toFixed(4)}</span>` +
+          `<span><i>&epsilon;<sub>3</sub></i> ${f.e[2].toFixed(4)}</span>` +
+          `<span><i>|&rho;<sub>A</sub> Bloch vector|</i> ${rlen.toFixed(4)}</span>`;
+      }
+
+      function render() {
+        timeLabel.textContent = `t = ${t}`;
+        drawSphere();
+        drawCurves();
+        drawReadout();
+      }
+
+      /* ---------------- interaction ---------------- */
+
+      slider.addEventListener('input', () => {
+        t = Number(slider.value);
+        playing = false;
+        playBtn.textContent = 'play';
+        render();
+      });
+
+      modelBtns.forEach((b) => {
+        b.addEventListener('click', () => {
+          modelKey = b.dataset.model!;
+          modelBtns.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+          render();
+        });
+      });
+
+      playBtn.addEventListener('click', () => {
+        playing = !playing;
+        playBtn.textContent = playing ? 'pause' : 'play';
+        if (playing && t >= data.times.length - 1) t = 0;
+        lastStep = performance.now();
+      });
+
+      canvas.addEventListener('pointerdown', (e) => {
+        dragging = true;
+        dragX = e.clientX;
+        canvas.setPointerCapture(e.pointerId);
+      });
+      canvas.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        azimuth += (e.clientX - dragX) * 0.01;
+        dragX = e.clientX;
+        drawSphere();
+      });
+      canvas.addEventListener('pointerup', () => { dragging = false; });
+      canvas.style.cursor = 'grab';
+
+      function loop(now: number) {
+        if (spinBox.checked && !dragging) {
+          azimuth += 0.0045;
+          drawSphere();
+        }
+        if (playing && now - lastStep > 620) {
+          lastStep = now;
+          t = t + 1;
+          if (t > data.times.length - 1) { t = 0; }
+          slider.value = String(t);
+          render();
+        }
+        rafId = requestAnimationFrame(loop);
+      }
+
+      render();
+      rafId = requestAnimationFrame(loop);
+      document.addEventListener('astro:before-swap', () => cancelAnimationFrame(rafId), { once: true });
+    });
+  }
+
+  setupBloch();
+  document.addEventListener('astro:after-swap', setupBloch);
+</script>

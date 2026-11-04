@@ -1,0 +1,285 @@
+---
+import '../../styles/deeptherm.css';
+---
+
+<figure class="dt-fig" data-dt-pole>
+  <p class="dt-title">Figure 3 — why no fixed number of replicas can ever be exact</p>
+
+  <div class="dt-controls">
+    <div class="dt-control">
+      <label for="dt-pole-k">moment <span class="dt-value" data-lab-k>k = 3</span></label>
+      <input id="dt-pole-k" type="range" min="2" max="6" step="1" value="3" data-k />
+    </div>
+    <div class="dt-control">
+      <label for="dt-pole-b">b <span class="dt-value" data-lab-b>0.50</span></label>
+      <input id="dt-pole-b" type="range" min="20" max="80" step="1" value="50" data-b />
+    </div>
+    <div class="dt-control">
+      <label for="dt-pole-r">fit degree <span class="dt-value" data-lab-r>R = 6</span></label>
+      <input id="dt-pole-r" type="range" min="1" max="12" step="1" value="6" data-r />
+    </div>
+  </div>
+
+  <div class="dt-row">
+    <div class="dt-panel" style="flex:0 1 300px">
+      <p class="dt-panel-label">|moment entry| in the complex s&ndash;plane</p>
+      <canvas class="dt-stage" data-map width="560" height="560" style="max-width:280px;margin:0 auto;border-radius:2px"></canvas>
+    </div>
+    <div class="dt-panel" style="flex:1 1 330px">
+      <p class="dt-panel-label">continuation onto the imaginary axis s = i y</p>
+      <svg class="dt-stage" viewBox="0 0 350 260" data-cut role="img"></svg>
+      <div class="dt-legend">
+        <span><i style="background:#be123c"></i>exact normalized moment entry</span>
+        <span><i style="background:#7347f7"></i>best degree-R polynomial on the physical interval</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dt-readout" data-readout></div>
+
+  <figcaption>
+    The two-qubit family <span class="dt-mono">|&Psi;(s)&rang; = s|00&rang; + b|10&rang; +
+    &radic;(1&minus;b&sup2;&minus;s&sup2;)|01&rang;</span> has a completely explicit
+    <span class="dt-mono">|0&rang;&lang;1|<sup>&otimes;k</sup></span> matrix element,
+    <span class="dt-mono">(sb)<sup>k</sup>(s&sup2;+b&sup2;)<sup>1&minus;k</sup></span>. On the
+    physical real interval (white band, left) it is a perfectly innocuous smooth function, and a
+    polynomial of modest degree matches it to graphical accuracy. But it carries a
+    <b>pole of order k&minus;1 at s = ib</b>, while every state-independent contraction of a
+    <i>bounded</i> number of circuit copies is a polynomial in the amplitudes &mdash; entire, with
+    no poles anywhere. Two analytic functions agreeing on an interval must agree everywhere, so
+    they cannot agree at all. Move the fit degree: the polynomial tracks the truth on the interval
+    and then diverges from it the instant you leave.
+  </figcaption>
+</figure>
+
+<script>
+  function setupPole() {
+    document.querySelectorAll('[data-dt-pole]').forEach((root) => {
+      const el = root as HTMLElement;
+      if (el.dataset.dtReady === '1') return;
+      el.dataset.dtReady = '1';
+
+      const ns = 'http://www.w3.org/2000/svg';
+      const mk = (tag: string, a: Record<string, string | number>) => {
+        const n = document.createElementNS(ns, tag);
+        for (const key in a) n.setAttribute(key, String(a[key]));
+        return n;
+      };
+
+      const canvas = el.querySelector('[data-map]') as HTMLCanvasElement;
+      const ctx = canvas.getContext('2d')!;
+      const svg = el.querySelector('[data-cut]') as SVGSVGElement;
+      const readout = el.querySelector('[data-readout]') as HTMLElement;
+      const sK = el.querySelector('[data-k]') as HTMLInputElement;
+      const sB = el.querySelector('[data-b]') as HTMLInputElement;
+      const sR = el.querySelector('[data-r]') as HTMLInputElement;
+
+      /* complex helpers */
+      type C = [number, number];
+      const cmul = (a: C, b: C): C => [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]];
+      const cabs = (a: C) => Math.hypot(a[0], a[1]);
+      function cpow(a: C, n: number): C {
+        let out: C = [1, 0];
+        for (let i = 0; i < n; i++) out = cmul(out, a);
+        return out;
+      }
+      function cdiv(a: C, b: C): C {
+        const q = b[0] * b[0] + b[1] * b[1];
+        if (!(q > 1e-300)) return [1e12, 0]; // sitting exactly on the pole
+        return [(a[0] * b[0] + a[1] * b[1]) / q, (a[1] * b[0] - a[0] * b[1]) / q];
+      }
+      // f(s) = (s b)^k (s^2 + b^2)^{1-k}
+      function f(s: C, b: number, k: number): C {
+        const num = cpow([s[0] * b, s[1] * b], k);
+        const den = cpow([s[0] * s[0] - s[1] * s[1] + b * b, 2 * s[0] * s[1]], k - 1);
+        return cdiv(num, den);
+      }
+
+      /* least-squares polynomial fit on the physical interval, in a rescaled variable */
+      function fitPoly(b: number, k: number, R: number) {
+        const smax = Math.sqrt(Math.max(1e-9, 1 - b * b));
+        const M = 90;
+        const xs: number[] = [], ys: number[] = [];
+        for (let i = 0; i <= M; i++) {
+          const s = (i / M) * smax;
+          xs.push((2 * s) / smax - 1); // rescale to [-1,1] for conditioning
+          ys.push(f([s, 0], b, k)[0]);
+        }
+        const n = R + 1;
+        const A: number[][] = Array.from({ length: n }, () => new Array(n + 1).fill(0));
+        for (let i = 0; i < n; i++) {
+          for (let j = 0; j < n; j++) {
+            let acc = 0;
+            for (let m = 0; m < xs.length; m++) acc += Math.pow(xs[m], i + j);
+            A[i][j] = acc;
+          }
+          let acc = 0;
+          for (let m = 0; m < xs.length; m++) acc += Math.pow(xs[m], i) * ys[m];
+          A[i][n] = acc;
+        }
+        // gaussian elimination with partial pivoting
+        for (let c = 0; c < n; c++) {
+          let piv = c;
+          for (let rr = c + 1; rr < n; rr++) if (Math.abs(A[rr][c]) > Math.abs(A[piv][c])) piv = rr;
+          [A[c], A[piv]] = [A[piv], A[c]];
+          if (Math.abs(A[c][c]) < 1e-14) continue;
+          for (let rr = 0; rr < n; rr++) {
+            if (rr === c) continue;
+            const fac = A[rr][c] / A[c][c];
+            for (let cc = c; cc <= n; cc++) A[rr][cc] -= fac * A[c][cc];
+          }
+        }
+        const coef = new Array(n).fill(0);
+        for (let i = 0; i < n; i++) coef[i] = Math.abs(A[i][i]) < 1e-14 ? 0 : A[i][n] / A[i][i];
+        return { coef, smax };
+      }
+      function evalPoly(coef: number[], z: C, smax: number): C {
+        // z is the raw complex s; rescale the same way the fit did
+        const x: C = [(2 * z[0]) / smax - 1, (2 * z[1]) / smax];
+        let out: C = [0, 0], pw: C = [1, 0];
+        for (let i = 0; i < coef.length; i++) {
+          out = [out[0] + coef[i] * pw[0], out[1] + coef[i] * pw[1]];
+          pw = cmul(pw, x);
+        }
+        return out;
+      }
+
+      function render() {
+        const k = +sK.value;
+        const b = +sB.value / 100;
+        const R = +sR.value;
+        (el.querySelector('[data-lab-k]') as HTMLElement).textContent = `k = ${k}`;
+        (el.querySelector('[data-lab-b]') as HTMLElement).textContent = b.toFixed(2);
+        (el.querySelector('[data-lab-r]') as HTMLElement).textContent = `R = ${R}`;
+
+        const { coef, smax } = fitPoly(b, k, R);
+
+        /* ---- heat map ---- */
+        const W = canvas.width, H = canvas.height;
+        const EXT = 1.1;
+        const img = ctx.createImageData(W, H);
+        for (let py = 0; py < H; py++) {
+          const y = EXT - (2 * EXT * py) / H;
+          for (let px = 0; px < W; px++) {
+            const x = -EXT + (2 * EXT * px) / W;
+            const v = cabs(f([x, y], b, k));
+            // white where the entry is small, saturating to deep violet at the pole
+            const g = Math.max(0, Math.min(1, (Math.log10(v + 1e-12) + 4) / 5));
+            const stops = [
+              [255, 255, 255], [237, 233, 254], [167, 139, 250], [91, 52, 214], [30, 12, 70],
+            ];
+            const s = g * (stops.length - 1);
+            const i0 = Math.min(stops.length - 2, Math.floor(s));
+            const fr = s - i0;
+            const i4 = 4 * (py * W + px);
+            for (let c = 0; c < 3; c++) {
+              img.data[i4 + c] = Math.round(stops[i0][c] + fr * (stops[i0 + 1][c] - stops[i0][c]));
+            }
+            img.data[i4 + 3] = 255;
+          }
+        }
+        ctx.putImageData(img, 0, 0);
+
+        const toPx = (x: number, y: number) => [((x + EXT) / (2 * EXT)) * W, ((EXT - y) / (2 * EXT)) * H];
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'rgba(60,50,90,0.35)';
+        ctx.beginPath();
+        let p = toPx(-EXT, 0); ctx.moveTo(p[0], p[1]);
+        p = toPx(EXT, 0); ctx.lineTo(p[0], p[1]);
+        p = toPx(0, -EXT); ctx.moveTo(p[0], p[1]);
+        p = toPx(0, EXT); ctx.lineTo(p[0], p[1]);
+        ctx.stroke();
+
+        // physical interval
+        ctx.strokeStyle = '#111827';
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        p = toPx(0, 0); ctx.moveTo(p[0], p[1]);
+        p = toPx(smax, 0); ctx.lineTo(p[0], p[1]);
+        ctx.stroke();
+
+        // poles
+        ctx.fillStyle = '#be123c';
+        for (const sy of [b, -b]) {
+          p = toPx(0, sy);
+          ctx.beginPath();
+          ctx.arc(p[0], p[1], 7, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+        ctx.fillStyle = '#3d3552';
+        ctx.font = '600 20px ui-sans-serif, system-ui, sans-serif';
+        p = toPx(0, b);
+        ctx.fillText('s = ib', p[0] + 14, p[1] + 7);
+        p = toPx(smax / 2, 0);
+        ctx.fillText('physical', p[0] - 34, p[1] + 30);
+
+        /* ---- imaginary cut ---- */
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        const W2 = 350, H2 = 260, m2 = { l: 42, r: 12, t: 14, b: 34 };
+        const iw = W2 - m2.l - m2.r, ih = H2 - m2.t - m2.b;
+        const YMAX = 1.0, lo = -2, hi = 4;
+        const X = (y: number) => m2.l + (y / YMAX) * iw;
+        const Y = (v: number) => {
+          const q = m2.t + ih - ((Math.log10(Math.max(v, 1e-9)) - lo) / (hi - lo)) * ih;
+          return Math.min(m2.t + ih, Math.max(m2.t, q));
+        };
+        for (let e = hi - 1; e >= lo; e -= 1) {
+          const yy = Y(Math.pow(10, e));
+          svg.appendChild(mk('line', { x1: m2.l, x2: W2 - m2.r, y1: yy, y2: yy, stroke: '#f1eff7', 'stroke-width': 1 }));
+          if ((e - lo) % 2 === 0) {
+            const lab = mk('text', { x: m2.l - 5, y: yy + 3.5, 'text-anchor': 'end', 'font-size': 9, fill: '#8b849c' });
+            lab.textContent = e === 0 ? '1' : `1e${e}`;
+            svg.appendChild(lab);
+          }
+        }
+        svg.appendChild(mk('line', { x1: m2.l, x2: W2 - m2.r, y1: m2.t + ih, y2: m2.t + ih, stroke: '#d7d3e6', 'stroke-width': 1 }));
+        svg.appendChild(mk('line', { x1: m2.l, x2: m2.l, y1: m2.t, y2: m2.t + ih, stroke: '#d7d3e6', 'stroke-width': 1 }));
+        for (let g = 0; g <= 1.0001; g += 0.25) {
+          const lab = mk('text', { x: X(g), y: H2 - 19, 'text-anchor': 'middle', 'font-size': 9, fill: '#8b849c' });
+          lab.textContent = g.toFixed(2);
+          svg.appendChild(lab);
+        }
+        const xl = mk('text', { x: m2.l + iw / 2, y: H2 - 5, 'text-anchor': 'middle', 'font-size': 9.5, fill: '#6b647f' });
+        xl.textContent = 'y   (moving off the physical axis)';
+        svg.appendChild(xl);
+
+        svg.appendChild(mk('line', {
+          x1: X(b), x2: X(b), y1: m2.t, y2: m2.t + ih,
+          stroke: '#be123c', 'stroke-width': 1, 'stroke-dasharray': '3 3', opacity: 0.6,
+        }));
+        const pl = mk('text', { x: X(b) + 4, y: m2.t + 10, 'font-size': 9, fill: '#be123c' });
+        pl.textContent = 'pole';
+        svg.appendChild(pl);
+
+        let exact = '', fit = '';
+        for (let i = 0; i <= 400; i++) {
+          const y = (i / 400) * YMAX;
+          const ve = cabs(f([0, y], b, k));
+          const vf = cabs(evalPoly(coef, [0, y], smax));
+          exact += `${i === 0 ? 'M' : 'L'}${X(y).toFixed(1)},${Y(ve).toFixed(1)}`;
+          fit += `${i === 0 ? 'M' : 'L'}${X(y).toFixed(1)},${Y(vf).toFixed(1)}`;
+        }
+        svg.appendChild(mk('path', { d: exact, fill: 'none', stroke: '#be123c', 'stroke-width': 1.9 }));
+        svg.appendChild(mk('path', { d: fit, fill: 'none', stroke: '#7347f7', 'stroke-width': 1.9 }));
+
+        /* ---- readout ---- */
+        let worst = 0;
+        for (let i = 0; i <= 120; i++) {
+          const s = (i / 120) * smax;
+          worst = Math.max(worst, Math.abs(f([s, 0], b, k)[0] - evalPoly(coef, [s, 0], smax)[0]));
+        }
+        readout.innerHTML =
+          `<span><i>pole order</i> ${k - 1}</span>` +
+          `<span><i>max fit error on physical interval</i> ${worst.toExponential(2)}</span>` +
+          `<span><i>|exact| at y = b</i> &infin;</span>` +
+          `<span><i>|fit| at y = b</i> ${cabs(evalPoly(coef, [0, b], smax)).toFixed(3)}</span>`;
+      }
+
+      [sK, sB, sR].forEach((s) => s.addEventListener('input', render));
+      render();
+    });
+  }
+
+  setupPole();
+  document.addEventListener('astro:after-swap', setupPole);
+</script>

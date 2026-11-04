@@ -1,0 +1,165 @@
+---
+import '../../styles/deeptherm.css';
+---
+
+<figure class="dt-fig" data-dt-fold>
+  <p class="dt-title">Figure 2 — the object that is actually linear: a folded replica contraction</p>
+
+  <div class="dt-controls">
+    <div class="dt-control">
+      <label for="dt-fold-k">open replicas <span class="dt-value" data-lab-k>k = 2</span></label>
+      <input id="dt-fold-k" type="range" min="1" max="4" step="1" value="2" data-k />
+    </div>
+    <div class="dt-control">
+      <label for="dt-fold-n">traced replicas <span class="dt-value" data-lab-n>n = 2</span></label>
+      <input id="dt-fold-n" type="range" min="0" max="5" step="1" value="2" data-n />
+    </div>
+  </div>
+
+  <svg class="dt-stage" viewBox="0 0 700 300" data-net role="img" style="max-width:700px;margin:0 auto"></svg>
+
+  <div class="dt-readout" data-readout></div>
+
+  <figcaption>
+    Each column is one copy of the circuit: a ket copy <span class="dt-mono">U(t)</span> and a bra
+    copy <span class="dt-mono">U(t)*</span>. The bath legs of <i>all</i> copies are tied to the
+    <b>same</b> measurement outcome by the boundary tensor
+    <span class="dt-mono">&Sigma;<sub>z</sub>(|z&rang;&lang;z|)<sup>&otimes;r</sup></span> &mdash; that
+    shared label is the entire content of &ldquo;conditioning on a measurement&rdquo;. The first k
+    columns are left open on <span class="dt-mono">A</span>; the last n are closed with a trace,
+    which is what turns each of them into one factor of the probability
+    <span class="dt-mono">p<sub>z</sub></span>. The result,
+    <span class="dt-mono">C<sub>k,n</sub> = &Sigma;<sub>z</sub> p<sub>z</sub><sup>n</sup>
+    &tau;<sub>z</sub><sup>&otimes;k</sup></span>, is an ordinary finite-dimensional linear object
+    with no inverse probability anywhere. The physical moment is not one of these; it is a
+    prescribed infinite combination of them.
+  </figcaption>
+</figure>
+
+<script>
+  function setupFold() {
+    document.querySelectorAll('[data-dt-fold]').forEach((root) => {
+      const el = root as HTMLElement;
+      if (el.dataset.dtReady === '1') return;
+      el.dataset.dtReady = '1';
+
+      const ns = 'http://www.w3.org/2000/svg';
+      const mk = (tag: string, a: Record<string, string | number>) => {
+        const n = document.createElementNS(ns, tag);
+        for (const key in a) n.setAttribute(key, String(a[key]));
+        return n;
+      };
+      const txt = (x: number, y: number, s: string, extra: Record<string, string | number> = {}) => {
+        const t = mk('text', { x, y, 'font-size': 10, fill: '#6b647f', ...extra });
+        t.textContent = s;
+        return t;
+      };
+
+      const svg = el.querySelector('[data-net]') as SVGSVGElement;
+      const readout = el.querySelector('[data-readout]') as HTMLElement;
+      const sK = el.querySelector('[data-k]') as HTMLInputElement;
+      const sN = el.querySelector('[data-n]') as HTMLInputElement;
+
+      function render() {
+        const k = +sK.value, n = +sN.value, r = k + n;
+        (el.querySelector('[data-lab-k]') as HTMLElement).textContent = `k = ${k}`;
+        (el.querySelector('[data-lab-n]') as HTMLElement).textContent = `n = ${n}`;
+
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        const W = 700;
+        const left = 90, right = W - 30;
+        const colW = (right - left) / r;
+        const railGap = Math.min(26, colW * 0.34);
+        const yTop = 58, yBoxTop = 96, yBoxBot = 200, yBase = 232;
+
+        // input state
+        svg.appendChild(mk('rect', {
+          x: left - 8, y: yBase, width: right - left + 16, height: 26, rx: 5,
+          fill: '#f3f1f8', stroke: '#d7d3e6', 'stroke-width': 1,
+        }));
+        svg.appendChild(txt((left + right) / 2, yBase + 17,
+          `|Ψ₀⟩⟨Ψ₀|  ⊗ ${r}  (r = k + n = ${r} replica pairs)`,
+          { 'text-anchor': 'middle', 'font-size': 10.5, fill: '#4b4360' }));
+
+        // outcome-locking boundary on B
+        svg.appendChild(mk('rect', {
+          x: left - 8, y: yTop - 16, width: right - left + 16, height: 24, rx: 5,
+          fill: '#ede9fe', stroke: '#c4b5fd', 'stroke-width': 1.2,
+        }));
+        svg.appendChild(txt((left + right) / 2, yTop,
+          `Σ_z |z⟩⟨z|⊗${r}   —   every copy locked to the same outcome z`,
+          { 'text-anchor': 'middle', 'font-size': 10.5, fill: '#5b34d6', 'font-weight': 600 }));
+
+        for (let i = 0; i < r; i++) {
+          const cx = left + colW * (i + 0.5);
+          const open = i < k;
+          const xk = cx - railGap / 2, xb = cx + railGap / 2;
+
+          // circuit boxes
+          for (const [x, lab] of [[xk, 'U'], [xb, 'U*']] as [number, string][]) {
+            svg.appendChild(mk('rect', {
+              x: x - 15, y: yBoxTop, width: 30, height: yBoxBot - yBoxTop, rx: 4,
+              fill: open ? '#ffffff' : '#fbfaff',
+              stroke: open ? '#7347f7' : '#cfc9e3', 'stroke-width': open ? 1.4 : 1,
+            }));
+            svg.appendChild(txt(x, (yBoxTop + yBoxBot) / 2 + 4, lab, {
+              'text-anchor': 'middle', 'font-size': 11.5,
+              fill: open ? '#5b34d6' : '#9a94ab', 'font-weight': 600,
+            }));
+            svg.appendChild(mk('line', {
+              x1: x, x2: x, y1: yBase, y2: yBoxBot, stroke: '#cfc9e3', 'stroke-width': 1,
+            }));
+          }
+
+          // bath legs up into the locking bar
+          svg.appendChild(mk('path', {
+            d: `M${xk},${yBoxTop}L${xk},${yTop + 8}`, stroke: '#a78bfa', 'stroke-width': 1.4, fill: 'none',
+          }));
+          svg.appendChild(mk('path', {
+            d: `M${xb},${yBoxTop}L${xb},${yTop + 8}`, stroke: '#a78bfa', 'stroke-width': 1.4, fill: 'none',
+          }));
+
+          // subsystem A legs, drawn as a side branch
+          const yA = yBoxTop - 14;
+          if (open) {
+            svg.appendChild(mk('path', {
+              d: `M${xk},${yBoxTop}q0,-10 -14,-10`, stroke: '#111827', 'stroke-width': 1.7, fill: 'none',
+            }));
+            svg.appendChild(mk('path', {
+              d: `M${xb},${yBoxTop}q0,-10 14,-10`, stroke: '#111827', 'stroke-width': 1.7, fill: 'none',
+            }));
+            svg.appendChild(mk('circle', { cx: xk - 14, cy: yA, r: 2.6, fill: '#111827' }));
+            svg.appendChild(mk('circle', { cx: xb + 14, cy: yA, r: 2.6, fill: '#111827' }));
+            svg.appendChild(txt(cx, yA - 8, 'open on A', { 'text-anchor': 'middle', 'font-size': 8.5, fill: '#111827' }));
+          } else {
+            svg.appendChild(mk('path', {
+              d: `M${xk},${yBoxTop}C${xk},${yA - 12} ${xb},${yA - 12} ${xb},${yBoxTop}`,
+              stroke: '#d97706', 'stroke-width': 1.7, fill: 'none',
+            }));
+            svg.appendChild(txt(cx, yA - 16, 'Tr', { 'text-anchor': 'middle', 'font-size': 9.5, fill: '#d97706', 'font-weight': 600 }));
+          }
+          svg.appendChild(txt(cx, yBoxBot + 16, open ? `τ_z` : `p_z`, {
+            'text-anchor': 'middle', 'font-size': 10,
+            fill: open ? '#111827' : '#d97706', 'font-weight': 600,
+          }));
+        }
+
+        svg.appendChild(txt(left - 16, yTop + 2, 'bath B', { 'text-anchor': 'end', 'font-size': 9.5 }));
+        svg.appendChild(txt(left - 16, yBoxTop - 12, 'system A', { 'text-anchor': 'end', 'font-size': 9.5 }));
+        svg.appendChild(txt(left - 16, (yBoxTop + yBoxBot) / 2 + 4, 'time t', { 'text-anchor': 'end', 'font-size': 9.5 }));
+        svg.appendChild(txt(left - 16, yBase + 17, 'input', { 'text-anchor': 'end', 'font-size': 9.5 }));
+
+        readout.innerHTML =
+          `<span><i>contraction</i> C<sub>${k},${n}</sub> = Σ<sub>z</sub> p<sub>z</sub><sup>${n}</sup> τ<sub>z</sub><sup>⊗${k}</sup></span>` +
+          `<span><i>replica pairs</i> ${r}</span>` +
+          `<span><i>needed for the exact moment</i> every n = 0, 1, 2, …</span>`;
+      }
+
+      [sK, sN].forEach((s) => s.addEventListener('input', render));
+      render();
+    });
+  }
+
+  setupFold();
+  document.addEventListener('astro:after-swap', setupFold);
+</script>

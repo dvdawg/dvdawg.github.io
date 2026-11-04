@@ -19,7 +19,7 @@ const landingLinks = [
   { label: "photos", href: "https://photo.dvdkm.cc" },
 ];
 ---
-<section id="sidebar-view" class="hidden pb-16 pt-14 lg:-mx-16 xl:-mx-32">
+<section id="sidebar-view" class="hidden pb-16 pt-10 lg:-mx-16 xl:-mx-32">
   <div class="grid w-full grid-cols-1 gap-10 md:grid-cols-[230px_minmax(0,1fr)] md:gap-12">
     <!-- left sidebar -->
     <aside class="flex flex-col gap-2">
@@ -33,7 +33,7 @@ const landingLinks = [
       />
       <h1 class="text-3xl font-serif font-light tracking-tight text-black">David Kim</h1>
       <p class="text-xs leading-relaxed text-black">
-        BA Physics and Computer Science at UC Berkeley. 
+        BA Physics, Statistics, Computer Science at UC Berkeley. 
       </p>
       <Separator class="bg-gray-200"/>
       <p class="text-[0.5rem] font-semibold tracking-[0.08em] text-gray-500 -mb-2">current</p>
@@ -72,85 +72,84 @@ const landingLinks = [
 
     <!-- center column -->
     <div class="min-w-0">
-      <div class="flex items-center gap-6 ml-3">
+      <div class="flex flex-wrap items-baseline gap-x-6 gap-y-1 ml-3">
         <p>explore my site!</p>
-        <div class="flex flex-wrap mt-[0.1rem] gap-2">
+        <nav class="text-base space-x-1.5 underline underline-offset-4 decoration-inherit">
           {landingLinks.map((link) => (
-            <a
-              href={link.href}
-              class="border border-light-accent px-2 py-1 text-sm font-normal leading-none text-black !no-underline transition-colors duration-200 hover:bg-light-accent hover:!text-dark-accent"
-            >
+            <a href={link.href} class="hover:text-accent-color transition-colors">
               {link.label}
             </a>
           ))}
-        </div>
+        </nav>
       </div>
       <Separator class="mt-3 bg-gray-200" />
-      <LandingHighlight
-        design="feature"
-        url="/posts/cond_aware_fno/"
-        image="/assets/blog/cond_aware_fno/fno.png"
-        imagePosition="center"
-        imageSize="26%"
-        title="Condition-Aware Fourier Neural Operators"
-        date="2026"
-        description="
-          A data-driven approach to spectral mode selection in Fourier Neural Operators using
-          condition number analysis and ridge regression. Presented at Yale's YURC 2026 conference.
-        "
-      />
-      <LandingHighlight 
-        design="feature"
-        url="https://github.com/dvdawg/QuICK-exp"
-        image="/assets/projects/thumbnails/quick.png"
-        imagePosition="left"
-        imageSize="26%"
-        title="QuICK-experiment" 
-        date="2026"
-        description="
-          A superconducting qubit measurement workflow for RFSoC QICK boards.
-        " 
-      />
-      <LandingHighlight 
-        design="feature"
-        url="https://github.com/dvdawg/speedyf"
-        image="/assets/projects/thumbnails/speedyf.png"
-        imagePosition="left"
-        imageSize="26%"
-        title="SpeedyF" 
-        date="2026"
-        description="
-          An improved desktop PDF viewer with a focus on lightweight, fast performance and various convenience features for
-          viewing academic papers.
-        " 
-      />
-      <LandingHighlight 
-        design="feature"
-        url="/assets/projects/ming_pres.pdf"
-        image="/assets/projects/thumbnails/MING.png"
-        imagePosition="left"
-        imageSize="26%"
-        title="MING Diode" 
-        date="2026"
-        description="
-          The Matched-pair Inverting Nonlinear Generator (MING) diode. A Chua-style diode 
-          with a piecewise-linear I-V characteristic using matched JFET behavior, 
-          op-amp signal conditioning, and bias networks to create a tunable nonlinear port.
-        " 
-      />
-      <LandingHighlight
-        design="feature"
-        url="https://github.com/gheustace/quantumalg"
-        image="/assets/projects/thumbnails/certifieddel.jpeg"
-        imagePosition="center top"
-        imageSize="26%"
-        title="Certified Deletion Circuits"
-        date="2024"
-        description="
-          An implementation of a homomorphic certified deletion scheme with quantum computing
-          at Berkeley.
-        "
-      />
+      <div class="grid sm:auto-rows-fr">
+        <LandingHighlight
+          design="feature"
+          url="/posts/cond_aware_fno/"
+          image="/assets/blog/cond_aware_fno/fno.png"
+          imagePosition="center"
+          imageSize="26%"
+          title="Condition-Aware Fourier Neural Operators"
+          date="2026"
+          description="
+            A data-driven approach to spectral mode selection in Fourier Neural Operators using
+            condition number analysis and ridge regression. Presented at Yale's YURC 2026 conference.
+          "
+        />
+        <LandingHighlight 
+          design="feature"
+          url="https://github.com/dvdawg/QuICK-exp"
+          image="/assets/projects/thumbnails/quick.png"
+          imagePosition="left"
+          imageSize="26%"
+          title="QuICK-experiment" 
+          date="2026"
+          description="
+            A superconducting qubit measurement workflow for RFSoC QICK boards.
+          " 
+        />
+        <LandingHighlight 
+          design="feature"
+          url="https://github.com/dvdawg/speedyf"
+          image="/assets/projects/thumbnails/speedyf.png"
+          imagePosition="center"
+          imageSize="26%"
+          title="SpeedyF" 
+          date="2026"
+          description="
+            An improved desktop PDF viewer with a focus on lightweight, fast performance and various convenience features for
+            viewing academic papers.
+          " 
+        />
+        <LandingHighlight 
+          design="feature"
+          url="/assets/projects/ming_pres.pdf"
+          image="/assets/projects/thumbnails/MING.png"
+          imagePosition="left"
+          imageSize="26%"
+          title="MING Diode" 
+          date="2026"
+          description="
+            The Matched-pair Inverting Nonlinear Generator (MING) diode. A Chua-style diode 
+            with a piecewise-linear I-V characteristic using matched JFET behavior, 
+            op-amp signal conditioning, and bias networks to create a tunable nonlinear port.
+          " 
+        />
+        <LandingHighlight
+          design="feature"
+          url="https://github.com/gheustace/quantumalg"
+          image="/assets/projects/thumbnails/certifieddel.jpeg"
+          imagePosition="center top"
+          imageSize="26%"
+          title="Certified Deletion Circuits"
+          date="2024"
+          description="
+            An implementation of a homomorphic certified deletion scheme with quantum computing
+            at Berkeley.
+          "
+        />
+      </div>
 
       <!-- <div class="flex items-baseline justify-between border-b-[1.5px] border-black pb-1.5">
         <h2 class="text-xs font-semibold uppercase tracking-[0.08em] text-black">Selected Work</h2>

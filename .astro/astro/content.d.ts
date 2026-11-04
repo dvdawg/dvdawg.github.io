@@ -179,6 +179,13 @@ declare module 'astro:content' {
   collection: "posts";
   data: InferEntrySchema<"posts">
 } & { render(): Render[".md"] };
+"deep_thermalization.mdx": {
+	id: "deep_thermalization.mdx";
+  slug: "deep_thermalization";
+  body: string;
+  collection: "posts";
+  data: InferEntrySchema<"posts">
+} & { render(): Render[".mdx"] };
 "ed_resc.md": {
 	id: "ed_resc.md";
   slug: "ed_resc";

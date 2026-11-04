@@ -1,0 +1,289 @@
+---
+import '../../styles/deeptherm.css';
+---
+
+<figure class="dt-fig" data-dt-walls>
+  <p class="dt-title">Figure 7 — the one model where the propagator can be diagonalized by hand</p>
+
+  <div class="dt-controls">
+    <div class="dt-control">
+      <label for="dt-w-L">sites L <span class="dt-value" data-lab-L>8</span></label>
+      <input id="dt-w-L" type="range" min="4" max="16" step="2" value="8" data-L />
+    </div>
+    <div class="dt-control">
+      <label for="dt-w-q">local dim q <span class="dt-value" data-lab-q>2</span></label>
+      <input id="dt-w-q" type="range" min="2" max="5" step="1" value="2" data-q />
+    </div>
+    <button type="button" class="dt-btn" data-reset>reset to the fixed point</button>
+  </div>
+
+  <p style="font-size:0.75rem;color:#6b647f;margin:0.6rem 0 0.2rem;text-align:center">
+    click a bond to flip its permutation label &mdash; every domain wall you create costs a factor
+  </p>
+  <svg class="dt-stage" viewBox="0 0 700 190" data-chain role="img" style="max-width:700px;margin:0 auto"></svg>
+
+  <div class="dt-row" style="margin-top:0.6rem">
+    <div class="dt-panel" style="flex:1 1 320px">
+      <p class="dt-panel-label">slow edge <span class="dt-mono">&lambda;<sub>*</sub>(q, L)</span></p>
+      <svg class="dt-stage" viewBox="0 0 340 240" data-edge role="img"></svg>
+    </div>
+    <div class="dt-panel" style="flex:1 1 290px">
+      <p class="dt-panel-label">exact <span class="dt-mono">r = 2</span> spectra, q = 2 (dense diagonalization)</p>
+      <svg class="dt-stage" viewBox="0 0 320 240" data-spec role="img"></svg>
+    </div>
+  </div>
+
+  <div class="dt-readout" data-readout></div>
+
+  <figcaption>
+    For a brick-wall circuit whose two-site gates are <b>freshly Haar-random at every layer and
+    every time step</b>, the average of <span class="dt-mono">&rho;<sup>&otimes;r</sup></span> is
+    propagated by an honest linear channel, and that channel is a product of two orthogonal
+    projectors. At <span class="dt-mono">r = 2</span> its basis is a classical binary string &mdash;
+    one label per bond, identity or swap &mdash; and one layer of Haar averaging never increases the
+    number of boundaries between unlike labels. The two uniform strings are the fixed points; every
+    domain wall hops with amplitude <span class="dt-mono">w = q/(q&sup2;+1)</span> under hard-core
+    exclusion, and diagonalizing that walk gives the exact band edge
+    <span class="dt-mono">&lambda;<sub>*</sub> = [(2q/(q&sup2;+1))&sup2; cos&sup2;(&pi;/L)]&sup2;</span>.
+    The band becomes dense as L grows but its top stays strictly below one, so this model cannot by
+    itself produce subexponential relaxation.
+  </figcaption>
+</figure>
+
+<script>
+  function setupWalls() {
+    document.querySelectorAll('[data-dt-walls]').forEach((root) => {
+      const el = root as HTMLElement;
+      if (el.dataset.dtReady === '1') return;
+      el.dataset.dtReady = '1';
+
+      const ns = 'http://www.w3.org/2000/svg';
+      const mk = (tag: string, a: Record<string, string | number>) => {
+        const n = document.createElementNS(ns, tag);
+        for (const key in a) n.setAttribute(key, String(a[key]));
+        return n;
+      };
+      const txt = (x: number, y: number, s: string, extra: Record<string, string | number> = {}) => {
+        const t = mk('text', { x, y, 'font-size': 10, fill: '#6b647f', ...extra });
+        t.textContent = s;
+        return t;
+      };
+
+      const svgC = el.querySelector('[data-chain]') as SVGSVGElement;
+      const svgE = el.querySelector('[data-edge]') as SVGSVGElement;
+      const svgS = el.querySelector('[data-spec]') as SVGSVGElement;
+      const readout = el.querySelector('[data-readout]') as HTMLElement;
+      const sL = el.querySelector('[data-L]') as HTMLInputElement;
+      const sQ = el.querySelector('[data-q]') as HTMLInputElement;
+      const resetBtn = el.querySelector('[data-reset]') as HTMLButtonElement;
+
+      // exact dense r=2 spectra committed in the dossier (q = 2, periodic)
+      const EXACT: Record<number, number[]> = {
+        4: [0.1024],
+        6: [0.2304, 0.1024, 0.0256],
+        8: [0.298415468787, 0.2048, 0.1024, 0.0512, 0.008784531213, 0.00262144],
+      };
+
+      let L = 8, q = 2;
+      let labels: number[] = [];
+
+      const lam = (qq: number, LL: number) =>
+        Math.pow(Math.pow((2 * qq) / (qq * qq + 1), 2) * Math.pow(Math.cos(Math.PI / LL), 2), 2);
+      const lamInf = (qq: number) => Math.pow((2 * qq) / (qq * qq + 1), 4);
+
+      function resetLabels() {
+        labels = new Array(L / 2).fill(0);
+      }
+
+      function drawChain() {
+        while (svgC.firstChild) svgC.removeChild(svgC.firstChild);
+        const W = 700, H = 190;
+        const m = L / 2;
+        const pad = 40;
+        const span = W - 2 * pad;
+        const step = span / L;
+        const siteY = 132;
+        const evenY = 96, oddY = 52;
+
+        // sites
+        for (let j = 0; j < L; j++) {
+          const x = pad + step * (j + 0.5);
+          svgC.appendChild(mk('circle', { cx: x, cy: siteY, r: 4, fill: '#c9c5d6' }));
+          svgC.appendChild(txt(x, siteY + 18, String(j), { 'text-anchor': 'middle', 'font-size': 8.5, fill: '#a8a2b8' }));
+        }
+        svgC.appendChild(txt(pad - 8, siteY + 4, 'sites', { 'text-anchor': 'end', 'font-size': 9 }));
+        svgC.appendChild(txt(pad - 8, evenY + 4, 'even layer', { 'text-anchor': 'end', 'font-size': 9 }));
+        svgC.appendChild(txt(pad - 8, oddY + 4, 'odd layer', { 'text-anchor': 'end', 'font-size': 9 }));
+
+        // odd layer, purely decorative (grey gates)
+        for (let b = 0; b < m; b++) {
+          const x0 = pad + step * (2 * b + 1.5);
+          svgC.appendChild(mk('rect', {
+            x: x0 - step * 0.45, y: oddY - 11, width: step * 0.9, height: 22, rx: 4,
+            fill: '#f3f1f8', stroke: '#dcd8e8', 'stroke-width': 1,
+          }));
+        }
+
+        // even layer, carrying the permutation labels
+        const bondX: number[] = [];
+        for (let b = 0; b < m; b++) {
+          const x0 = pad + step * (2 * b + 0.5);
+          bondX.push(x0);
+          const on = labels[b] === 1;
+          const g = mk('g', { style: 'cursor:pointer' });
+          g.appendChild(mk('rect', {
+            x: x0 - step * 0.45, y: evenY - 12, width: step * 0.9, height: 24, rx: 4,
+            fill: on ? '#7347f7' : '#eeecf5', stroke: on ? '#5b34d6' : '#d7d3e6', 'stroke-width': 1,
+          }));
+          const lab = txt(x0, evenY + 4, on ? 'swap' : 'e', {
+            'text-anchor': 'middle', 'font-size': 10,
+            fill: on ? '#ffffff' : '#6b647f', 'font-weight': 600,
+          });
+          g.appendChild(lab);
+          g.addEventListener('click', () => {
+            labels[b] = 1 - labels[b];
+            render();
+          });
+          svgC.appendChild(g);
+          // legs down to the two sites it acts on
+          for (const dx of [-0.5, 0.5]) {
+            svgC.appendChild(mk('line', {
+              x1: x0 + dx * step, x2: x0 + dx * step, y1: evenY + 12, y2: siteY - 5,
+              stroke: '#dcd8e8', 'stroke-width': 1,
+            }));
+          }
+        }
+
+        // domain walls between cyclically adjacent bond labels
+        let walls = 0;
+        for (let b = 0; b < m; b++) {
+          const nb = (b + 1) % m;
+          if (labels[b] !== labels[nb]) {
+            walls++;
+            const xa = bondX[b], xb = bondX[nb];
+            const x = nb === 0 ? W - pad * 0.5 : (xa + xb) / 2;
+            svgC.appendChild(mk('line', {
+              x1: x, x2: x, y1: evenY - 22, y2: evenY + 22,
+              stroke: '#be123c', 'stroke-width': 2.4, 'stroke-dasharray': '3 3',
+            }));
+            svgC.appendChild(txt(x, evenY - 27, 'wall', { 'text-anchor': 'middle', 'font-size': 8.5, fill: '#be123c' }));
+          }
+        }
+
+        const w = q / (q * q + 1);
+        const cost = Math.pow(2 * w, 2 * walls);
+        svgC.appendChild(txt(W / 2, H - 8,
+          walls === 0
+            ? 'uniform string  →  eigenvalue 1 (the Haar fixed point)'
+            : `${walls} domain walls  →  block weight ≤ (2w)^${2 * walls} = ${cost.toExponential(2)}`,
+          { 'text-anchor': 'middle', 'font-size': 10, fill: walls === 0 ? '#0e7490' : '#be123c' }));
+      }
+
+      function drawEdge() {
+        while (svgE.firstChild) svgE.removeChild(svgE.firstChild);
+        const W = 340, H = 240, m = { l: 44, r: 16, t: 14, b: 38 };
+        const iw = W - m.l - m.r, ih = H - m.t - m.b;
+        const LMAX = 40;
+        const X = (LL: number) => m.l + ((LL - 4) / (LMAX - 4)) * iw;
+        const Y = (v: number) => m.t + ih - (v / 0.55) * ih;
+
+        svgE.appendChild(mk('line', { x1: m.l, x2: W - m.r, y1: m.t + ih, y2: m.t + ih, stroke: '#d7d3e6', 'stroke-width': 1 }));
+        svgE.appendChild(mk('line', { x1: m.l, x2: m.l, y1: m.t, y2: m.t + ih, stroke: '#d7d3e6', 'stroke-width': 1 }));
+        for (let v = 0; v <= 0.5001; v += 0.1) {
+          svgE.appendChild(mk('line', { x1: m.l, x2: W - m.r, y1: Y(v), y2: Y(v), stroke: '#f1eff7', 'stroke-width': 1 }));
+          svgE.appendChild(txt(m.l - 5, Y(v) + 3.5, v.toFixed(1), { 'text-anchor': 'end', 'font-size': 9 }));
+        }
+        for (let LL = 4; LL <= LMAX; LL += 8) {
+          svgE.appendChild(txt(X(LL), H - 20, String(LL), { 'text-anchor': 'middle', 'font-size': 9 }));
+        }
+        svgE.appendChild(txt(m.l + iw / 2, H - 6, 'chain length L', { 'text-anchor': 'middle', 'font-size': 9.5 }));
+
+        const cols: Record<number, string> = { 2: '#7347f7', 3: '#0e7490', 4: '#d97706', 5: '#be123c' };
+        for (let qq = 2; qq <= 5; qq++) {
+          let d = '';
+          for (let LL = 4; LL <= LMAX; LL += 2) {
+            d += `${LL === 4 ? 'M' : 'L'}${X(LL).toFixed(1)},${Y(lam(qq, LL)).toFixed(1)}`;
+          }
+          const isSel = qq === q;
+          svgE.appendChild(mk('path', {
+            d, fill: 'none', stroke: cols[qq], 'stroke-width': isSel ? 2.2 : 1,
+            opacity: isSel ? 1 : 0.3,
+          }));
+          svgE.appendChild(mk('line', {
+            x1: m.l, x2: W - m.r, y1: Y(lamInf(qq)), y2: Y(lamInf(qq)),
+            stroke: cols[qq], 'stroke-width': 1, 'stroke-dasharray': '3 3', opacity: isSel ? 0.65 : 0.18,
+          }));
+          if (isSel) {
+            svgE.appendChild(txt(W - m.r - 2, Y(lamInf(qq)) - 5, `L → ∞ : ${lamInf(qq).toFixed(4)}`, {
+              'text-anchor': 'end', 'font-size': 9, fill: cols[qq],
+            }));
+          }
+        }
+        svgE.appendChild(mk('circle', { cx: X(L), cy: Y(lam(q, L)), r: 4, fill: cols[q] }));
+      }
+
+      function drawSpectra() {
+        while (svgS.firstChild) svgS.removeChild(svgS.firstChild);
+        const W = 320, H = 240, m = { l: 46, r: 16, t: 18, b: 38 };
+        const iw = W - m.l - m.r, ih = H - m.t - m.b;
+        const lo = -3, hi = 0.1;
+        const Y = (v: number) => m.t + ih - ((Math.log10(Math.max(v, 1e-4)) - lo) / (hi - lo)) * ih;
+        const sizes = [4, 6, 8];
+        const slot = iw / sizes.length;
+
+        for (let p = 0; p >= -3; p--) {
+          const y = Y(Math.pow(10, p));
+          svgS.appendChild(mk('line', { x1: m.l, x2: W - m.r, y1: y, y2: y, stroke: '#f1eff7', 'stroke-width': 1 }));
+          svgS.appendChild(txt(m.l - 5, y + 3.5, p === 0 ? '1' : `1e${p}`, { 'text-anchor': 'end', 'font-size': 9 }));
+        }
+        svgS.appendChild(mk('line', { x1: m.l, x2: m.l, y1: m.t, y2: m.t + ih, stroke: '#d7d3e6', 'stroke-width': 1 }));
+        svgS.appendChild(mk('line', { x1: m.l, x2: W - m.r, y1: m.t + ih, y2: m.t + ih, stroke: '#d7d3e6', 'stroke-width': 1 }));
+
+        sizes.forEach((LL, i) => {
+          const cx = m.l + slot * (i + 0.5);
+          svgS.appendChild(txt(cx, H - 20, `L = ${LL}`, { 'text-anchor': 'middle', 'font-size': 9 }));
+          // eigenvalue 1 fixed space
+          svgS.appendChild(mk('line', {
+            x1: cx - slot * 0.3, x2: cx + slot * 0.3, y1: Y(1), y2: Y(1),
+            stroke: '#0e7490', 'stroke-width': 2.6,
+          }));
+          for (const v of EXACT[LL]) {
+            svgS.appendChild(mk('line', {
+              x1: cx - slot * 0.28, x2: cx + slot * 0.28, y1: Y(v), y2: Y(v),
+              stroke: '#7347f7', 'stroke-width': 2, opacity: 0.85,
+            }));
+          }
+          // predicted edge
+          svgS.appendChild(mk('circle', { cx: cx + slot * 0.34, cy: Y(lam(2, LL)), r: 3, fill: 'none', stroke: '#be123c', 'stroke-width': 1.6 }));
+        });
+        svgS.appendChild(txt(m.l, m.t - 5, 'eigenvalue 1: Haar fixed space', { 'font-size': 8.5, fill: '#0e7490' }));
+        svgS.appendChild(txt(m.l + iw / 2, H - 6, 'circles: formula for λ*', { 'text-anchor': 'middle', 'font-size': 9, fill: '#be123c' }));
+      }
+
+      function render() {
+        L = +sL.value; q = +sQ.value;
+        (el.querySelector('[data-lab-L]') as HTMLElement).textContent = String(L);
+        (el.querySelector('[data-lab-q]') as HTMLElement).textContent = String(q);
+        if (labels.length !== L / 2) resetLabels();
+        drawChain();
+        drawEdge();
+        drawSpectra();
+        const w = q / (q * q + 1);
+        readout.innerHTML =
+          `<span><i>w = q/(q&sup2;+1)</i> ${w.toFixed(5)}</span>` +
+          `<span><i>&lambda;<sub>*</sub>(q,L)</i> ${lam(q, L).toFixed(6)}</span>` +
+          `<span><i>rate &minus;log &lambda;<sub>*</sub></i> ${(-Math.log(lam(q, L))).toFixed(5)} / period</span>` +
+          `<span><i>L &rarr; &infin;</i> ${lamInf(q).toFixed(6)} (rate ${(-Math.log(lamInf(q))).toFixed(6)})</span>`;
+      }
+
+      sL.addEventListener('input', () => { resetLabels(); render(); });
+      sQ.addEventListener('input', render);
+      resetBtn.addEventListener('click', () => { resetLabels(); render(); });
+      resetLabels();
+      render();
+    });
+  }
+
+  setupWalls();
+  document.addEventListener('astro:after-swap', setupWalls);
+</script>

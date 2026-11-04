@@ -37,12 +37,13 @@ const featureClass =
       class={featureClass}
       style={`--landing-highlight-image-size: ${imageSize};`}
     >
-      <div class="h-28 w-full overflow-hidden rounded-sm sm:h-auto">
+      <!-- 16:9 minimum; stretches with the row so every thumbnail matches -->
+      <div class="relative ml-2 h-28 overflow-hidden rounded-sm sm:h-auto sm:before:block sm:before:pt-[56.25%] sm:before:content-['']">
         {image && (
           <img
             src={image}
             alt={imageAlt}
-            class="h-full w-full object-cover ml-2"
+            class="absolute inset-0 h-full w-full object-cover"
             style={`object-position: ${imagePosition};`}
             loading="eager"
           />
@@ -50,14 +51,14 @@ const featureClass =
       </div>
       <div class="ml-2 mt-3 min-w-0 self-start">
         <div class="flex items-baseline justify-between gap-4">
-          <h3 class="min-w-0 truncate text-lg font-normal leading-tight text-black">{title}</h3>
+          <h3 class="min-w-0 truncate text-xl font-normal leading-tight text-black">{title}</h3>
           {date && (
             <span class="shrink-0 font-mono font-bold text-[11px] text-dark-accent mr-3">
               {date}
             </span>
           )}
         </div>
-        <p class="mt-2 text-xs leading-relaxed text-gray-700 w-5/6">
+        <p class="mt-[5.5px] text-xs leading-relaxed text-gray-700 w-5/6 sm:line-clamp-4">
           {description}
         </p>
       </div>

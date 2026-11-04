@@ -1,0 +1,296 @@
+---
+import '../../styles/deeptherm.css';
+---
+
+<figure class="dt-fig" data-dt-norm>
+  <p class="dt-title">Figure 4 — two ways to undo the Born denominator</p>
+
+  <div class="dt-controls">
+    <div class="dt-control">
+      <label for="dt-norm-N">degree <span class="dt-value" data-lab-n>N = 4</span></label>
+      <input id="dt-norm-N" type="range" min="0" max="24" step="1" value="4" data-n />
+    </div>
+    <div class="dt-control">
+      <label for="dt-norm-k">moment <span class="dt-value" data-lab-k>k = 2</span></label>
+      <input id="dt-norm-k" type="range" min="2" max="5" step="1" value="2" data-k />
+    </div>
+    <div class="dt-control">
+      <label for="dt-norm-d">D<sub>A</sub> <span class="dt-value" data-lab-d>4</span></label>
+      <input id="dt-norm-d" type="range" min="2" max="16" step="1" value="4" data-d />
+    </div>
+    <div class="dt-control">
+      <label for="dt-norm-m">D<sub>B</sub> <span class="dt-value" data-lab-m>64</span></label>
+      <input id="dt-norm-m" type="range" min="4" max="12" step="1" value="6" data-m />
+    </div>
+  </div>
+
+  <div class="dt-row">
+    <div class="dt-panel" style="flex:1 1 350px">
+      <p class="dt-panel-label">readout weight <span class="dt-mono">P<sub>N</sub>(u)</span> against the target 1</p>
+      <svg class="dt-stage" viewBox="0 0 380 250" data-profile role="img"></svg>
+    </div>
+    <div class="dt-panel" style="flex:1 1 280px">
+      <p class="dt-panel-label">squared error vs. degree</p>
+      <svg class="dt-stage" viewBox="0 0 320 250" data-err role="img"></svg>
+    </div>
+  </div>
+
+  <div class="dt-legend">
+    <span><i style="background:#7347f7"></i>signed Laguerre readout</span>
+    <span><i style="background:#d97706"></i>monotone folded tower</span>
+    <span><i style="background:#9aa0ac"></i>Born weight density of u = D<sub>B</sub> p<sub>z</sub></span>
+  </div>
+
+  <div class="dt-readout" data-readout></div>
+
+  <figcaption>
+    Both schemes replace <span class="dt-mono">p<sub>z</sub><sup>1&minus;k</sup></span> by a
+    polynomial in the Born weight, so that the moment becomes a finite sum of honest
+    <span class="dt-mono">(k+j)</span>-replica contractions. The
+    <b>monotone tower</b> (orange) is exact, positive and state-uniform, but converges only
+    where <span class="dt-mono">(1&minus;p<sub>z</sub>)<sup>N</sup></span> has decayed &mdash;
+    it needs <span class="dt-mono">N = &Theta;(D<sub>B</sub>)</span>. The
+    <b>signed Laguerre readout</b> (violet) is optimal in the Haar/Porter&ndash;Thomas measure
+    (grey), so its degree is set by the accuracy alone and never by the bath size &mdash;
+    at the cost of oscillating sign and exponentially growing coefficients.
+  </figcaption>
+</figure>
+
+<script>
+  function setupNorm() {
+    document.querySelectorAll('[data-dt-norm]').forEach((root) => {
+      const el = root as HTMLElement;
+      if (el.dataset.dtReady === '1') return;
+      el.dataset.dtReady = '1';
+
+      const ns = 'http://www.w3.org/2000/svg';
+      const mk = (tag: string, a: Record<string, string | number>) => {
+        const n = document.createElementNS(ns, tag);
+        for (const key in a) n.setAttribute(key, String(a[key]));
+        return n;
+      };
+
+      /* ---- special functions ---- */
+      const LANCZOS = [
+        676.5203681218851, -1259.1392167224028, 771.32342877765313,
+        -176.61502916214059, 12.507343278686905, -0.13857109526572012,
+        9.9843695780195716e-6, 1.5056327351493116e-7,
+      ];
+      function lgamma(z: number): number {
+        if (z < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * z)) - lgamma(1 - z);
+        z -= 1;
+        let x = 0.99999999999980993;
+        for (let i = 0; i < 8; i++) x += LANCZOS[i] / (z + i + 1);
+        const t = z + 7.5;
+        return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x);
+      }
+      // log of the rising factorial (a)_n = a(a+1)…(a+n-1), for a > 0
+      function lpoch(a: number, n: number) {
+        return n === 0 ? 0 : lgamma(a + n) - lgamma(a);
+      }
+      // generalized Laguerre L_n^alpha(x) values for n = 0..N
+      function laguerreSeq(N: number, alpha: number, x: number) {
+        const out = new Array(N + 1).fill(0);
+        out[0] = 1;
+        if (N >= 1) out[1] = 1 + alpha - x;
+        for (let n = 1; n < N; n++) {
+          out[n + 1] = ((2 * n + 1 + alpha - x) * out[n] - (n + alpha) * out[n - 1]) / (n + 1);
+        }
+        return out;
+      }
+
+      // P_N(u) = u^r * d^r * Gamma(d+r+1) * sum_n [(r)_n / Gamma(n+d+2r+1)] L_n^{d+2r}(du)
+      function laguerreProfile(u: number, d: number, r: number, N: number) {
+        const alpha = d + 2 * r;
+        const Ls = laguerreSeq(N, alpha, d * u);
+        const pre = r * Math.log(d) + lgamma(d + r + 1);
+        let s = 0;
+        for (let n = 0; n <= N; n++) {
+          s += Math.exp(pre + lpoch(r, n) - lgamma(n + alpha + 1)) * Ls[n];
+        }
+        return Math.pow(u, r) * s;
+      }
+
+      // E^2 = Pr{Y > N} for the beta-negative-binomial law of the projection tail
+      function laguerreError(d: number, r: number, N: number) {
+        let s = 0;
+        for (let n = 0; n <= N; n++) {
+          s += Math.exp(
+            2 * lgamma(d + r + 1) - lgamma(d + 1) + 2 * lpoch(r, n)
+            - lgamma(n + 1) - lgamma(n + d + 2 * r + 1)
+          );
+        }
+        return Math.max(0, 1 - s);
+      }
+
+      // partial sum of the negative-binomial tower at Born weight p
+      function towerProfile(p: number, r: number, N: number) {
+        if (p <= 0) return 0;
+        let s = 0, term = Math.pow(p, r);
+        for (let n = 0; n <= N; n++) {
+          s += term;
+          term *= ((n + r) / (n + 1)) * (1 - p);
+        }
+        return s;
+      }
+      // exact remainder Pr{X > N} averaged over the Gamma(d+1, rate d) Born law
+      function towerError(d: number, r: number, N: number, m: number) {
+        // trapezoid over the size-biased density of u = m p
+        let acc = 0;
+        const U = 24, steps = 900;
+        const logNorm = (d + 1) * Math.log(d) - lgamma(d + 1);
+        for (let i = 0; i <= steps; i++) {
+          const u = (i / steps) * U;
+          const w = Math.exp(logNorm + d * Math.log(Math.max(u, 1e-12)) - d * u);
+          const e = 1 - towerProfile(Math.min(u / m, 1), r, N);
+          acc += (i === 0 || i === steps ? 0.5 : 1) * w * e * e;
+        }
+        return Math.max(0, acc * (U / steps));
+      }
+
+      /* ---- state ---- */
+      const sN = el.querySelector('[data-n]') as HTMLInputElement;
+      const sK = el.querySelector('[data-k]') as HTMLInputElement;
+      const sD = el.querySelector('[data-d]') as HTMLInputElement;
+      const sM = el.querySelector('[data-m]') as HTMLInputElement;
+      const svgP = el.querySelector('[data-profile]') as SVGSVGElement;
+      const svgE = el.querySelector('[data-err]') as SVGSVGElement;
+      const readout = el.querySelector('[data-readout]') as HTMLElement;
+
+      function render() {
+        const N = +sN.value, k = +sK.value, d = +sD.value;
+        const m = Math.pow(2, +sM.value);
+        const r = k - 1;
+        (el.querySelector('[data-lab-n]') as HTMLElement).textContent = `N = ${N}`;
+        (el.querySelector('[data-lab-k]') as HTMLElement).textContent = `k = ${k}`;
+        (el.querySelector('[data-lab-d]') as HTMLElement).textContent = String(d);
+        (el.querySelector('[data-lab-m]') as HTMLElement).textContent = String(m);
+
+        /* ---- panel 1: profiles on u ---- */
+        while (svgP.firstChild) svgP.removeChild(svgP.firstChild);
+        const W = 380, H = 250, mg = { l: 34, r: 12, t: 14, b: 32 };
+        const iw = W - mg.l - mg.r, ih = H - mg.t - mg.b;
+        const UMAX = 4.5;
+        const X = (u: number) => mg.l + (u / UMAX) * iw;
+        const Y = (v: number) => mg.t + ih - ((v + 0.6) / 2.2) * ih;
+        const clampY = (v: number) => Math.min(mg.t + ih, Math.max(mg.t - 2, Y(v)));
+
+        // Born density (size-biased Gamma(d+1, rate d))
+        const logNorm = (d + 1) * Math.log(d) - lgamma(d + 1);
+        let peak = 0;
+        const dens: number[] = [];
+        for (let i = 0; i <= 160; i++) {
+          const u = (i / 160) * UMAX;
+          const w = Math.exp(logNorm + d * Math.log(Math.max(u, 1e-12)) - d * u);
+          dens.push(w);
+          peak = Math.max(peak, w);
+        }
+        let dpath = `M${mg.l},${mg.t + ih}`;
+        dens.forEach((w, i) => {
+          const u = (i / 160) * UMAX;
+          dpath += `L${X(u).toFixed(1)},${(mg.t + ih - (w / peak) * ih * 0.42).toFixed(1)}`;
+        });
+        dpath += `L${X(UMAX)},${mg.t + ih}Z`;
+        svgP.appendChild(mk('path', { d: dpath, fill: '#eceaf2', stroke: '#c9c5d6', 'stroke-width': 0.8 }));
+
+        // axes + target line
+        svgP.appendChild(mk('line', { x1: mg.l, x2: W - mg.r, y1: Y(0), y2: Y(0), stroke: '#d7d3e6', 'stroke-width': 1 }));
+        svgP.appendChild(mk('line', { x1: mg.l, x2: mg.l, y1: mg.t, y2: mg.t + ih, stroke: '#d7d3e6', 'stroke-width': 1 }));
+        svgP.appendChild(mk('line', {
+          x1: mg.l, x2: W - mg.r, y1: Y(1), y2: Y(1),
+          stroke: '#111827', 'stroke-width': 1.2, 'stroke-dasharray': '4 3', opacity: 0.6,
+        }));
+        const tl = mk('text', { x: W - mg.r - 2, y: Y(1) - 5, 'text-anchor': 'end', 'font-size': 9, fill: '#4b5563' });
+        tl.textContent = 'target: P(u) = 1';
+        svgP.appendChild(tl);
+        for (const v of [0, 1]) {
+          const lab = mk('text', { x: mg.l - 5, y: Y(v) + 3.5, 'text-anchor': 'end', 'font-size': 9, fill: '#8b849c' });
+          lab.textContent = String(v);
+          svgP.appendChild(lab);
+        }
+        for (let u = 0; u <= UMAX; u++) {
+          const lab = mk('text', { x: X(u), y: H - 18, 'text-anchor': 'middle', 'font-size': 9, fill: '#8b849c' });
+          lab.textContent = String(u);
+          svgP.appendChild(lab);
+        }
+        const xl = mk('text', { x: mg.l + iw / 2, y: H - 4, 'text-anchor': 'middle', 'font-size': 9.5, fill: '#6b647f' });
+        xl.textContent = 'scaled Born weight  u = D_B p_z';
+        svgP.appendChild(xl);
+
+        // curves
+        let lag = '', tow = '';
+        for (let i = 0; i <= 300; i++) {
+          const u = (i / 300) * UMAX;
+          const a = laguerreProfile(u, d, r, N);
+          const b = towerProfile(Math.min(u / m, 1), r, N);
+          lag += `${i === 0 ? 'M' : 'L'}${X(u).toFixed(1)},${clampY(a).toFixed(1)}`;
+          tow += `${i === 0 ? 'M' : 'L'}${X(u).toFixed(1)},${clampY(b).toFixed(1)}`;
+        }
+        svgP.appendChild(mk('path', { d: tow, fill: 'none', stroke: '#d97706', 'stroke-width': 1.8 }));
+        svgP.appendChild(mk('path', { d: lag, fill: 'none', stroke: '#7347f7', 'stroke-width': 1.8 }));
+
+        /* ---- panel 2: error vs degree ---- */
+        while (svgE.firstChild) svgE.removeChild(svgE.firstChild);
+        const W2 = 320, H2 = 250, m2 = { l: 40, r: 12, t: 14, b: 32 };
+        const iw2 = W2 - m2.l - m2.r, ih2 = H2 - m2.t - m2.b;
+        const NMAX = 24;
+        const lo = -6, hi = 0.15;
+        const X2 = (n: number) => m2.l + (n / NMAX) * iw2;
+        const Y2 = (v: number) => {
+          const y = m2.t + ih2 - ((Math.log10(Math.max(v, 1e-9)) - lo) / (hi - lo)) * ih2;
+          return Math.min(m2.t + ih2, Math.max(m2.t, y));
+        };
+        for (let p = 0; p >= -6; p -= 2) {
+          const y = Y2(Math.pow(10, p));
+          svgE.appendChild(mk('line', { x1: m2.l, x2: W2 - m2.r, y1: y, y2: y, stroke: '#eeecf5', 'stroke-width': 1 }));
+          const lab = mk('text', { x: m2.l - 5, y: y + 3.5, 'text-anchor': 'end', 'font-size': 9, fill: '#8b849c' });
+          lab.textContent = p === 0 ? '1' : `1e${p}`;
+          svgE.appendChild(lab);
+        }
+        svgE.appendChild(mk('line', { x1: m2.l, x2: W2 - m2.r, y1: m2.t + ih2, y2: m2.t + ih2, stroke: '#d7d3e6', 'stroke-width': 1 }));
+        svgE.appendChild(mk('line', { x1: m2.l, x2: m2.l, y1: m2.t, y2: m2.t + ih2, stroke: '#d7d3e6', 'stroke-width': 1 }));
+        for (let n = 0; n <= NMAX; n += 6) {
+          const lab = mk('text', { x: X2(n), y: H2 - 18, 'text-anchor': 'middle', 'font-size': 9, fill: '#8b849c' });
+          lab.textContent = String(n);
+          svgE.appendChild(lab);
+        }
+        const xl2 = mk('text', { x: m2.l + iw2 / 2, y: H2 - 4, 'text-anchor': 'middle', 'font-size': 9.5, fill: '#6b647f' });
+        xl2.textContent = 'polynomial degree N  (replica orders k … k+N)';
+        svgE.appendChild(xl2);
+
+        let eL = '', eT = '';
+        for (let n = 0; n <= NMAX; n++) {
+          eL += `${n === 0 ? 'M' : 'L'}${X2(n).toFixed(1)},${Y2(laguerreError(d, r, n)).toFixed(1)}`;
+          eT += `${n === 0 ? 'M' : 'L'}${X2(n).toFixed(1)},${Y2(towerError(d, r, n, m)).toFixed(1)}`;
+        }
+        svgE.appendChild(mk('path', { d: eT, fill: 'none', stroke: '#d97706', 'stroke-width': 1.8 }));
+        svgE.appendChild(mk('path', { d: eL, fill: 'none', stroke: '#7347f7', 'stroke-width': 1.8 }));
+        svgE.appendChild(mk('line', {
+          x1: X2(N), x2: X2(N), y1: m2.t, y2: m2.t + ih2, stroke: '#7347f7', 'stroke-width': 1, opacity: 0.28,
+        }));
+        svgE.appendChild(mk('circle', { cx: X2(N), cy: Y2(laguerreError(d, r, N)), r: 3.2, fill: '#7347f7' }));
+        svgE.appendChild(mk('circle', { cx: X2(N), cy: Y2(towerError(d, r, N, m)), r: 3.2, fill: '#d97706' }));
+
+        /* ---- readout ---- */
+        // largest scaled monomial coefficient of the signed readout
+        let cmax = 0;
+        for (let i = 0; i <= 120; i++) {
+          const u = (i / 120) * UMAX;
+          cmax = Math.max(cmax, Math.abs(laguerreProfile(u, d, r, N)));
+        }
+        readout.innerHTML =
+          `<span><i>Laguerre E<sub>N</sub><sup>2</sup></i> ${laguerreError(d, r, N).toExponential(2)}</span>` +
+          `<span><i>tower E<sub>N</sub><sup>2</sup></i> ${towerError(d, r, N, m).toExponential(2)}</span>` +
+          `<span><i>replica orders used</i> ${k}…${k + N}</span>` +
+          `<span><i>certificate depth</i> ${2 * k + 2 * N - 1}</span>` +
+          `<span><i>max |P<sub>N</sub>| on plot</i> ${cmax.toFixed(2)}</span>`;
+      }
+
+      [sN, sK, sD, sM].forEach((s) => s.addEventListener('input', render));
+      render();
+    });
+  }
+
+  setupNorm();
+  document.addEventListener('astro:after-swap', setupNorm);
+</script>

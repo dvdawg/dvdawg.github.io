@@ -12,9 +12,9 @@ import { Separator } from "$lib/components/ui/separator";
 const link = menuitems.find(({ href }) => pathname.startsWith(href));
 ---
 <Container>
-    <div class="flex justify-between mb-3 pb-6 pt-9"> 
+    <div class="flex justify-between mb-3 pb-6 pt-9" transition:name="site-header">
         <div class="flex items-center gap-8">
-            <h1 class="text-4xl font-bold leading-none">
+            <h1 class="my-0 text-4xl font-bold leading-none">
                 <a href="/" class="hover:text-black transition-colors">
                     <SiteMark class="text-4xl" />
                 </a>

@@ -1,0 +1,259 @@
+/* Shared styling for the interactive figures in the deep-thermalization post. */
+
+.dt-fig {
+  --dt-line: #d7d3e6;
+  --dt-ink: #2c2540;
+  --dt-muted: #6b647f;
+  --dt-accent: #7347f7;
+  --dt-accent-soft: #a78bfa;
+  --dt-accent-wash: #ede9fe;
+  --dt-warm: #d97706;
+  --dt-cool: #0e7490;
+  --dt-rose: #be123c;
+
+  margin: 2.25rem 0;
+  padding: 1rem 1rem 0.75rem;
+  border: 1px solid var(--dt-line);
+  border-radius: 0.5rem;
+  background: #ffffff;
+  font-size: 0.875rem;
+  color: var(--dt-ink);
+}
+
+.dt-fig * {
+  box-sizing: border-box;
+}
+
+.dt-title {
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dt-accent);
+  margin: 0 0 0.75rem;
+}
+
+.dt-fig figcaption {
+  margin-top: 0.85rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--dt-line);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--dt-muted);
+}
+
+.dt-fig figcaption b,
+.dt-fig figcaption strong {
+  color: var(--dt-ink);
+  font-weight: 600;
+}
+
+/* ---- controls ---- */
+
+.dt-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  margin: 0.75rem 0 0.25rem;
+}
+
+.dt-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.dt-control > label {
+  font-size: 0.75rem;
+  color: var(--dt-muted);
+  white-space: nowrap;
+}
+
+.dt-fig input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+  width: 8.5rem;
+  background: var(--dt-line);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.dt-fig input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--dt-accent);
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px var(--dt-accent);
+}
+
+.dt-fig input[type="range"]::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--dt-accent);
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px var(--dt-accent);
+  cursor: pointer;
+}
+
+.dt-value {
+  font-family: "Space Mono", ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: var(--dt-ink);
+  min-width: 2.5rem;
+}
+
+.dt-seg {
+  display: inline-flex;
+  border: 1px solid var(--dt-line);
+  border-radius: 0.3rem;
+  overflow: hidden;
+}
+
+.dt-seg button {
+  font: inherit;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  background: #fff;
+  border: none;
+  border-right: 1px solid var(--dt-line);
+  color: var(--dt-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dt-seg button:last-child {
+  border-right: none;
+}
+
+.dt-seg button[aria-pressed="true"] {
+  background: var(--dt-accent-wash);
+  color: var(--dt-accent);
+  font-weight: 600;
+}
+
+.dt-btn {
+  font: inherit;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid var(--dt-line);
+  border-radius: 0.3rem;
+  background: #fff;
+  color: var(--dt-muted);
+  cursor: pointer;
+}
+
+.dt-btn:hover {
+  border-color: var(--dt-accent-soft);
+  color: var(--dt-accent);
+}
+
+.dt-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--dt-muted);
+  cursor: pointer;
+}
+
+.dt-check input {
+  accent-color: var(--dt-accent);
+  cursor: pointer;
+}
+
+/* ---- readouts ---- */
+
+.dt-readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.4rem;
+  margin-top: 0.6rem;
+  font-family: "Space Mono", ui-monospace, monospace;
+  font-size: 0.75rem;
+}
+
+.dt-readout span > i {
+  font-style: normal;
+  color: var(--dt-muted);
+}
+
+/* ---- canvases / svg ---- */
+
+.dt-stage {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.dt-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.dt-panel {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.dt-panel-label {
+  font-size: 0.75rem;
+  color: var(--dt-muted);
+  text-align: center;
+  margin-bottom: 0.2rem;
+}
+
+.dt-fig text {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+.dt-fig .dt-mono {
+  font-family: "Space Mono", ui-monospace, monospace;
+}
+
+.dt-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--dt-muted);
+}
+
+.dt-legend i {
+  display: inline-block;
+  width: 0.85rem;
+  height: 0.15rem;
+  vertical-align: middle;
+  margin-right: 0.35rem;
+  border-radius: 1px;
+}
+
+/* Keep the blog's global image rule from touching figure internals. */
+.blog-content .dt-fig img {
+  max-width: 100%;
+}
+
+.blog-content .dt-fig p {
+  margin-bottom: 0;
+}
+
+.blog-content .dt-fig ul {
+  margin-left: 1.1rem;
+}
+
+.blog-content .dt-fig li {
+  margin: 0.15rem 0;
+}

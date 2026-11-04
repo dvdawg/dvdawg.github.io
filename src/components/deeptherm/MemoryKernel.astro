@@ -1,0 +1,213 @@
+---
+import '../../styles/deeptherm.css';
+---
+
+<figure class="dt-fig" data-dt-mori>
+  <p class="dt-title">Figure 6 — the exact generator is frequency dependent, and its singularities decide the law</p>
+
+  <div class="dt-row">
+    <div class="dt-panel" style="flex:1 1 320px">
+      <p class="dt-panel-label">projecting an infinite-dimensional propagator onto a few observables</p>
+      <svg class="dt-stage" viewBox="0 0 340 270" data-diagram role="img"></svg>
+    </div>
+    <div class="dt-panel" style="flex:1 1 320px">
+      <p class="dt-panel-label">what each resolvent singularity does in time</p>
+      <div class="dt-controls" style="margin-top:0">
+        <div class="dt-seg" data-sing-group>
+          <button type="button" data-sing="pole" aria-pressed="true">isolated pole</button>
+          <button type="button" data-sing="complex" aria-pressed="false">complex pair</button>
+          <button type="button" data-sing="edge" aria-pressed="false">branch edge</button>
+          <button type="button" data-sing="cont" aria-pressed="false">continuum at 1</button>
+        </div>
+      </div>
+      <svg class="dt-stage" viewBox="0 0 340 240" data-signal role="img"></svg>
+    </div>
+  </div>
+
+  <div class="dt-readout" data-readout></div>
+
+  <figcaption>
+    Physical time evolution of a pure state is exactly linear &mdash; on functions of the state, not
+    on the state. That is the Koopman operator <span class="dt-mono">K</span>, and at finite volume
+    it is unitary. Choose a handful of relevant coordinates (the primitive harmonics), let
+    <span class="dt-mono">P</span> project onto them and <span class="dt-mono">Q = 1 &minus; P</span>
+    onto everything else. The exact evolution of the relevant block is <b>not</b> a fixed matrix: it
+    is <span class="dt-mono">A + &Sigma;(z)</span>, where the self-energy
+    <span class="dt-mono">&Sigma;(z) = B(z&minus;D)<sup>&minus;1</sup>C</span> is the price of having
+    thrown information into <span class="dt-mono">Q</span> and having to get it back. Every decay law
+    people fit to deep-thermalization data &mdash; clean exponential, damped oscillation, power-law
+    tail, stretched exponential &mdash; is one possible analytic structure of that single object,
+    not a separate physical hypothesis.
+  </figcaption>
+</figure>
+
+<script>
+  function setupMori() {
+    document.querySelectorAll('[data-dt-mori]').forEach((root) => {
+      const el = root as HTMLElement;
+      if (el.dataset.dtReady === '1') return;
+      el.dataset.dtReady = '1';
+
+      const ns = 'http://www.w3.org/2000/svg';
+      const mk = (tag: string, a: Record<string, string | number>) => {
+        const n = document.createElementNS(ns, tag);
+        for (const key in a) n.setAttribute(key, String(a[key]));
+        return n;
+      };
+      const txt = (x: number, y: number, s: string, extra: Record<string, string | number> = {}) => {
+        const t = mk('text', { x, y, 'font-size': 10, fill: '#6b647f', ...extra });
+        t.textContent = s;
+        return t;
+      };
+
+      const svgD = el.querySelector('[data-diagram]') as SVGSVGElement;
+      const svgS = el.querySelector('[data-signal]') as SVGSVGElement;
+      const readout = el.querySelector('[data-readout]') as HTMLElement;
+      const btns = Array.from(el.querySelectorAll('[data-sing-group] button')) as HTMLButtonElement[];
+      let kind = 'pole';
+
+      function drawDiagram() {
+        while (svgD.firstChild) svgD.removeChild(svgD.firstChild);
+        const W = 340, H = 270;
+
+        svgD.appendChild(mk('rect', {
+          x: 14, y: 18, width: W - 28, height: H - 46, rx: 8,
+          fill: '#fbfaff', stroke: '#dcd8e8', 'stroke-width': 1,
+        }));
+        svgD.appendChild(txt(W / 2, 34, 'functions on projective state space   (K unitary)', {
+          'text-anchor': 'middle', 'font-size': 9.5, fill: '#9a94ab',
+        }));
+
+        // relevant block P
+        svgD.appendChild(mk('rect', { x: 34, y: 58, width: 120, height: 62, rx: 6, fill: '#ede9fe', stroke: '#a78bfa', 'stroke-width': 1.4 }));
+        svgD.appendChild(txt(94, 82, 'P  relevant', { 'text-anchor': 'middle', 'font-size': 11, fill: '#5b34d6', 'font-weight': 600 }));
+        svgD.appendChild(txt(94, 100, 'C₁, C₂, C₃ …', { 'text-anchor': 'middle', 'font-size': 9.5, fill: '#5b34d6' }));
+
+        // irrelevant block Q
+        svgD.appendChild(mk('rect', { x: 186, y: 58, width: 120, height: 62, rx: 6, fill: '#f3f1f8', stroke: '#cfc9e3', 'stroke-width': 1.2 }));
+        svgD.appendChild(txt(246, 82, 'Q  everything else', { 'text-anchor': 'middle', 'font-size': 10, fill: '#8b849c' }));
+        svgD.appendChild(txt(246, 100, 'bath coordinates, ℓ ≥ …', { 'text-anchor': 'middle', 'font-size': 9, fill: '#a8a2b8' }));
+
+        const arrow = (x1: number, y1: number, x2: number, y2: number, col: string, lab: string, dy = -5) => {
+          svgD.appendChild(mk('path', {
+            d: `M${x1},${y1}L${x2},${y2}`, stroke: col, 'stroke-width': 1.5,
+            'marker-end': 'url(#dt-arrow)',
+          }));
+          svgD.appendChild(txt((x1 + x2) / 2, (y1 + y2) / 2 + dy, lab, {
+            'text-anchor': 'middle', 'font-size': 9.5, fill: col, 'font-weight': 600,
+          }));
+        };
+
+        const defs = mk('defs', {});
+        const marker = mk('marker', {
+          id: 'dt-arrow', viewBox: '0 0 10 10', refX: 9, refY: 5,
+          markerWidth: 5, markerHeight: 5, orient: 'auto-start-reverse',
+        });
+        marker.appendChild(mk('path', { d: 'M0,0 L10,5 L0,10 z', fill: '#8b849c' }));
+        defs.appendChild(marker);
+        svgD.appendChild(defs);
+
+        arrow(154, 76, 184, 76, '#8b849c', 'B');
+        arrow(186, 104, 156, 104, '#8b849c', 'C', 12);
+
+        // self loops
+        svgD.appendChild(mk('path', { d: 'M44,120 q-18,26 22,26 q30,0 22,-26', stroke: '#5b34d6', 'stroke-width': 1.5, fill: 'none', 'marker-end': 'url(#dt-arrow)' }));
+        svgD.appendChild(txt(66, 162, 'A = PKP', { 'text-anchor': 'middle', 'font-size': 9.5, fill: '#5b34d6', 'font-weight': 600 }));
+        svgD.appendChild(mk('path', { d: 'M204,120 q-16,26 24,26 q30,0 22,-26', stroke: '#8b849c', 'stroke-width': 1.5, fill: 'none', 'marker-end': 'url(#dt-arrow)' }));
+        svgD.appendChild(txt(226, 162, 'D = QKQ', { 'text-anchor': 'middle', 'font-size': 9.5, fill: '#8b849c', 'font-weight': 600 }));
+
+        // formula box
+        svgD.appendChild(mk('rect', { x: 30, y: 176, width: W - 60, height: 62, rx: 6, fill: '#ffffff', stroke: '#d7d3e6', 'stroke-width': 1 }));
+        svgD.appendChild(txt(W / 2, 198, 'U(z) = [ z − A − Σ(z) ]⁻¹', {
+          'text-anchor': 'middle', 'font-size': 12, fill: '#2c2540', 'font-weight': 600,
+        }));
+        svgD.appendChild(txt(W / 2, 218, 'Σ(z) = B (z − D)⁻¹ C  =  Σₛ Mₛ / z^{s+1}', {
+          'text-anchor': 'middle', 'font-size': 10, fill: '#6b647f',
+        }));
+        svgD.appendChild(txt(W / 2, 232, 'memory kernel Mₛ = B Dˢ C', {
+          'text-anchor': 'middle', 'font-size': 9, fill: '#9a94ab',
+        }));
+      }
+
+      const MODELS: Record<string, { label: string; f: (t: number) => number; note: string }> = {
+        pole: {
+          label: 'g(t) ~ λᵗ  with λ = 0.72',
+          f: (t) => Math.pow(0.72, t),
+          note: 'isolated simple pole inside the unit disc → clean exponential on a semilog plot',
+        },
+        complex: {
+          label: 'g(t) ~ |λ|ᵗ cos(θt),  |λ| = 0.78, θ = 0.9',
+          f: (t) => Math.abs(Math.pow(0.78, t) * Math.cos(0.9 * t)) + 1e-6,
+          note: 'complex conjugate pair → the same envelope, plus an oscillation that must match D₁',
+        },
+        edge: {
+          label: 'g(t) ~ λ_cᵗ t^(−α−1),  λ_c = 0.86, α = 0.5',
+          f: (t) => Math.pow(0.86, t) * Math.pow(Math.max(t, 1), -1.5),
+          note: 'branch edge with density (λ_c−λ)^α → exponential times a power-law prefactor',
+        },
+        cont: {
+          label: 'g(t) ~ exp(−c t^β),  c = 1.1, β = 0.5',
+          f: (t) => Math.exp(-1.1 * Math.pow(t, 0.5)),
+          note: 'spectrum accumulating at 1 → stretched exponential; visually a bending semilog line',
+        },
+      };
+
+      function drawSignal() {
+        while (svgS.firstChild) svgS.removeChild(svgS.firstChild);
+        const W = 340, H = 240, m = { l: 46, r: 14, t: 16, b: 40 };
+        const iw = W - m.l - m.r, ih = H - m.t - m.b;
+        const TMAX = 30, lo = -6, hi = 0.2;
+        const X = (t: number) => m.l + (t / TMAX) * iw;
+        const Y = (v: number) => {
+          const y = m.t + ih - ((Math.log10(Math.max(v, 1e-9)) - lo) / (hi - lo)) * ih;
+          return Math.min(m.t + ih, Math.max(m.t, y));
+        };
+
+        for (let p = 0; p >= lo; p -= 2) {
+          const y = Y(Math.pow(10, p));
+          svgS.appendChild(mk('line', { x1: m.l, x2: W - m.r, y1: y, y2: y, stroke: '#f1eff7', 'stroke-width': 1 }));
+          svgS.appendChild(txt(m.l - 5, y + 3.5, p === 0 ? '1' : `1e${p}`, { 'text-anchor': 'end', 'font-size': 9 }));
+        }
+        svgS.appendChild(mk('line', { x1: m.l, x2: W - m.r, y1: m.t + ih, y2: m.t + ih, stroke: '#d7d3e6', 'stroke-width': 1 }));
+        svgS.appendChild(mk('line', { x1: m.l, x2: m.l, y1: m.t, y2: m.t + ih, stroke: '#d7d3e6', 'stroke-width': 1 }));
+        for (let t = 0; t <= TMAX; t += 10) {
+          svgS.appendChild(txt(X(t), H - 22, String(t), { 'text-anchor': 'middle', 'font-size': 9 }));
+        }
+        svgS.appendChild(txt(m.l + iw / 2, H - 7, 'time t', { 'text-anchor': 'middle', 'font-size': 9.5 }));
+
+        // grey reference: all four, faint
+        for (const key of Object.keys(MODELS)) {
+          let d = '';
+          for (let i = 0; i <= 240; i++) {
+            const t = (i / 240) * TMAX;
+            d += `${i === 0 ? 'M' : 'L'}${X(t).toFixed(1)},${Y(MODELS[key].f(t)).toFixed(1)}`;
+          }
+          const sel = key === kind;
+          svgS.appendChild(mk('path', {
+            d, fill: 'none', stroke: sel ? '#7347f7' : '#d7d3e6',
+            'stroke-width': sel ? 2.1 : 1, opacity: sel ? 1 : 0.7,
+          }));
+        }
+        svgS.appendChild(txt(W - m.r - 2, m.t + 10, MODELS[kind].label, {
+          'text-anchor': 'end', 'font-size': 9.5, fill: '#5b34d6',
+        }));
+
+        readout.innerHTML = `<span><i>${kind}</i> ${MODELS[kind].note}</span>`;
+      }
+
+      btns.forEach((b) => {
+        b.addEventListener('click', () => {
+          kind = b.dataset.sing!;
+          btns.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+          drawSignal();
+        });
+      });
+
+      drawDiagram();
+      drawSignal();
+    });
+  }
+
+  setupMori();
+  document.addEventListener('astro:after-swap', setupMori);
+</script>

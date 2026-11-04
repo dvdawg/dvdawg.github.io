@@ -6,10 +6,11 @@ const {
   image,
   imagePosition = "center",
   imageClass = "",
+  year,
 } = Astro.props;
 ---
-<a href={url} class="block h-full">
-  <article class="relative h-72 overflow-hidden rounded-sm border border-neutral-200 transition duration-[400ms] hover:shadow-2xl">
+<a href={url} class="group block h-full">
+  <article class="relative h-72 overflow-hidden rounded-sm">
     {image && (
       <img
         src={image}
@@ -18,9 +19,14 @@ const {
         style={`object-position: ${imagePosition};`}
       />
     )}
-    <div class="absolute bottom-0 left-0 right-0 h-22 border-t border-neutral-200 bg-[#f3f3f8] p-3">
-      <h1 class="truncate font-serif text-2xl font-bold leading-tight">{title}</h1>
-      <p class="line-clamp-2 pt-1 text-xs italic">{description}</p>
+    <div class="absolute bottom-0 left-0 right-0 h-24 border-t border-neutral-200 bg-[#f7f7fa] px-3 pt-3 transition-colors duration-200 group-hover:bg-light-accent">
+      <div class="flex items-baseline justify-between gap-4">
+        <h1 class="min-w-0 truncate text-lg font-normal leading-tight text-black">{title}</h1>
+        {year && (
+          <span class="shrink-0 font-mono text-[11px] font-bold text-dark-accent">{year}</span>
+        )}
+      </div>
+      <p class="mt-2 line-clamp-2 text-xs leading-relaxed text-gray-700">{description}</p>
     </div>
   </article>
 </a>
