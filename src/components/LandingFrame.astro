@@ -1,0 +1,263 @@
+---
+import Container from "./container.astro";
+import ContactLinks from "./ContactLinks.astro";
+import LandingSidebarView from "./LandingSidebarView.astro";
+import LayoutToggle from "./LayoutToggle.astro";
+import LandingNavigation from "./LandingNavigation.astro";
+import { projects } from "../data/projects";
+import { getCollection } from "astro:content";
+const recentPosts = (
+  await getCollection("posts", ({ data }) => import.meta.env.DEV || !data.draft)
+)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+---
+
+<div class="landing-frame" data-landing-frame transition:persist="landing-frame" transition:animate="none">
+  <div class="landing-shift" data-landing-shift>
+    <Container>
+      <script is:inline>
+        (() => {
+          const root = document.documentElement;
+          const state = history.state;
+          const path = location.pathname.replace(/^\/|\/$/g, "");
+          const candidate = path === "" ? state?.landingSection : path;
+          const section = candidate === "projects" || candidate === "misc" ? candidate : null;
+          const saved = state?.landingFrame;
+          let view = "hero";
+          try {
+            const preference = JSON.parse(localStorage.getItem("landing-view-preference") || "null");
+            if (preference?.expiresAt > Date.now()
+              && (preference.view === "hero" || preference.view === "sidebar")) {
+              view = preference.view;
+            }
+          } catch {
+            // The page works without storage.
+          }
+          if (section && (saved?.view === "hero" || saved?.view === "sidebar")) view = saved.view;
+          root.dataset.landingView = view;
+          if (!section) return;
+
+          root.dataset.landingRestoring = section;
+          const frame = document.currentScript.closest("[data-landing-frame]");
+          frame.dataset.collapsed = "true";
+          frame.dataset.ready = "";
+          frame.dataset.instant = "";
+          const values = {
+            "--landing-rise": saved?.rise,
+            "--landing-nav-offset": saved?.navOffset,
+            "--landing-nav-shift-x": saved?.navShiftX,
+            "--landing-expanded-height": saved?.expandedHeight,
+            "--landing-compact-height": saved?.compactHeight,
+          };
+          if (saved?.width === innerWidth && saved?.height === innerHeight
+            && Object.values(values).every(Number.isFinite)) {
+            for (const [name, value] of Object.entries(values)) frame.style.setProperty(name, `${value}px`);
+          } else {
+            frame.dataset.booting = "";
+          }
+        })();
+      </script>
+
+      <section
+        id="hero-view"
+        class="-mt-5 flex min-h-[100vh] flex-col items-center justify-center gap-6 px-4 pb-16 pt-16">
+        <div
+          data-landing-blur
+          class="hero-lockup grid w-full max-w-4xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 sm:gap-6"
+          transition:name="site-logo"
+          transition:animate="none">
+          <h1 class="hero-title min-w-0 font-serif font-normal leading-[0.85] tracking-tight text-black whitespace-nowrap">
+            David Kim
+          </h1>
+          <!-- headshot (commented out for now)
+          <div class="flex-shrink-0 overflow-hidden">
+            <img
+              src="/assets/images/headshot.png"
+              alt="Portrait of David Kim"
+              class="h-[clamp(120px,22vw,200px)] w-[clamp(120px,22vw,200px)] rounded-full object-cover object-[center_55%]"
+              loading="eager"
+            />
+          </div>
+          -->
+          <div class="justify-self-end">
+            <img
+              src="/assets/images/dvd_pfp.png"
+              alt="Portrait of David Kim"
+              width="512"
+              height="512"
+              class="hero-portrait object-contain object-left-top"
+              loading="eager"
+            />
+          </div>
+        </div>
+
+    <!-- about me section -->
+        <div
+          class="flex w-full max-w-5xl flex-col gap-8 text-left md:flex-row md:items-start md:gap-4">
+          <div class="flex-1 space-y-2 text-base leading-relaxed">
+            <div data-landing-blur class="page-content space-y-2">
+              <p class="text-black">
+                I'm an undergraduate at UC Berkeley studying physics, statistics, and
+                computer science. I'm broadly interested in quantum device engineering and information,
+                as well as statistical models of learning.
+              </p>
+              <p class="text-black">
+                I contribute to superconducting qubit research at Berkeley's
+                <a href="https://aqt.lbl.gov/about-aqt/qnl/"
+                  >Quantum Nanoelectronics Laboratory</a
+                > (assoc. LBNL) and
+                <a href="https://quantumdevices.berkeley.edu/"
+                  >Quantum Devices Laboratory</a
+                >. At
+                <a href="https://launchpad.studentorg.berkeley.edu/">Launchpad</a>, I
+                work on projects with interesting applications in machine learning.
+              </p>
+              <!-- <div class="space-y-2 text-base">
+                <p>
+                  Read more on my <a href="/blog">blog</a>, see what I've built on the
+                  <a href="/projects">projects</a> page, or check out some of my <a href="https://photo.dvdkm.cc">photography</a>!
+                </p>
+              </div> -->
+            </div>
+            <LandingNavigation idPrefix="hero" />
+          </div>
+
+          <div data-landing-blur class="flex w-full flex-col gap-3 items-start text-left md:w-auto md:max-w-xs">
+            <ContactLinks />
+            <div class="pt-8 self-center"><LayoutToggle /></div>
+          </div>
+        </div>
+      </section>
+
+      <LandingSidebarView projects={projects} posts={recentPosts}>
+        <LayoutToggle slot="toggle" pressed={true} />
+      </LandingSidebarView>
+    </Container>
+  </div>
+</div>
+
+<style>
+  .landing-frame {
+    --landing-fade-duration: 650ms;
+    display: flow-root;
+    position: relative;
+    height: var(--landing-expanded-height, auto);
+    transition: height 350ms ease var(--landing-move-delay, 0ms);
+  }
+
+  .landing-shift {
+    display: flow-root;
+    transform: translateY(0);
+    transition: transform 350ms ease var(--landing-move-delay, 0ms);
+  }
+
+  .landing-frame :global([data-landing-blur]) {
+    transition: filter 350ms ease, opacity var(--landing-fade-duration) ease;
+  }
+
+  .landing-frame :global([data-landing-row]) {
+    position: relative;
+    z-index: 1;
+    transform: translateY(0);
+    transition: transform 350ms ease var(--landing-move-delay, 0ms);
+  }
+
+  .landing-frame[data-ready][data-collapsed="true"] {
+    --landing-fade-duration: 350ms;
+    height: var(--landing-compact-height);
+    overflow: clip;
+  }
+
+  .landing-frame[data-collapsed="true"] .landing-shift {
+    transform: translateY(var(--landing-rise));
+  }
+
+  .landing-frame[data-collapsed="true"] :global([data-landing-row]) {
+    transform: translate(var(--landing-nav-shift-x, 0px), var(--landing-nav-offset));
+  }
+
+  .landing-frame[data-collapsed="true"] :global([data-landing-blur]) {
+    filter: blur(2px);
+    opacity: 0.16;
+    pointer-events: none;
+  }
+
+  .landing-frame :global(#sidebar-view [data-landing-blur]) {
+    transition: opacity var(--landing-fade-duration) linear;
+  }
+
+  :global(html[data-landing-view="sidebar"]) .landing-frame[data-collapsed="true"] {
+    --landing-move-delay: 350ms;
+  }
+
+  .landing-frame[data-collapsed="true"] :global(#sidebar-view [data-landing-blur]) {
+    filter: none;
+    opacity: 0;
+  }
+
+  .landing-frame[data-instant],
+  .landing-frame[data-instant] :global(*) {
+    transition: none !important;
+  }
+
+  .landing-frame[data-booting] {
+    height: 94px;
+    visibility: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .landing-frame,
+    .landing-frame :global(*) {
+      transition: none !important;
+    }
+  }
+
+  .hero-lockup {
+    container-type: inline-size;
+    --hero-gap: 0.75rem;
+    --hero-image-size: clamp(88px, 18cqw, 200px);
+  }
+
+  .hero-title {
+    font-size: clamp(2.65rem, calc((100cqw - var(--hero-image-size) - var(--hero-gap)) * 0.218), 10.25rem);
+  }
+
+  .hero-portrait {
+    width: var(--hero-image-size);
+    height: var(--hero-image-size);
+    aspect-ratio: 1 / 1;
+    overflow: visible;
+  }
+
+  :global(.view-fly-in) {
+    animation-duration: 450ms;
+  }
+
+  :global(.view-fly-out) {
+    animation-duration: 450ms;
+  }
+
+  :global(html[data-landing-view="sidebar"] #hero-view) {
+    display: none !important;
+  }
+
+  :global(html[data-landing-view="sidebar"] #sidebar-view) {
+    display: block !important;
+  }
+
+  :global(html[data-landing-view="hero"] #sidebar-view) {
+    display: none !important;
+  }
+
+  @media (min-width: 640px) {
+    .hero-lockup {
+      --hero-gap: 1.5rem;
+      --hero-image-size: clamp(120px, 22vw, 200px);
+    }
+  }
+</style>
+
+<script>
+  import "../scripts/landing-frame";
+</script>

@@ -1,0 +1,66 @@
+---
+import BackToIndex from "./BackToIndex.astro";
+const { idPrefix, class: className } = Astro.props;
+const pathname = Astro.url.pathname;
+const menuitems = [
+    { name: "projects", href: "/projects/"},
+    { name: "blog", href: "/blog/" },
+    { name: "misc", href: "/misc/" },
+    { name: "photography", href: "https://photo.dvdkm.cc" },
+];
+---
+
+<div data-landing-row class:list={["flex flex-wrap items-baseline gap-x-5 gap-y-2 text-base leading-relaxed", className]}>
+  <p class="shrink-0">explore my site!</p>
+  <nav class="flex flex-wrap items-center gap-x-2 gap-y-2 text-base">
+    {
+      menuitems.map((link, index) => (
+        <Fragment>
+          {index > 0 && (
+            <svg
+              width="4"
+              height="4"
+              viewBox="0 0 20 20"
+              class="shrink-0 text-gray-500"
+              aria-hidden="true"
+              focusable="false">
+              <defs>
+                <mask
+                  id={`landing-dvd-cutout-${idPrefix}-${index}`}
+                  maskUnits="userSpaceOnUse"
+                  x="0"
+                  y="0"
+                  width="20"
+                  height="20">
+                  <circle cx="10" cy="10" r="8" fill="white" />
+                  <circle cx="10" cy="10" r="2" fill="black" />
+                  <path
+                    d="M9 2.06 A8 8 0 0 1 11 2.06 L10.44 6.53 A3.5 3.5 0 0 0 9.56 6.53 Z M11 17.94 A8 8 0 0 1 9 17.94 L9.56 13.47 A3.5 3.5 0 0 0 10.44 13.47 Z"
+                    transform="rotate(-45 10 10)"
+                    fill="black"
+                  />
+                </mask>
+              </defs>
+              <circle
+                cx="10"
+                cy="10"
+                r="8"
+                fill="currentColor"
+                mask={`url(#landing-dvd-cutout-${idPrefix}-${index})`}
+              />
+            </svg>
+          )}
+          <a
+            href={link.href}
+            class:list={[
+              "underline underline-offset-4 decoration-inherit hover:text-accent-color transition-colors",
+              { "text-accent-color": link.href === pathname },
+            ]}>
+            {link.name}
+          </a>
+        </Fragment>
+      ))
+    }
+    <BackToIndex />
+  </nav>
+</div>

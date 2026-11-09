@@ -1,0 +1,21 @@
+---
+import ProjectPost from "./ProjectPost.astro";
+import { projects } from "../data/projects";
+---
+
+<!-- projects list -->
+<div class="grid grid-cols-1 gap-4 pt-4 md:grid-cols-2">
+  {
+    projects.map((project) => (
+      <ProjectPost
+        url={project.url}
+        title={project.title}
+        description={project.description}
+        image={project.image}
+        imagePosition={project.imagePosition}
+        imageClass={project.imageClass}
+        year={project.year}
+      />
+    ))
+  }
+</div>

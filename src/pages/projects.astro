@@ -1,26 +1,8 @@
 ---
-import Page from '../layouts/Page.astro';
-import ProjectPost from '../components/ProjectPost.astro';
-import { projects } from '../data/projects';
-
-const pageTitle = "projects";
+import LandingPage from "../layouts/LandingPage.astro";
+import ProjectsContent from "../components/ProjectsContent.astro";
 ---
 
-<Page pageTitle={pageTitle}>
-  <!-- projects list -->
-  <div class="grid grid-cols-1 gap-4 pt-4 md:grid-cols-2">
-    {
-      projects.map((project) => (
-        <ProjectPost
-          url={project.url}
-          title={project.title}
-          description={project.description}
-          image={project.image}
-          imagePosition={project.imagePosition}
-          imageClass={project.imageClass}
-          year={project.year}
-        />
-      ))
-    }
-  </div>
-</Page>
+<LandingPage pageTitle="projects">
+  <ProjectsContent />
+</LandingPage>

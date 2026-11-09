@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import type { Project } from "../data/projects";
 import ContactLinks from "./ContactLinks.astro";
+import LandingNavigation from "./LandingNavigation.astro";
 import WorkLedgerRow from "./WorkLedgerRow.astro";
 import LandingHighlight from "./LandingHighlight.astro";
 import { Separator } from "$lib/components/ui/separator";
@@ -12,17 +13,11 @@ interface Props {
 }
 
 const { projects, posts }: Props = Astro.props;
-const landingLinks = [
-  { label: "blog", href: "/blog/" },
-  { label: "projects", href: "/projects/" },
-  { label: "misc", href: "/misc/" },
-  { label: "photos", href: "https://photo.dvdkm.cc" },
-];
 ---
 <section id="sidebar-view" class="hidden pb-16 pt-10 lg:-mx-16 xl:-mx-32">
   <div class="grid w-full grid-cols-1 gap-10 md:grid-cols-[230px_minmax(0,1fr)] md:gap-12">
     <!-- left sidebar -->
-    <aside class="flex flex-col gap-2">
+    <aside data-landing-blur class="flex flex-col gap-2">
       <img
         src="/assets/images/dvd_pfp.png"
         alt="Portrait of David Kim"
@@ -72,18 +67,11 @@ const landingLinks = [
 
     <!-- center column -->
     <div class="min-w-0">
-      <div class="flex flex-wrap items-baseline gap-x-6 gap-y-1 ml-3">
-        <p>explore my site!</p>
-        <nav class="text-base space-x-1.5 underline underline-offset-4 decoration-inherit">
-          {landingLinks.map((link) => (
-            <a href={link.href} class="hover:text-accent-color transition-colors">
-              {link.label}
-            </a>
-          ))}
-        </nav>
+      <LandingNavigation idPrefix="sidebar" class="ml-3" />
+      <div data-landing-blur>
+        <Separator class="mt-3 bg-gray-200" />
       </div>
-      <Separator class="mt-3 bg-gray-200" />
-      <div class="grid sm:auto-rows-fr">
+      <div data-landing-blur class="grid sm:auto-rows-fr">
         <LandingHighlight
           design="feature"
           url="/posts/cond_aware_fno/"

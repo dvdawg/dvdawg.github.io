@@ -1,0 +1,29 @@
+---
+import Page from "./Page.astro";
+import LandingFrame from "../components/LandingFrame.astro";
+
+const { pageTitle } = Astro.props;
+---
+
+<Page pageTitle={pageTitle} showHeader={false} animateContent={false}>
+  <LandingFrame slot="landing" />
+  <div data-landing-content>
+    <slot />
+  </div>
+</Page>
+
+<style is:global>
+  html[data-landing-restoring="projects"] [data-landing-panel="projects"],
+  html[data-landing-restoring="misc"] [data-landing-panel="misc"] {
+    display: block;
+  }
+
+  html[data-landing-restoring] [data-landing-back][hidden] {
+    display: inline-flex;
+  }
+
+  html[data-landing-restoring="projects"] [data-landing-row] a[href="/projects/"],
+  html[data-landing-restoring="misc"] [data-landing-row] a[href="/misc/"] {
+    color: var(--accent-color, #c4b5fd);
+  }
+</style>

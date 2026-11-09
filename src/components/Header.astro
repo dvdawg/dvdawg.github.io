@@ -34,7 +34,7 @@ const link = menuitems.find(({ href }) => pathname.startsWith(href));
                 </a>
             </div> -->
         </div>
-        <nav class='text-lg place-self-center space-x-1.5 underline underline-offset-4 decoration-inherit'>
+        <nav data-site-navigation class='text-lg place-self-center space-x-1.5 underline underline-offset-4 decoration-inherit'>
             {
                 menuitems.map((link) => (
                   <a
@@ -50,3 +50,7 @@ const link = menuitems.find(({ href }) => pathname.startsWith(href));
         </nav>
     </div>
 </Container>
+
+<script>
+  import "../scripts/landing-frame";
+</script>

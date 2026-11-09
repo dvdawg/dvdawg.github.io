@@ -1,0 +1,48 @@
+<button
+  type="button"
+  class="back-to-index"
+  data-landing-back
+  aria-label="Back to index"
+  title="Back to index"
+  hidden>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="m12 19-7-7 7-7M5 12h14" />
+  </svg>
+</button>
+
+<style>
+  .back-to-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    vertical-align: middle;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    appearance: none;
+    background: transparent;
+    color: #000;
+    cursor: pointer;
+    transition: color 150ms ease;
+  }
+
+  .back-to-index[hidden] {
+    display: none;
+  }
+
+  .back-to-index svg {
+    transform: translateY(1px);
+  }
+
+  .back-to-index:hover {
+    color: #a78bfa;
+  }
+
+  .back-to-index:focus-visible {
+    outline: 2px solid #a78bfa;
+    outline-offset: 3px;
+  }
+</style>

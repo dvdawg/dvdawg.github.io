@@ -84,13 +84,13 @@ body {
 
 /* Prevent header from fading during view transitions */
 /* Specifically target persistent header elements to prevent any animations */
-[data-astro-transition-persist] {
+[data-astro-transition-persist]:not([data-landing-frame]) {
   animation: none !important;
   opacity: 1 !important;
   transform: none !important;
 }
 
-[data-astro-transition-persist] * {
+[data-astro-transition-persist]:not([data-landing-frame]) * {
   animation: none !important;
   opacity: 1 !important;
   transform: none !important;
